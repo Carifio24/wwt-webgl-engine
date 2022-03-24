@@ -20,6 +20,7 @@ import {
   faExpand,
   faEye,
   faEyeSlash,
+  faHandPointer,
   faImage,
   faMapMarkedAlt,
   faMapMarkerAlt,
@@ -32,11 +33,12 @@ import {
   faSave,
   faSearchMinus,
   faSearchPlus,
+  faSlash,
   faSlidersH,
   faTimes,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome';
 
 import Notifications from 'vue-notification';
 
@@ -93,8 +95,11 @@ library.add(faTimes);
 library.add(faWindowClose);
 library.add(faSave);
 library.add(faCopy);
+library.add(faHandPointer);
+library.add(faSlash);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.component('font-awesome-layers', FontAwesomeLayers);
 Vue.component('vue-color-chrome', Chrome);
 Vue.component('v-select', vSelect);
 Vue.component('vue-slider', VueSlider);

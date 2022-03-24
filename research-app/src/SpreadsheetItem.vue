@@ -26,6 +26,20 @@
         :class="['icon-button', { 'icon-active': editing }]"
         icon="pencil-alt"
       />
+      <font-awesome-layers
+        @click="handleSelectability"  
+      >
+        <font-awesome-icon
+          v-hide="!hasFocus || selectable"
+          class="icon-button"
+          icon="slash"
+        />
+        <font-awesome-icon
+          v-hide="!hasFocus"
+          class="icon-button"
+          icon="hand-pointer"
+        />
+      </font-awesome-layers>
       <font-awesome-icon
         v-hide="!hasFocus"
         class="icon-button"
@@ -168,6 +182,8 @@ export default class CatalogItem extends Vue {
   beforeCreate(): void {
     this.$options.computed = {
       ...mapState(wwtResearchAppNamespace, {
+        selectable: (_state, getters) =>
+          getters["researchAppTableLayerSelectability"](this.layer),
         visible: (_state, getters) =>
           getters["researchAppTableLayerVisibility"](this.layer),
       }),
@@ -186,13 +202,15 @@ export default class CatalogItem extends Vue {
       ]),
       ...mapMutations(wwtResearchAppNamespace, [
         "removeResearchAppTableLayer",
+        "setResearchAppTableLayerSelectability",
         "setResearchAppTableLayerVisibility",
       ]),
     };
   }
 
-  // Tied to the store value
+  // Tied to the store values
   visible!: boolean;
+  selectable!: boolean;
 
   spreadsheetState!: (layer: CatalogLayerInfo) => SpreadSheetLayerSettingsInterfaceRO | null;
 
@@ -200,6 +218,10 @@ export default class CatalogItem extends Vue {
   deleteLayer!: (id: string | Guid) => void;
   removeCatalogHipsByName!: (name: string) => void;
   removeResearchAppTableLayer!: (layer: CatalogLayerInfo) => void;
+  setResearchAppTableLayerSelectability!: (args: {
+    layer: CatalogLayerInfo;
+    selectable: boolean;
+  }) => void;
   setResearchAppTableLayerVisibility!: (args: {
     layer: CatalogLayerInfo;
     visible: boolean;
@@ -325,6 +347,13 @@ export default class CatalogItem extends Vue {
     this.setResearchAppTableLayerVisibility({
       layer: this.layer,
       visible: !this.visible,
+    });
+  }
+
+  handleSelectability() {
+    this.setResearchAppTableLayerSelectability({
+      layer: this.layer,
+      selectable: !this.selectable,
     });
   }
 
