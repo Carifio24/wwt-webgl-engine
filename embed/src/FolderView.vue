@@ -120,6 +120,7 @@ export default class FolderView extends Vue {
   border-radius: 2px;
   width: ~"min(96px, 16vw)";
   cursor: pointer;
+  pointer-events: auto;
 
   & img {
     width: 100%;

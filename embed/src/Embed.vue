@@ -1054,6 +1054,7 @@ ul.tool-menu {
   position: absolute;
   left: 0.5rem;
   top: 0.5rem;
+  pointer-events: none;
   height: calc(100% - 2rem);
   display: flex;
   flex-direction: column;
