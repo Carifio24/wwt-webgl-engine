@@ -77,9 +77,11 @@ new Vue({
       props: {
         "wwtNamespace": "wwt-embed",
         "embedSettings": settings,
-        "jwstWtmlUrl": "https://web.wwtassets.org/specials/2022/jwst-first/index.wtml",
+        "jwstWtmlUrl": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/index.wtml",
         "url": "https://web.wwtassets.org/specials/2022/jwst-smacs/",
-        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-first/placeholder.jpg"
+        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-first/placeholder.jpg",
+        "bgWtml": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/jwst_smacs0723.wtml",
+        "bgName": "unwise"
       }
     });
   }
