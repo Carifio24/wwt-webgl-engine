@@ -290,7 +290,7 @@ export default class Embed extends WWTAwareComponent {
   }
 
   networks = [
-    { name: "facebook", color: "#1877f2", text: "Share on Facebook" },
+    { name: "facebook", color: "#1877f2", text: "Share" },
     { name: "twitter", color: "#1da1f2", text: "Tweet" }
   ]
 
@@ -886,6 +886,13 @@ body {
   }
 }
 
+.tool-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
 #credits {
   color: #ddd;
   font-size: 70%;
@@ -1061,7 +1068,7 @@ ul.tool-menu {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  gap: 2px;
+  gap: 5px;
   flex-shrink: 1;
 }
 
