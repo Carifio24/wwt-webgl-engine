@@ -77,9 +77,11 @@ new Vue({
       props: {
         "wwtNamespace": "wwt-embed",
         "embedSettings": settings,
-        "jwstWtmlUrl": "http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=jwst",
-        "url": "https://web.wwtassets.org/specials/2022/jwst-first/draft1/",
-        "thumbnailUrl": "https://cdn.worldwidetelescope.org/thumbnails/jwst.jpg"
+        "jwstWtmlUrl": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/index.wtml",
+        "url": "https://web.wwtassets.org/specials/2022/jwst-first/draft2/",
+        "thumbnailUrl": "https://cdn.worldwidetelescope.org/thumbnails/jwst.jpg",
+        "bgWtml": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/jwst_smacs0723.wtml",
+        "bgName": "unwise"
       }
     });
   }

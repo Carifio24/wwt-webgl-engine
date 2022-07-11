@@ -272,6 +272,8 @@ export default class Embed extends WWTAwareComponent {
   @Prop({ default: "" }) jwstWtmlUrl!: string;
   @Prop({ default: "" }) url!: string;
   @Prop({ default: "" }) thumbnailUrl!: string;
+  @Prop({ default: "" }) bgWtml!: string;
+  @Prop({ default: "" }) bgName!: string;
 
   componentState = ComponentState.LoadingResources;
   backgroundImagesets: BackgroundImageset[] = [];
@@ -473,6 +475,14 @@ export default class Embed extends WWTAwareComponent {
             this.setupForImageset(options);
           }
         }
+
+        this.loadImageCollection({
+          url: this.bgWtml,
+          loadChildFolders: true
+        }).then((_folder) => {
+          this.curBackgroundImagesetName = this.bgName;
+          this.backgroundImagesets.unshift(new BackgroundImageset("unWISE", "unwise"));
+        });
 
         this.loadImageCollection({
           url: this.jwstWtmlUrl,
