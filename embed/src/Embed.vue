@@ -43,9 +43,9 @@
         flex-direction="column"
         :root-folder="collectionFolder"
       />
-  </div>
+    </div>
 
-  <ul id="controls">
+    <ul id="controls">
       <li v-show="showToolMenu">
         <v-popover placement="left">
           <font-awesome-icon
@@ -104,95 +104,93 @@
       </li>
     </ul>
 
-  <div id="bottom-content">
+    <div id="bottom-content">
+      <div id="tools">
+        <div class="tool-container">
+          <template v-if="currentTool == 'crossfade'">
+            <span>Foreground opacity:</span>
+            <input
+              class="opacity-range"
+              type="range"
+              v-model="foregroundOpacity"
+            />
+          </template>
+          <template v-else-if="currentTool == 'choose-background'">
+            <span>Background imagery:</span>
+            <select v-model="curBackgroundImagesetName">
+              <option
+                v-for="bg in backgroundImagesets"
+                v-bind:value="bg.imagesetName"
+                v-bind:key="bg.imagesetName"
+              >
+                {{ bg.displayName }}
+              </option>
+            </select>
+          </template>
+          <template v-else-if="currentTool == 'playback-controls'">
+            <div class="playback-controls">
+              <font-awesome-icon
+                v-bind:icon="tourPlaybackIcon"
+                size="lg"
+                class="clickable"
+                @click="tourPlaybackButtonClicked()"
+              ></font-awesome-icon>
+              <vue-slider
+                class="scrubber"
+                v-model="twoWayTourTimecode"
+                :max="wwtTourRunTime"
+                :marks="wwtTourStopStartTimes"
+                :tooltip-formatter="formatTimecode"
+                :adsorb="true"
+                :duration="0"
+                :interval="0.001"
+                :contained="true"
+                :hide-label="true"
+                :use-keyboard="false"
+              ></vue-slider>
+            </div>
+          </template>
+        </div>
+      </div>
 
-    <div id="tools">
-      <div class="tool-container">
-        <template v-if="currentTool == 'crossfade'">
-          <span>Foreground opacity:</span>
-          <input
-            class="opacity-range"
-            type="range"
-            v-model="foregroundOpacity"
-          />
-        </template>
-        <template v-else-if="currentTool == 'choose-background'">
-          <span>Background imagery:</span>
-          <select v-model="curBackgroundImagesetName">
-            <option
-              v-for="bg in backgroundImagesets"
-              v-bind:value="bg.imagesetName"
-              v-bind:key="bg.imagesetName"
-            >
-              {{ bg.displayName }}
-            </option>
-          </select>
-        </template>
-        <template v-else-if="currentTool == 'playback-controls'">
-          <div class="playback-controls">
+      <div id="credits" v-show="embedSettings.creditMode == CreditMode.Default">
+        <div id="network-sharing-container">
+          <ShareNetwork
+            v-for="network in networks"
+            :key="network.name"
+            :network="network.name"
+            :class="`${network.name}-button`"
+            :style="{ backgroundColor: network.color, width: 'fit-content' }"
+            :description="description"
+            :url="url"
+            :title="title"
+            :hashtags="hashtagString"
+            :quote="description"
+            twitter-user="WWTelescope"
+          >
             <font-awesome-icon
-              v-bind:icon="tourPlaybackIcon"
+              :class="`${network.name}-icon`"
+              :style="{ padding: '0px 4px 0px 2px' }"
+              :icon="['fab', network.name]"
               size="lg"
-              class="clickable"
-              @click="tourPlaybackButtonClicked()"
             ></font-awesome-icon>
-            <vue-slider
-              class="scrubber"
-              v-model="twoWayTourTimecode"
-              :max="wwtTourRunTime"
-              :marks="wwtTourStopStartTimes"
-              :tooltip-formatter="formatTimecode"
-              :adsorb="true"
-              :duration="0"
-              :interval="0.001"
-              :contained="true"
-              :hide-label="true"
-              :use-keyboard="false"
-            ></vue-slider>
-          </div>
-        </template>
+            <span>{{ network.text }}</span>
+          </ShareNetwork>
+        </div>
+        <p>
+          Powered by
+          <a href="https://worldwidetelescope.org/home/"
+            >AAS WorldWide Telescope</a
+          >
+          <a href="https://worldwidetelescope.org/home/"
+            ><img alt="WWT Logo" src="./assets/logo_wwt.png"
+          /></a>
+          <a href="https://aas.org/"
+            ><img alt="AAS Logo" src="./assets/logo_aas.png"
+          /></a>
+        </p>
       </div>
     </div>
-
-    <div id="credits" v-show="embedSettings.creditMode == CreditMode.Default">
-      <div id="network-sharing-container">
-        <ShareNetwork
-          v-for="network in networks"
-          :key="network.name"
-          :network="network.name"
-          :class="`${network.name}-button`"
-          :style="{backgroundColor: network.color, width: 'fit-content'}"
-          :description="description"
-          :url="url"
-          :title="title"
-          :hashtags="hashtagString"
-          :quote="description"
-          twitter-user="WWTelescope"
-        >
-          <font-awesome-icon
-            :class="`${network.name}-icon`"
-            :style="{padding: '0px 4px 0px 2px'}"
-            :icon="['fab', network.name]"
-            size="lg"
-          ></font-awesome-icon>
-          <span>{{ network.text }}</span>
-        </ShareNetwork>
-      </div>
-      <p>
-        Powered by
-        <a href="https://worldwidetelescope.org/home/"
-          >AAS WorldWide Telescope</a
-        >
-        <a href="https://worldwidetelescope.org/home/"
-          ><img alt="WWT Logo" src="./assets/logo_wwt.png"
-        /></a>
-        <a href="https://aas.org/"
-          ><img alt="AAS Logo" src="./assets/logo_aas.png"
-        /></a>
-      </p>
-    </div>
-
-  </div>
   </div>
 </template>
 
@@ -209,7 +207,7 @@ import {
   WWTAwareComponent,
 } from "@wwtelescope/engine-vuex";
 import { CreditMode, EmbedSettings } from "@wwtelescope/embed-common";
-import { Meta } from '@sophosoft/vue-meta-decorator'
+import { Meta } from "@sophosoft/vue-meta-decorator";
 
 /** The overall state of the WWT embed component. */
 enum ComponentState {
@@ -268,7 +266,8 @@ export type FolderItem = Folder | FolderUp | Imageset | Place;
 export default class Embed extends WWTAwareComponent {
   CreditMode = CreditMode;
 
-  @Prop({ default: new EmbedSettings() }) readonly embedSettings!: EmbedSettings;
+  @Prop({ default: new EmbedSettings() })
+  readonly embedSettings!: EmbedSettings;
   @Prop({ default: "" }) jwstWtmlUrl!: string;
   @Prop({ default: "" }) url!: string;
   @Prop({ default: "" }) thumbnailUrl!: string;
@@ -281,9 +280,9 @@ export default class Embed extends WWTAwareComponent {
   windowShape = defaultWindowShape;
 
   collectionFolder: Folder | null = null;
-  title = "JWST with WWT"
-  description = "View JWST imagery using WorldWide Telescope";
-  hashtags = ["jwst", "wwt", "worldwidetelescope"];
+  title = "Explore JWST’s first image in full resolution!";
+  description = "View JWST imagery using AAS WorldWide Telescope";
+  hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -291,8 +290,8 @@ export default class Embed extends WWTAwareComponent {
 
   networks = [
     { name: "facebook", color: "#1877f2", text: "Share" },
-    { name: "twitter", color: "#1da1f2", text: "Tweet" }
-  ]
+    { name: "twitter", color: "#1da1f2", text: "Tweet" },
+  ];
 
   // @Meta
   // getMetaInfo() {
@@ -476,7 +475,7 @@ export default class Embed extends WWTAwareComponent {
 
         this.loadImageCollection({
           url: this.jwstWtmlUrl,
-          loadChildFolders: true
+          loadChildFolders: true,
         }).then((folder) => {
           this.collectionFolder = folder;
           const children = folder.get_children();
@@ -490,7 +489,7 @@ export default class Embed extends WWTAwareComponent {
                 place: item,
                 noZoom: false,
                 instant: true,
-                trackObject: true
+                trackObject: true,
               });
             }
           }
@@ -869,7 +868,6 @@ body {
   .clickable {
     cursor: pointer;
   }
-  
 }
 
 .playback-controls {
@@ -918,7 +916,7 @@ body {
       text-decoration: underline;
     }
 
-    &[class^='share-network']:hover {
+    &[class^="share-network"]:hover {
       text-decoration: none;
       filter: brightness(75%);
     }
