@@ -78,7 +78,7 @@ new Vue({
         "wwtNamespace": "wwt-embed",
         "embedSettings": settings,
         "jwstWtmlUrl": "https://web.wwtassets.org/specials/2022/jwst-first/index.wtml",
-        "url": "https://web.wwtassets.org/specials/2022/jwst-first/",
+        "url": "https://web.wwtassets.org/specials/2022/jwst-smacs/",
         "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-first/placeholder.jpg"
       }
     });
