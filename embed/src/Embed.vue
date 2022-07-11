@@ -1074,7 +1074,6 @@ ul.tool-menu {
 
 .facebook-button {
   border-radius: 3px;
-  background-color: rgb(11, 87, 187);
   padding: 4px;
 }
 
