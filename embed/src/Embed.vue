@@ -863,7 +863,6 @@ body {
 
   .opacity-range {
     width: 50vw;
-    pointer-events: auto;
   }
 
   .clickable {
@@ -895,6 +894,7 @@ body {
   flex-direction: row;
   align-items: center;
   gap: 5px;
+  pointer-events: auto;
 }
 
 #credits {
