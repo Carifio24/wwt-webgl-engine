@@ -279,7 +279,7 @@ export default class Embed extends WWTAwareComponent {
 
   url = "https://web.wwtassets.org/specials/2022/jwst/";
   title = "JWST with WWT"
-  description = "View James Webb Space Telescope imagery using WorldWide Telescope";
+  description = "View JWST imagery using WorldWide Telescope";
   thumbnailUrl = "http://cdn.worldwidetelescope.org/thumbnails/jwst.jpg";
   hashtags = ["jwst", "wwt", "worldwidetelescope"];
 
