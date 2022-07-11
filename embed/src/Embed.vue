@@ -264,8 +264,10 @@ export type FolderItem = Folder | FolderUp | Imageset | Place;
 export default class Embed extends WWTAwareComponent {
   CreditMode = CreditMode;
 
-  @Prop({ default: new EmbedSettings() })
-  readonly embedSettings!: EmbedSettings;
+  @Prop({ default: new EmbedSettings() }) readonly embedSettings!: EmbedSettings;
+  @Prop({ default: "" }) jwstWtmlUrl!: string;
+  @Prop({ default: "" }) url!: string;
+  @Prop({ default: "" }) thumbnailUrl!: string;
 
   componentState = ComponentState.LoadingResources;
   backgroundImagesets: BackgroundImageset[] = [];
@@ -275,12 +277,8 @@ export default class Embed extends WWTAwareComponent {
   windowShape = defaultWindowShape;
 
   collectionFolder: Folder | null = null;
-  jwstWtmlUrl = "http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=jwst";
-
-  url = "https://web.wwtassets.org/specials/2022/jwst/";
   title = "JWST with WWT"
   description = "View JWST imagery using WorldWide Telescope";
-  thumbnailUrl = "http://cdn.worldwidetelescope.org/thumbnails/jwst.jpg";
   hashtags = ["jwst", "wwt", "worldwidetelescope"];
 
   get hashtagString() {
@@ -296,7 +294,6 @@ export default class Embed extends WWTAwareComponent {
   getMetaInfo() {
     return {
       title: this.title,
-      //url: this.url,
       meta: [
         { property: "og:type", content: "website" },
         { property: "og:url", content: this.url },

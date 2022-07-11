@@ -76,7 +76,10 @@ new Vue({
     return createElement(Embed, {
       props: {
         "wwtNamespace": "wwt-embed",
-        "embedSettings": settings
+        "embedSettings": settings,
+        "jwstWtmlUrl": "http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=jwst",
+        "url": "https://web.wwtassets.org/specials/2022/jwst/",
+        "thumbnailUrl": "http://cdn.worldwidetelescope.org/thumbnails/jwst.jpg"
       }
     });
   }
