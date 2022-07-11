@@ -294,24 +294,24 @@ export default class Embed extends WWTAwareComponent {
     { name: "twitter", color: "#1da1f2", text: "Tweet" }
   ]
 
-  @Meta
-  getMetaInfo() {
-    return {
-      title: this.title,
-      meta: [
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: this.url },
-        { property: "og:title", content: this.title },
-        { property: "og:site_name", content: "WorldWide Telescope" },
-        { property: "og:description", content: this.description },
-        { property: "og:image", content: this.thumbnailUrl.replace("https", "http") },
-        { property: "og:image:secure_url", content: this.thumbnailUrl },
-        { property: "og:image:type", content: "image/jpeg" },
-        { property: "og:image:width", content: "96" },
-        { property: "og:image:height", content: "45" }
-      ],
-    }
-  }
+  // @Meta
+  // getMetaInfo() {
+  //   return {
+  //     title: this.title,
+  //     meta: [
+  //       { property: "og:type", content: "website" },
+  //       { property: "og:url", content: this.url },
+  //       { property: "og:title", content: this.title },
+  //       { property: "og:site_name", content: "WorldWide Telescope" },
+  //       { property: "og:description", content: this.description },
+  //       { property: "og:image", content: this.thumbnailUrl.replace("https", "http") },
+  //       { property: "og:image:secure_url", content: this.thumbnailUrl },
+  //       { property: "og:image:type", content: "image/jpeg" },
+  //       { property: "og:image:width", content: "96" },
+  //       { property: "og:image:height", content: "45" }
+  //     ],
+  //   }
+  // }
 
   get showFolderView() {
     const children = this.collectionFolder?.get_children();
