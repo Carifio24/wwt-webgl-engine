@@ -38,7 +38,7 @@
 
     <div id="left-content">
       <folder-view
-        v-if="collectionFolder !== null"
+        v-if="collectionFolder !== null && showFolderView"
         id="folder-view"
         flex-direction="column"
         :root-folder="collectionFolder"
@@ -308,6 +308,11 @@ export default class Embed extends WWTAwareComponent {
     }
   }
 
+  get showFolderView() {
+    const children = this.collectionFolder?.get_children();
+    return children !== null && children !== undefined && children.length > 1;
+  }
+
   get isLoadingState() {
     return this.componentState == ComponentState.LoadingResources;
   }
@@ -469,6 +474,21 @@ export default class Embed extends WWTAwareComponent {
           loadChildFolders: true
         }).then((folder) => {
           this.collectionFolder = folder;
+          const children = folder.get_children();
+          if (children === null) {
+            return;
+          }
+          if (children.length === 1) {
+            const item = children[0];
+            if (item instanceof Place) {
+              this.gotoTarget({
+                place: item,
+                noZoom: false,
+                instant: true,
+                trackObject: true
+              });
+            }
+          }
         });
 
         if (!backgroundWasInitialized) {
