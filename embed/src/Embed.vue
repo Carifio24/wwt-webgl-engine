@@ -45,7 +45,7 @@
       />
   </div>
 
-    <ul id="controls">
+  <ul id="controls">
       <li v-show="showToolMenu">
         <v-popover placement="left">
           <font-awesome-icon
@@ -103,6 +103,8 @@
         ></font-awesome-icon>
       </li>
     </ul>
+
+  <div id="bottom-content">
 
     <div id="tools">
       <div class="tool-container">
@@ -189,6 +191,8 @@
         /></a>
       </p>
     </div>
+
+  </div>
   </div>
 </template>
 
@@ -815,6 +819,18 @@ body {
   }
 }
 
+#bottom-content {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: calc(100% - 1rem);
+  pointer-events: none;
+  align-items: center;
+  gap: 25px;
+}
+
 #controls {
   position: absolute;
   z-index: 10;
@@ -838,24 +854,18 @@ body {
 }
 
 #tools {
-  position: absolute;
   z-index: 10;
-  bottom: 3rem;
-  left: 50%;
   color: #fff;
-
-  .tool-container {
-    position: relative;
-    left: -50%;
-  }
 
   .opacity-range {
     width: 50vw;
+    pointer-events: auto;
   }
 
   .clickable {
     cursor: pointer;
   }
+  
 }
 
 .playback-controls {
@@ -880,9 +890,7 @@ body {
   color: #ddd;
   font-size: 70%;
   justify-self: flex-end;
-  position: absolute;
-  bottom: 0.5rem;
-  right: 0.5rem;
+  align-self: flex-end;
 
   p {
     margin: 0;
@@ -893,6 +901,7 @@ body {
   a {
     text-decoration: none;
     color: #fff;
+    pointer-events: auto;
 
     &:hover {
       text-decoration: underline;
