@@ -6,6 +6,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faAdjust,
   faCompress,
+  faHeart,
   faExpand,
   faMountain,
   faPlay,
@@ -14,6 +15,7 @@ import {
   faSearchMinus,
   faSearchPlus,
   faSlidersH,
+  faStar,
   faUndoAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -51,6 +53,7 @@ Vue.use(createPlugin(), {
 library.add(faAdjust);
 library.add(faCompress);
 library.add(faExpand);
+library.add(faHeart);
 library.add(faMountain);
 library.add(faPlay);
 library.add(faPause);
@@ -58,6 +61,7 @@ library.add(faRedo);
 library.add(faSearchMinus);
 library.add(faSearchPlus);
 library.add(faSlidersH);
+library.add(faStar);
 library.add(faUndoAlt);
 library.add(faFacebook);
 library.add(faTwitter);

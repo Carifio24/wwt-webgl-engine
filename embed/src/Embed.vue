@@ -76,6 +76,14 @@
                   ><font-awesome-icon icon="redo" /> Tour player controls</a
                 >
               </li>
+              <li>
+                <a
+                  href="https://worldwidetelescope.org/connect/"
+                  target="_blank"
+                  v-close-popover
+                  ><font-awesome-icon icon="heart" /> Connect with WWT!</a
+                >
+              </li>
             </ul>
           </template>
         </v-popover>
