@@ -83,7 +83,7 @@ new Vue({
         "embedSettings": settings,
         "jwstWtmlUrl": "http://data1.wwtassets.org/packages/2022/07_jwst/jwst_first_v2.wtml",
         "url": "https://web.wwtassets.org/specials/2022/jwst-release/",
-        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-release/preview.jpg",
+        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-release/preview.jpg?v=2",
         "bgWtml": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/jwst_smacs0723.wtml",
         "bgName": "unwise"
       }
