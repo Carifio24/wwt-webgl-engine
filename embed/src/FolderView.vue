@@ -51,7 +51,15 @@ export default class FolderView extends Vue {
   }
 
   created(): void {
-    this.items = this.rootFolder.get_children();
+    this.items = [];
+    
+    for (const c of this.rootFolder.get_children() || []) {
+      if (c instanceof Place) {
+        this.items.push(c);
+      }
+    }
+    
+    this.rootFolder.get_children();
     this.lastSelectedItem = null;
   }
 
@@ -116,7 +124,7 @@ export default class FolderView extends Vue {
 
 .item {
   padding: 3px;
-  border: 1px solid white;
+  border: 1px solid #444;
   border-radius: 2px;
   width: ~"min(96px, 16vw)";
   cursor: pointer;
