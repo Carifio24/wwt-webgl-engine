@@ -290,8 +290,8 @@ export default class Embed extends WWTAwareComponent {
   windowShape = defaultWindowShape;
 
   collectionFolder: Folder | null = null;
-  title = "Explore JWST’s first image in full resolution!";
-  description = "View JWST imagery using AAS WorldWide Telescope";
+  title = "Explore JWST’s first images in full resolution!";
+  description = "Pan and zoom into the new images on a sky map using AAS WorldWide Telescope.";
   hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
 
   get hashtagString() {
