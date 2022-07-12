@@ -276,7 +276,7 @@ export default class Embed extends WWTAwareComponent {
 
   componentState = ComponentState.LoadingResources;
   backgroundImagesets: BackgroundImageset[] = [];
-  currentTool: ToolType = null;
+  currentTool: ToolType = "crossfade";
   fullscreenModeActive = false;
   tourPlaybackJustEnded = false;
   windowShape = defaultWindowShape;
@@ -477,10 +477,12 @@ export default class Embed extends WWTAwareComponent {
 
         this.loadImageCollection({
           url: this.bgWtml,
-          loadChildFolders: true
+          loadChildFolders: true,
         }).then((_folder) => {
           this.curBackgroundImagesetName = this.bgName;
-          this.backgroundImagesets.unshift(new BackgroundImageset("unWISE", "unwise"));
+          this.backgroundImagesets.unshift(
+            new BackgroundImageset("unWISE", "unwise")
+          );
         });
 
         this.loadImageCollection({
