@@ -58,9 +58,9 @@ export default class FolderView extends Vue {
         this.items.push(c);
       }
     }
-    
-    this.rootFolder.get_children();
-    this.lastSelectedItem = null;
+    if (this.items?.length > 0) {
+      this.selectItem(this.items[0]);
+    }
   }
 
   selectItem(item: Thumbnail): void {
