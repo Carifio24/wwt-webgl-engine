@@ -10,6 +10,16 @@
 [![npm](https://img.shields.io/npm/v/@wwtelescope/research-app?label=@wwtelescope/research-app)](https://www.npmjs.com/package/@wwtelescope/research-app)
 [![npm](https://img.shields.io/npm/v/@wwtelescope/research-app-messages?label=@wwtelescope/research-app-messages)](https://www.npmjs.com/package/@wwtelescope/research-app-messages)
 
+# 🚨🚨 This is a Fork! 🚨🚨
+
+This branch is a fork of [the main wwt-webgl-engine repo][main] to implement the
+[jwst-release custom explorer app][app]. Unless you're specifically interested in this
+app, you should [go to the main repo][main].
+
+[main]: https://github.com/WorldWideTelescope/wwt-webgl-engine/
+[app]: https://web.wwtassets.org/specials/2022/jwst-release/
+
+
 # The AAS WorldWide Telescope WebGL engine
 
 The “WebGL engine” of the [AAS] [WorldWide Telescope][wwt-home] (WWT) is a

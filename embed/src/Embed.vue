@@ -201,14 +201,19 @@
         </div>
         <p>
           Powered by
-          <a href="https://worldwidetelescope.org/home/"
+          <a href="https://worldwidetelescope.org/home/" target="_blank"
             >AAS WorldWide Telescope</a
           >
-          <a href="https://worldwidetelescope.org/home/"
+          <a href="https://worldwidetelescope.org/home/" target="_blank"
             ><img alt="WWT Logo" src="./assets/logo_wwt.png"
           /></a>
-          <a href="https://aas.org/"
+          <a href="https://aas.org/" target="_blank"
             ><img alt="AAS Logo" src="./assets/logo_aas.png"
+          /></a>
+          <a
+            href="https://github.com/pkgw/wwt-webgl-engine/tree/special-2022-jwst-release#readme"
+            target="_blank"
+            ><img alt="GitHub Logo" src="./assets/logo_github.png"
           /></a>
         </p>
       </div>
