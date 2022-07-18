@@ -184,6 +184,20 @@
             ></font-awesome-icon>
             <span>{{ network.text }}</span>
           </ShareNetwork>
+          <a
+            href="https://bit.ly/wwtdonate22"
+            target="_blank"
+            class="support-button"
+            style="background-color: #f056b0; width: fit-content"
+          >
+            <font-awesome-icon
+              class="heart-icon"
+              :style="{ padding: '0px 4px 0px 2px' }"
+              icon="heart"
+              size="lg"
+            ></font-awesome-icon>
+            <span>Support WWT</span>
+          </a>
         </div>
         <p>
           Powered by
@@ -291,7 +305,8 @@ export default class Embed extends WWTAwareComponent {
 
   collectionFolder: Folder | null = null;
   title = "Explore JWST’s first images in full resolution!";
-  description = "Pan and zoom into the new images on a sky map using AAS WorldWide Telescope.";
+  description =
+    "Pan and zoom into the new images on a sky map using AAS WorldWide Telescope.";
   hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
 
   get hashtagString() {
@@ -1100,6 +1115,11 @@ ul.tool-menu {
 }
 
 .twitter-button {
+  border-radius: 10px;
+  padding: 4px 8px;
+}
+
+.support-button {
   border-radius: 10px;
   padding: 4px 8px;
 }
