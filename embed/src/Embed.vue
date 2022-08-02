@@ -36,7 +36,7 @@
       </div>
     </transition>
 
-    <div class="image-description">
+    <div class="image-description" v-show="showImageDescription">
       <h1>Cartwheel Galaxy (JWST NIRCam and MIRI Composite Image)</h1>
 
       <p>
@@ -83,6 +83,11 @@
                   v-close-popover
                   @click="selectTool('choose-background')"
                   ><font-awesome-icon icon="mountain" /> Choose background</a
+                >
+              </li>
+              <li>
+                <a href="#" v-close-popover @click="toggleImageDescription()"
+                  ><font-awesome-icon icon="toggle-off" /> Toggle description</a
                 >
               </li>
               <li v-show="showPlaybackControls">
@@ -350,6 +355,12 @@ export default class Embed extends WWTAwareComponent {
 
   get isReadyToStartState() {
     return this.componentState == ComponentState.ReadyToStart;
+  }
+
+  showImageDescription = true;
+
+  toggleImageDescription() {
+    this.showImageDescription = !this.showImageDescription;
   }
 
   get coordText() {
@@ -873,8 +884,8 @@ body {
   position: absolute;
   bottom: 7rem;
   left: 0px;
-  width: calc(~"min(100% - 1rem, 40rem)");
-  max-height: 35%;
+  width: calc(~"min(100% - 2rem, 40rem)");
+  max-height: 25%;
   margin-left: 50vw;
   transform: translateX(-50%);
   overflow-y: scroll;

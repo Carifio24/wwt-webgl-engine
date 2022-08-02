@@ -16,6 +16,7 @@ import {
   faSearchPlus,
   faSlidersH,
   faStar,
+  faToggleOff,
   faUndoAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -62,6 +63,7 @@ library.add(faSearchMinus);
 library.add(faSearchPlus);
 library.add(faSlidersH);
 library.add(faStar);
+library.add(faToggleOff);
 library.add(faUndoAlt);
 library.add(faFacebook);
 library.add(faTwitter);
