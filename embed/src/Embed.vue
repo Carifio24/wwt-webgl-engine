@@ -195,7 +195,7 @@
             :style="{ backgroundColor: network.color, width: 'fit-content' }"
             :description="description"
             :url="url"
-            :title="title"
+            :title="description"
             :hashtags="hashtagString"
             :quote="description"
             twitter-user="WWTelescope"
@@ -331,9 +331,8 @@ export default class Embed extends WWTAwareComponent {
   tourPlaybackJustEnded = false;
   windowShape = defaultWindowShape;
 
-  title = "Cartwheel Galaxy (JWST NIRCam and MIRI Composite Image)";
-  description =
-    "Pan and zoom into the Cartwheel Galaxy on a sky map using AAS WorldWide Telescope.";
+  // This is the Tweet text:
+  description = "Check out JWST’s Cartwheel Galaxy!";
   hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
 
   get hashtagString() {
