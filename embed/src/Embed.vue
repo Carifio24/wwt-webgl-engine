@@ -36,13 +36,30 @@
       </div>
     </transition>
 
-    <div id="left-content">
-      <folder-view
-        v-if="collectionFolder !== null && showFolderView"
-        id="folder-view"
-        flex-direction="column"
-        :root-folder="collectionFolder"
-      />
+    <div class="image-description">
+      <h1>Cartwheel Galaxy (JWST NIRCam and MIRI Composite Image)</h1>
+
+      <p>
+        This image of the Cartwheel and its companion galaxies is a composite
+        from Webb’s Near-Infrared Camera (NIRCam) and Mid-Infrared Instrument
+        (MIRI), which reveals details that are difficult to see in the
+        individual images alone.
+      </p>
+
+      <p>
+        This galaxy formed as the result of a high-speed collision that occurred
+        about 400 million years ago. The Cartwheel is composed of two rings, a
+        bright inner ring and a colorful outer ring. Both rings expand outward
+        from the center of the collision like shockwaves.
+      </p>
+
+      <p class="more">
+        <a
+          target="_blank"
+          href="https://webbtelescope.org/contents/news-releases/2022/news-2022-039"
+          >🚀 Learn more at webbtelescope.org …</a
+        >
+      </p>
     </div>
 
     <ul id="controls">
@@ -298,7 +315,6 @@ export default class Embed extends WWTAwareComponent {
   @Prop({ default: "" }) jwstWtmlUrl!: string;
   @Prop({ default: "" }) url!: string;
   @Prop({ default: "" }) thumbnailUrl!: string;
-  @Prop({ default: "" }) bgWtml!: string;
   @Prop({ default: "" }) bgName!: string;
 
   componentState = ComponentState.LoadingResources;
@@ -308,7 +324,6 @@ export default class Embed extends WWTAwareComponent {
   tourPlaybackJustEnded = false;
   windowShape = defaultWindowShape;
 
-  collectionFolder: Folder | null = null;
   title = "Cartwheel Galaxy (JWST NIRCam and MIRI Composite Image)";
   description =
     "Pan and zoom into the Cartwheel Galaxy on a sky map using AAS WorldWide Telescope.";
@@ -494,13 +509,12 @@ export default class Embed extends WWTAwareComponent {
             new BackgroundImageset("unWISE", "unwise")
           );
 
-          this.collectionFolder = folder;
           const children = folder.get_children();
           if (children === null) {
             return;
           }
-          if (children.length === 1) {
-            const item = children[0];
+
+          for (const item of children) {
             if (item instanceof Place) {
               this.gotoTarget({
                 place: item,
@@ -508,6 +522,7 @@ export default class Embed extends WWTAwareComponent {
                 instant: true,
                 trackObject: true,
               });
+              break;
             }
           }
         });
@@ -709,6 +724,21 @@ export default class Embed extends WWTAwareComponent {
 </script>
 
 <style lang="less">
+@font-face {
+  font-family: "Roboto Condensed";
+  font-style: normal;
+  font-weight: 400;
+  src: url(./assets/googlewebfont-RobotoCondensed-Regular.ttf)
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto Condensed";
+  font-style: normal;
+  font-weight: 700;
+  src: url(./assets/googlewebfont-RobotoCondensed-Bold.ttf) format("truetype");
+}
+
 html {
   height: 100%;
   margin: 0;
@@ -836,6 +866,41 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1;
+  }
+}
+
+.image-description {
+  position: absolute;
+  bottom: 7rem;
+  left: 0px;
+  width: calc(~"min(100% - 1rem, 40rem)");
+  max-height: 35%;
+  margin-left: 50vw;
+  transform: translateX(-50%);
+  overflow-y: scroll;
+  color: #fff;
+  font-family: "Roboto Condensed", Verdana, Arial, Helvetica, sans-serif;
+  background-color: rgba(255, 255, 255, 0.07);
+  padding: 0.5rem;
+
+  h1 {
+    font-size: 150%;
+    font-weight: bold;
+    margin: 0px 0px 1rem 0px;
+  }
+
+  .more {
+    font-weight: bold;
+    margin: 0px;
+  }
+
+  a {
+    color: #b4defa;
+    text-decoration: none;
+
+    &:hover {
+      color: #2aa5f7;
+    }
   }
 }
 
