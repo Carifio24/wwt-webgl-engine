@@ -54,9 +54,11 @@
       </p>
 
       <p class="more">
+        <!-- This trick redirects the click through the bit.ly link so we can count clicks -->
         <a
           target="_blank"
           href="https://webbtelescope.org/contents/news-releases/2022/news-2022-039"
+          @click.prevent="openSourceLink"
           >🚀 Learn more at webbtelescope.org …</a
         >
       </p>
@@ -361,6 +363,10 @@ export default class Embed extends WWTAwareComponent {
 
   toggleImageDescription() {
     this.showImageDescription = !this.showImageDescription;
+  }
+
+  openSourceLink() {
+    window.open("https://bit.ly/3BC61fH");
   }
 
   get coordText() {
@@ -891,6 +897,7 @@ body {
   overflow-y: scroll;
   color: #fff;
   font-family: "Roboto Condensed", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 85%;
   background-color: rgba(255, 255, 255, 0.07);
   padding: 0.5rem;
 
