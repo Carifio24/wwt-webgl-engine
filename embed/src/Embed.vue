@@ -309,9 +309,9 @@ export default class Embed extends WWTAwareComponent {
   windowShape = defaultWindowShape;
 
   collectionFolder: Folder | null = null;
-  title = "Explore JWST’s first images in full resolution!";
+  title = "Cartwheel Galaxy (JWST NIRCam and MIRI Composite Image)";
   description =
-    "Pan and zoom into the new images on a sky map using AAS WorldWide Telescope.";
+    "Pan and zoom into the Cartwheel Galaxy on a sky map using AAS WorldWide Telescope.";
   hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
 
   get hashtagString() {
@@ -323,28 +323,10 @@ export default class Embed extends WWTAwareComponent {
     { name: "twitter", color: "#1da1f2", text: "Tweet" },
   ];
 
-  // @Meta
-  // getMetaInfo() {
-  //   return {
-  //     title: this.title,
-  //     meta: [
-  //       { property: "og:type", content: "website" },
-  //       { property: "og:url", content: this.url },
-  //       { property: "og:title", content: this.title },
-  //       { property: "og:site_name", content: "WorldWide Telescope" },
-  //       { property: "og:description", content: this.description },
-  //       { property: "og:image", content: this.thumbnailUrl.replace("https", "http") },
-  //       { property: "og:image:secure_url", content: this.thumbnailUrl },
-  //       { property: "og:image:type", content: "image/jpeg" },
-  //       { property: "og:image:width", content: "96" },
-  //       { property: "og:image:height", content: "45" }
-  //     ],
-  //   }
-  // }
-
   get showFolderView() {
-    const children = this.collectionFolder?.get_children();
-    return children !== null && children !== undefined && children.length > 1;
+    //const children = this.collectionFolder?.get_children();
+    //return children !== null && children !== undefined && children.length > 1;
+    return false;
   }
 
   get isLoadingState() {
@@ -504,19 +486,14 @@ export default class Embed extends WWTAwareComponent {
         }
 
         this.loadImageCollection({
-          url: this.bgWtml,
+          url: this.jwstWtmlUrl,
           loadChildFolders: true,
-        }).then((_folder) => {
+        }).then((folder) => {
           this.curBackgroundImagesetName = this.bgName;
           this.backgroundImagesets.unshift(
             new BackgroundImageset("unWISE", "unwise")
           );
-        });
 
-        this.loadImageCollection({
-          url: this.jwstWtmlUrl,
-          loadChildFolders: true,
-        }).then((folder) => {
           this.collectionFolder = folder;
           const children = folder.get_children();
           if (children === null) {
