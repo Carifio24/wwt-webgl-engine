@@ -910,7 +910,7 @@ body {
   max-height: 25%;
   margin-left: 50vw;
   transform: translateX(-50%);
-  overflow-y: scroll;
+  overflow-y: auto;
   color: #fff;
   font-family: "Roboto Condensed", Verdana, Arial, Helvetica, sans-serif;
   font-size: 85%;
