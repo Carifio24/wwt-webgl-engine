@@ -83,9 +83,9 @@ new Vue({
       props: {
         "wwtNamespace": "wwt-embed",
         "embedSettings": settings,
-        "jwstWtmlUrl": "http://data1.wwtassets.org/packages/2022/08_jwst/cartwheel/index.wtml",
-        "url": "https://web.wwtassets.org/specials/2022/jwst-cartwheel/?v=2",
-        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-cartwheel/preview.jpg",
+        "jwstWtmlUrl": "https://data1.wwtassets.org/packages/2022/08_jwst/ceers_nircam/index.wtml",
+        "url": "https://web.wwtassets.org/specials/2022/jwst-ceers/",
+        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-ceers/preview.jpg",
         "bgName": "unwise"
       }
     });

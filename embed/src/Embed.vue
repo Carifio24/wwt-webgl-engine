@@ -37,29 +37,32 @@
     </transition>
 
     <div class="image-description" v-show="showImageDescription">
-      <h1>Cartwheel Galaxy (JWST NIRCam and MIRI Composite Image)</h1>
+      <h1>
+        Wide View of Early Universe Hints at Galaxy Among the Earliest Ever
+        Detected
+      </h1>
 
       <p>
-        This image of the Cartwheel and its companion galaxies is a composite
-        from Webb’s Near-Infrared Camera (NIRCam) and Mid-Infrared Instrument
-        (MIRI), which reveals details that are difficult to see in the
-        individual images alone.
-      </p>
-
-      <p>
-        This galaxy formed as the result of a high-speed collision that occurred
-        about 400 million years ago. The Cartwheel is composed of two rings, a
-        bright inner ring and a colorful outer ring. Both rings expand outward
-        from the center of the collision like shockwaves.
+        Two new images from NASA’s James Webb Space Telescope show what may be
+        among the earliest galaxies ever observed. Both images include objects
+        from more than 13 billion years ago, and one offers a much wider field
+        of view than
+        <a
+          href="https://www.nasa.gov/image-feature/goddard/2022/nasa-s-webb-delivers-deepest-infrared-image-of-universe-yet"
+          >Webb’s First Deep Field image</a
+        >, which was released amid great fanfare July 12. The images represent
+        some of the first out of a major collaboration of astronomers and other
+        academic researchers teaming with NASA and global partners to uncover
+        new insights about the universe.
       </p>
 
       <p class="more">
         <!-- This trick redirects the click through the bit.ly link so we can count clicks -->
         <a
           target="_blank"
-          href="https://webbtelescope.org/contents/news-releases/2022/news-2022-039"
+          href="https://cns.utexas.edu/news/widest-view-of-early-universe-hints-at-galaxy-among-the-earliest-ever-detected"
           @click.prevent="openSourceLink"
-          >🚀 Learn more at webbtelescope.org …</a
+          >🚀 Learn more at utexas.edu …</a
         >
       </p>
     </div>
@@ -235,7 +238,7 @@
             ><img alt="AAS Logo" src="./assets/logo_aas.png"
           /></a>
           <a
-            href="https://github.com/pkgw/wwt-webgl-engine/tree/special-2022-jwst-release#readme"
+            href="https://github.com/pkgw/wwt-webgl-engine/tree/special-2022-jwst-ceers#readme"
             target="_blank"
             ><img alt="GitHub Logo" src="./assets/logo_github.png"
           /></a>
@@ -332,7 +335,8 @@ export default class Embed extends WWTAwareComponent {
   windowShape = defaultWindowShape;
 
   // This is the Tweet text:
-  description = "Check out JWST’s Cartwheel Galaxy!";
+  description =
+    "Wide View of Early Universe Hints at Galaxy Among the Earliest Ever Detected";
   hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
 
   get hashtagString() {
@@ -365,7 +369,8 @@ export default class Embed extends WWTAwareComponent {
   }
 
   openSourceLink() {
-    window.open("https://bit.ly/3BC61fH");
+    // Custom link to the target URL so that we can count clicks.
+    window.open("https://bit.ly/3zylWsI");
   }
 
   get coordText() {
@@ -535,7 +540,7 @@ export default class Embed extends WWTAwareComponent {
               this.gotoTarget({
                 place: item,
                 noZoom: false,
-                instant: true,
+                instant: false,
                 trackObject: true,
               });
               break;
