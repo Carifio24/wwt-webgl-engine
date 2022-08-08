@@ -40,3 +40,15 @@ a custom viewer. Unless you're specifically interested in this app, you should
       customization.
 6. `npm run build` to check build.
 7. `npm run serve-embed` and test app.
+8. Iterate, checkpoint work into Git.
+9. Set up preview image:
+   1. Take a good-sized screenshot to use for the preview.
+   2. Crop it to 2:1 aspect ratio.
+   3. Resize to 1200×600 size.
+   4. Export it to `embed/public/preview.jpg`.
+   5. Update preview-related parameters in `embed/public/index.html` if needed.
+9. Upload preview image:
+   1. Export `$AZURE_STORAGE_CONNECTION_STRING` for `wwtwebstatic` server.
+   2. `npm run build` just to be safe.
+   3. Sub in appropriate `!YYYY!` and `!DIRNAME!`, then:
+      `az storage azcopy blob upload -c '$web' -r -s embed/dist/preview.jpg -d specials/!YYYY!/!DIRNAME!/`
