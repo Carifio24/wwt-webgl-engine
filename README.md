@@ -62,3 +62,22 @@ a custom viewer. Unless you're specifically interested in this app, you should
    2. `npm run build` just to be safe.
    3. Sub in appropriate `!YYYY!` and `!DIRNAME!`, then:
       `az storage azcopy blob upload -c '$web' -r -s embed/dist/preview.jpg -d specials/!YYYY!/!DIRNAME!/`
+9. Upload draft:
+   1. Checkpoint work into Git.
+   2. Update `embed/public/index.html` to append `draft1/` to `og:url`.
+   3. Update `embed/src/main.ts` to append `draft1/` to `url`.
+   4. `npm run build`.
+   5. `az storage azcopy blob upload -c '$web' -r -s 'embed/dist/*' -d specials/!YYYY!/!DIRNAME!/draft1/`
+   6. View at `https://web.wwtassets.org/specials/!YYYY!/!DIRNAME!/draft1/`
+   7. Now test social media previews (Twitter, FB, Slack).
+   8. Test on actual phone.
+   9. `git restore` when satisfied.
+9. Deploy:
+   1. `git diff` / `git status` check and commit any final changes.
+   2. `rm -rf embed/dist` for safety.
+   3. `npm run build`.
+   4. `az storage azcopy blob upload -c '$web' -r -s 'embed/dist/*' -d specials/!YYYY!/!DIRNAME!/`
+9. Promote:
+   1. Tweet from WWT account.
+   2. Retweet or amplify from personal accounts.
+   3. Mention on #wwt AstroPy Slack channel.
