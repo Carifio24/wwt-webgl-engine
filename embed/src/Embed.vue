@@ -65,6 +65,11 @@
           >🚀 Learn more at utexas.edu …</a
         >
       </p>
+
+      <p class="credits">
+        Credit: NASA/STScI/CEERS/TACC/S. Finkelstein/G. Yang./C. Papovich/Z.
+        Levay.
+      </p>
     </div>
 
     <ul id="controls">
@@ -755,6 +760,13 @@ export default class Embed extends WWTAwareComponent {
 
 @font-face {
   font-family: "Roboto Condensed";
+  font-style: italic;
+  font-weight: 400;
+  src: url(./assets/googlewebfont-RobotoCondensed-Italic.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto Condensed";
   font-style: normal;
   font-weight: 700;
   src: url(./assets/googlewebfont-RobotoCondensed-Bold.ttf) format("truetype");
@@ -913,6 +925,11 @@ body {
 
   .more {
     font-weight: bold;
+  }
+
+  .credits {
+    font-style: italic;
+    font-size: 90%;
     margin: 0px;
   }
 

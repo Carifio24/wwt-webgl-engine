@@ -29,6 +29,7 @@ a custom viewer. Unless you're specifically interested in this app, you should
    2. Update image description to press release teaser.
    3. Update Read More link and description (destination domain) to press
       release.
+   3. Update image credits.
    4. Update GitHub repo link in "Powered by" footer.
    5. Update "Description" in Component preamble to match title (this will be
       the text filled in with any generated tweet).
