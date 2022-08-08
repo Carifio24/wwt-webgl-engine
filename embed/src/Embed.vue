@@ -37,6 +37,7 @@
     </transition>
 
     <div class="image-description" v-show="showImageDescription">
+      <a class="close-button" @click="showImageDescription = false">×</a>
       <h1>
         Wide View of Early Universe Hints at Galaxy Among the Earliest Ever
         Detected
@@ -916,6 +917,19 @@ body {
   font-size: 85%;
   background-color: rgba(255, 255, 255, 0.07);
   padding: 0.5rem;
+
+  .close-button {
+    float: right;
+    font-size: 2rem;
+    width: 1rem;
+    height: 1rem;
+    line-height: 1rem;
+    text-align: center;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
 
   h1 {
     font-size: 150%;

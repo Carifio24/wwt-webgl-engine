@@ -9,6 +9,7 @@ a custom viewer. Unless you're specifically interested in this app, you should
 
 ## Custom App Workflow
 
+1. Switch to a new branch with an appropriate name.
 1. Make sure custom `engine/wwtlib/bin/wwtlib.js` is downloaded.
 2. Determine data WTML URL. Validate:
    1. First folder item is `<Place>` of interest
@@ -40,8 +41,16 @@ a custom viewer. Unless you're specifically interested in this app, you should
    9. Review `this.backgroundImagesets.unshift` line for necessary
       customization.
 6. `npm run build` to check build.
-7. `npm run serve-embed` and test app.
-8. Iterate, checkpoint work into Git.
+7. Iterate, checkpoint work into Git.
+8. Push to GitHub to establish branch
+9. `npm run serve-embed` and test app.
+   1. General appearance, duh.
+   2. Do *not* test social media buttons in case that leads them to cache a
+      missing/bad preview for the final URL.
+   2. "Learn more" link. Click counted on bit.ly?
+   3. "Support WWT" link.
+   4. GitHub link.
+   5. Mobile display (via devtools).
 9. Set up preview image:
    1. Take a good-sized screenshot to use for the preview.
    2. Crop it to 2:1 aspect ratio.
