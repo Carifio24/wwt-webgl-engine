@@ -77,6 +77,8 @@ a custom viewer. Unless you're specifically interested in this app, you should
    2. `rm -rf embed/dist` for safety.
    3. `npm run build`.
    4. `az storage azcopy blob upload -c '$web' -r -s 'embed/dist/*' -d specials/!YYYY!/!DIRNAME!/`
+   5. If CDN purge needed:
+      `az cdn endpoint purge -g wwt-web01 --profile-name wwt-cdn-01 -n wwtweb-prod --content-paths '/specials/!YYYY!/!DIRNAME!/*'`
 9. Promote:
    1. Tweet from WWT account.
    2. Retweet or amplify from personal accounts.
