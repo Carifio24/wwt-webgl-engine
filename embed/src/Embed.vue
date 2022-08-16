@@ -61,9 +61,9 @@
         <!-- This trick redirects the click through the bit.ly link so we can count clicks -->
         <a
           target="_blank"
-          href="https://cns.utexas.edu/news/widest-view-of-early-universe-hints-at-galaxy-among-the-earliest-ever-detected"
+          href="https://ceers.github.io/ceers-first-images-release"
           @click.prevent="openSourceLink"
-          >🚀 Learn more at utexas.edu …</a
+          >🚀 Learn more at ceers.github.io …</a
         >
       </p>
 
@@ -376,7 +376,7 @@ export default class Embed extends WWTAwareComponent {
 
   openSourceLink() {
     // Custom link to the target URL so that we can count clicks.
-    window.open("https://bit.ly/3zylWsI");
+    window.open("https://bit.ly/3PHGJ3r");
   }
 
   get coordText() {
