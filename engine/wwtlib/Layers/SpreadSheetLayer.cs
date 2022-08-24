@@ -617,6 +617,10 @@ namespace wwtlib
             {
                 double ra = Double.Parse(row[LngColumn]);
                 double dec = Double.Parse(row[LatColumn]);
+                if (!astronomical)
+                {
+                    ra += 180;
+                }
                 Vector3d position = Coordinates.GeoTo3dDouble(dec, ra);
 
                 if(!IsPointInFrustum(position, WWTControl.Singleton.RenderContext.Frustum))
