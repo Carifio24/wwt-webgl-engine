@@ -39,22 +39,11 @@
     <div class="image-description" v-show="showImageDescription">
       <a class="close-button" @click="showImageDescription = false">×</a>
       <h1>
-        Wide View of Early Universe Hints at Galaxy Among the Earliest Ever
-        Detected
+        DECaPS2
       </h1>
 
       <p>
-        Two new images from NASA’s James Webb Space Telescope show what may be
-        among the earliest galaxies ever observed. Both images include objects
-        from more than 13 billion years ago, and one offers a much wider field
-        of view than
-        <a
-          href="https://www.nasa.gov/image-feature/goddard/2022/nasa-s-webb-delivers-deepest-infrared-image-of-universe-yet"
-          >Webb’s First Deep Field image</a
-        >, which was released amid great fanfare July 12. The images represent
-        some of the first out of a major collaboration of astronomers and other
-        academic researchers teaming with NASA and global partners to uncover
-        new insights about the universe.
+        Add informational text, link to more information, etc. here
       </p>
 
       <p class="more">
