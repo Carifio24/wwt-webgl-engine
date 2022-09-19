@@ -232,7 +232,7 @@
             ><img alt="AAS Logo" src="./assets/logo_aas.png"
           /></a>
           <a
-            href="https://github.com/Carifio24/wwt-webgl-engine/tree/special-2022-decaps#readme"
+            href="https://github.com/Carifio24/wwt-webgl-engine/tree/special-2022-decaps2#readme"
             target="_blank"
             ><img alt="GitHub Logo" src="./assets/logo_github.png"
           /></a>
