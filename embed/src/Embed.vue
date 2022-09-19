@@ -50,15 +50,14 @@
         <!-- This trick redirects the click through the bit.ly link so we can count clicks -->
         <a
           target="_blank"
-          href="https://ceers.github.io/ceers-first-images-release"
+          href="https://someurl.com"
           @click.prevent="openSourceLink"
-          >🚀 Learn more at ceers.github.io …</a
+          >🚀 Learn more at some link…</a
         >
       </p>
 
       <p class="credits">
-        Credit: NASA/STScI/CEERS/TACC/S. Finkelstein/G. Yang./C. Papovich/Z.
-        Levay.
+        Credit: Add credits here
       </p>
     </div>
 
@@ -233,7 +232,7 @@
             ><img alt="AAS Logo" src="./assets/logo_aas.png"
           /></a>
           <a
-            href="https://github.com/pkgw/wwt-webgl-engine/tree/special-2022-jwst-ceers#readme"
+            href="https://github.com/Carifio24/wwt-webgl-engine/tree/special-2022-decaps#readme"
             target="_blank"
             ><img alt="GitHub Logo" src="./assets/logo_github.png"
           /></a>
@@ -331,8 +330,8 @@ export default class Embed extends WWTAwareComponent {
 
   // This is the Tweet text:
   description =
-    "Wide View of Early Universe Hints at Galaxy Among the Earliest Ever Detected";
-  hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
+    "DECaPS2";
+  hashtags = ["noirlab", "wwt", "decaps"];
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -365,7 +364,7 @@ export default class Embed extends WWTAwareComponent {
 
   openSourceLink() {
     // Custom link to the target URL so that we can count clicks.
-    window.open("https://bit.ly/3PHGJ3r");
+    window.open("");
   }
 
   get coordText() {
@@ -522,7 +521,7 @@ export default class Embed extends WWTAwareComponent {
         }).then((folder) => {
           this.curBackgroundImagesetName = this.bgName;
           this.backgroundImagesets.unshift(
-            new BackgroundImageset("unWISE", "unwise")
+            new BackgroundImageset("NOIRLab All-Sky / WWT DSS", "NOIRLab All-Sky / WWT DSS")
           );
 
           const children = folder.get_children();
