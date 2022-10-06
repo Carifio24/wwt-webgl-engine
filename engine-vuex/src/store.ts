@@ -400,7 +400,7 @@ export interface LoadImageCollectionParams {
  * inside either an action or a mutation.
  */
 function activeLayersList(): string[] {
-  if (Vue.$wwt.inst === null)
+  if (WWTEngineVuexModule.$wwt.inst === null)
     throw new Error('cannot get activeLayersList without linking to WWTInstance');
 
   const layers: string[] = [];
@@ -415,7 +415,7 @@ function activeLayersList(): string[] {
     }
   }
 
-  const rootlm = Vue.$wwt.inst.lm.get_allMaps()[Vue.$wwt.inst.ctl.getCurrentReferenceFrame()];
+  const rootlm = WWTEngineVuexModule.$wwt.inst.lm.get_allMaps()[WWTEngineVuexModule.$wwt.inst.ctl.getCurrentReferenceFrame()];
   if (rootlm) {
     accum(rootlm);
   }
@@ -438,10 +438,10 @@ function availableImagesets(): ImagesetInfo[] {
  * inside either an action or a mutation.
  */
 function spreadSheetLayerByKey(key: string): SpreadSheetLayer | null {
-  if (Vue.$wwt.inst === null)
+  if (WWTEngineVuexModule.$wwt.inst === null)
     throw new Error('cannot get spreadSheetLayerByKey without linking to WWTInstance');
 
-  const layer = Vue.$wwt.inst.lm.get_layerList()[key];
+  const layer = WWTEngineVuexModule.$wwt.inst.lm.get_layerList()[key];
 
   if (layer !== null && layer instanceof SpreadSheetLayer) {
     return layer;
@@ -464,6 +464,9 @@ function catalogLayerKey(catalog: CatalogLayerInfo): string {
   stateFactory: true,
 })
 export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexState {
+
+  static $wwt: WWTGlobalState = new WWTGlobalState();
+
   // NOTE: We were orginally alphabetizing these all, but now I think it will be
   // better to group topically related fields.
 
@@ -490,46 +493,46 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   get lookupImageset() {
     // This is how you create a parametrized getter in vuex-module-decorators:
-    return function (imagesetName: string): Imageset | null {
-      if (Vue.$wwt.inst === null)
+    return (imagesetName: string): Imageset | null => {
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot lookupImageset without linking to WWTInstance');
-      return Vue.$wwt.inst.ctl.getImagesetByName(imagesetName);
+      return WWTEngineVuexModule.$wwt.inst.ctl.getImagesetByName(imagesetName);
     }
   }
 
   get findRADecForScreenPoint() {
     return function (pt: { x: number; y: number }): { ra: number; dec: number } {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot findRADecForScreenPoint without linking to WWTInstance');
-      const coords = Vue.$wwt.inst.ctl.getCoordinatesForScreenPoint(pt.x, pt.y);
+      const coords = WWTEngineVuexModule.$wwt.inst.ctl.getCoordinatesForScreenPoint(pt.x, pt.y);
       return { ra: (15 * coords.x + 720) % 360, dec: coords.y };
     }
   }
 
   get findScreenPointForRADec() {
     return function (pt: { ra: number; dec: number }): { x: number; y: number } {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot findScreenPointForRADec without linking to WWTInstance');
-      return Vue.$wwt.inst.ctl.getScreenPointForCoordinates(pt.ra / 15, pt.dec);
+      return WWTEngineVuexModule.$wwt.inst.ctl.getScreenPointForCoordinates(pt.ra / 15, pt.dec);
     }
   }
 
   @Mutation
   internalLinkToInstance(wwt: WWTInstance): void {
-    Vue.$wwt.link(wwt);
+    WWTEngineVuexModule.$wwt.link(wwt);
   }
 
   @Mutation
   internalUnlinkFromInstance(): void {
-    Vue.$wwt.unlink();
+    WWTEngineVuexModule.$wwt.unlink();
   }
 
   @Mutation
   internalUpdate(): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot internalUpdate without linking to WWTInstance');
 
-    const wwt = Vue.$wwt.inst;
+    const wwt = WWTEngineVuexModule.$wwt.inst;
 
     const raRad = wwt.si.getRA() * H2R;
     if (this.raRad != raRad)
@@ -590,76 +593,76 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   applySetting(setting: EngineSetting): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot applySetting without linking to WWTInstance');
-    Vue.$wwt.inst.applySetting(setting);
+    WWTEngineVuexModule.$wwt.inst.applySetting(setting);
   }
 
   @Mutation
   setBackgroundImageByName(imagesetName: string): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setBackgroundImageByName without linking to WWTInstance');
-    Vue.$wwt.inst.setBackgroundImageByName(imagesetName);
+    WWTEngineVuexModule.$wwt.inst.setBackgroundImageByName(imagesetName);
   }
 
   @Mutation
   setForegroundImageByName(imagesetName: string): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setForegroundImageByName without linking to WWTInstance');
-    Vue.$wwt.inst.setForegroundImageByName(imagesetName);
+    WWTEngineVuexModule.$wwt.inst.setForegroundImageByName(imagesetName);
   }
 
   @Mutation
   setForegroundOpacity(opacity: number): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setForegroundOpacity without linking to WWTInstance');
-    Vue.$wwt.inst.setForegroundOpacity(opacity);
+    WWTEngineVuexModule.$wwt.inst.setForegroundOpacity(opacity);
     this.foregroundOpacity = opacity;
   }
 
   @Mutation
   setupForImageset(options: SetupForImagesetOptions): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setupForImageset without linking to WWTInstance');
-    Vue.$wwt.inst.setupForImageset(options);
+    WWTEngineVuexModule.$wwt.inst.setupForImageset(options);
   }
 
   @Mutation
   zoom(factor: number): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot zoom without linking to WWTInstance');
-    Vue.$wwt.inst.ctl.zoom(factor);
+    WWTEngineVuexModule.$wwt.inst.ctl.zoom(factor);
   }
 
   @Mutation
   move(args: { x: number; y: number }): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot move without linking to WWTInstance');
-    Vue.$wwt.inst.ctl.move(args.x, args.y);
+    WWTEngineVuexModule.$wwt.inst.ctl.move(args.x, args.y);
   }
 
   @Mutation
   tilt(args: { x: number; y: number }): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot tilt without linking to WWTInstance');
-    Vue.$wwt.inst.ctl._tilt(args.x, args.y);
+    WWTEngineVuexModule.$wwt.inst.ctl._tilt(args.x, args.y);
   }
 
   @Mutation
   setTime(time: Date): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setTime without linking to WWTInstance');
-    Vue.$wwt.inst.stc.set_now(time);
+    WWTEngineVuexModule.$wwt.inst.stc.set_now(time);
     this.clockDiscontinuities += 1;
   }
 
   @Mutation
   setClockRate(rate: number): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setClockRate without linking to WWTInstance');
 
-    if (Vue.$wwt.inst.stc.get_timeRate() != rate) {
-      Vue.$wwt.inst.stc.set_timeRate(rate);
+    if (WWTEngineVuexModule.$wwt.inst.stc.get_timeRate() != rate) {
+      WWTEngineVuexModule.$wwt.inst.stc.set_timeRate(rate);
       this.clockRate = rate;
       this.clockDiscontinuities += 1;
     }
@@ -667,14 +670,14 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   setClockSync(isSynced: boolean): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setClockSync without linking to WWTInstance');
 
-    if (Vue.$wwt.inst.stc.get_syncToClock() != isSynced) {
-      Vue.$wwt.inst.stc.set_syncToClock(isSynced);
+    if (WWTEngineVuexModule.$wwt.inst.stc.get_syncToClock() != isSynced) {
+      WWTEngineVuexModule.$wwt.inst.stc.set_syncToClock(isSynced);
 
       if (isSynced) {
-        this.clockRate = Vue.$wwt.inst.stc.get_timeRate();
+        this.clockRate = WWTEngineVuexModule.$wwt.inst.stc.get_timeRate();
       } else {
         this.clockRate = 0;
       }
@@ -685,10 +688,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   startTour(): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot start tour without linking to WWTInstance');
 
-    const player = Vue.$wwt.inst.getActiveTourPlayer();
+    const player = WWTEngineVuexModule.$wwt.inst.getActiveTourPlayer();
     if (player === null)
       throw new Error('no tour to start');
 
@@ -697,10 +700,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   toggleTourPlayPauseState(): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot play/pause tour without linking to WWTInstance');
 
-    const player = Vue.$wwt.inst.getActiveTourPlayer();
+    const player = WWTEngineVuexModule.$wwt.inst.getActiveTourPlayer();
     if (player === null)
       throw new Error('no tour to play/pause');
 
@@ -710,10 +713,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   setTourPlayerLeaveSettingsWhenStopped(value: boolean): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setTourPlayerLeaveSettingsWhenStopped without linking to WWTInstance');
 
-    const player = Vue.$wwt.inst.getActiveTourPlayer();
+    const player = WWTEngineVuexModule.$wwt.inst.getActiveTourPlayer();
     if (player === null)
       throw new Error('no tour player to control');
 
@@ -722,26 +725,26 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   seekToTourTimecode(value: number): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot seekToTourTimecode without linking to WWTInstance');
 
-    Vue.$wwt.inst.seekToTourTimecode(value);
+    WWTEngineVuexModule.$wwt.inst.seekToTourTimecode(value);
   }
 
   @Action({ rawError: true })
   async waitForReady(): Promise<void> {
-    if (Vue.$wwt.inst !== null) {
-      return Vue.$wwt.inst.waitForReady();
+    if (WWTEngineVuexModule.$wwt.inst !== null) {
+      return WWTEngineVuexModule.$wwt.inst.waitForReady();
     } else {
       return new Promise((resolve, _reject) => {
         const waitThenResolve = (): void => {
-          (Vue.$wwt.inst as WWTInstance).waitForReady().then(resolve);
+          (WWTEngineVuexModule.$wwt.inst as WWTInstance).waitForReady().then(resolve);
         };
 
-        if (Vue.$wwt.inst !== null) {
+        if (WWTEngineVuexModule.$wwt.inst !== null) {
           waitThenResolve();
         } else {
-          Vue.$wwt.onLinkedCallbacks.push(waitThenResolve);
+          WWTEngineVuexModule.$wwt.onLinkedCallbacks.push(waitThenResolve);
         }
       });
     }
@@ -751,41 +754,41 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
   async gotoRADecZoom(
     { raRad, decRad, zoomDeg, instant, rollRad }: GotoRADecZoomParams
   ): Promise<void> {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot gotoRADecZoom without linking to WWTInstance');
-    return Vue.$wwt.inst.gotoRADecZoom(raRad, decRad, zoomDeg, instant, rollRad);
+    return WWTEngineVuexModule.$wwt.inst.gotoRADecZoom(raRad, decRad, zoomDeg, instant, rollRad);
   }
 
   @Action({ rawError: true })
   async gotoTarget(options: GotoTargetOptions): Promise<void> {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot gotoTarget without linking to WWTInstance');
-    return Vue.$wwt.inst.gotoTarget(options);
+    return WWTEngineVuexModule.$wwt.inst.gotoTarget(options);
   }
 
   @Mutation
   setTrackedObject(obj: SolarSystemObjects): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setTrackedObject without linking to WWTInstance');
-    Vue.$wwt.inst.ctl.renderContext.set_solarSystemTrack(obj);
+    WWTEngineVuexModule.$wwt.inst.ctl.renderContext.set_solarSystemTrack(obj);
   }
 
   @MutationAction
   async loadTour(
     { url, play }: LoadTourParams
   ) {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot loadTour without linking to WWTInstance');
 
     if (play)
-      await Vue.$wwt.inst.loadAndPlayTour(url);
+      await WWTEngineVuexModule.$wwt.inst.loadAndPlayTour(url);
     else
-      await Vue.$wwt.inst.loadTour(url);
+      await WWTEngineVuexModule.$wwt.inst.loadTour(url);
 
     let tourRunTime: number | null = null;
     const tourStopStartTimes: number[] = [];
 
-    const player = Vue.$wwt.inst.getActiveTourPlayer();
+    const player = WWTEngineVuexModule.$wwt.inst.getActiveTourPlayer();
     if (player !== null) {
       const tour = player.get_tour();
       if (tour !== null) {
@@ -810,9 +813,9 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
   async loadImageCollection(
     { url, loadChildFolders }: LoadImageCollectionParams
   ): Promise<Folder> {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot loadImageCollection without linking to WWTInstance');
-    const result = await Vue.$wwt.inst.loadImageCollection(url, loadChildFolders);
+    const result = await WWTEngineVuexModule.$wwt.inst.loadImageCollection(url, loadChildFolders);
     (this.context.state as WWTEngineVuexState).availableImagesets = availableImagesets();
     return result;
   }
@@ -823,7 +826,7 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   deleteLayer(id: string | Guid): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot deleteLayer without linking to WWTInstance');
 
     let stringId = "";
@@ -831,10 +834,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
     if (typeof id === "string") {
       stringId = id;
       const guid = Guid.fromString(id);
-      Vue.$wwt.inst.lm.deleteLayerByID(guid, true, true);
+      WWTEngineVuexModule.$wwt.inst.lm.deleteLayerByID(guid, true, true);
     } else {
       stringId = id.toString();
-      Vue.$wwt.inst.lm.deleteLayerByID(id, true, true);
+      WWTEngineVuexModule.$wwt.inst.lm.deleteLayerByID(id, true, true);
     }
 
     // Mirror modification in the reactive system. Here we just
@@ -852,7 +855,7 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   get imagesetStateForLayer() {
     return (guidtext: string): ImageSetLayerState | null => {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot get imagesetStateForLayer without linking to WWTInstance');
       return this.imagesetLayers[guidtext] || null;
     }
@@ -860,10 +863,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   get imagesetForLayer() {
     return function (guidtext: string): Imageset | null {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot get imagesetForLayer without linking to WWTInstance');
 
-      const layer = Vue.$wwt.inst.lm.get_layerList()[guidtext];
+      const layer = WWTEngineVuexModule.$wwt.inst.lm.get_layerList()[guidtext];
 
       if (layer !== null && layer instanceof ImageSetLayer) {
         return layer.get_imageSet();
@@ -912,11 +915,11 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
   async addImageSetLayer(
     options: AddImageSetLayerOptions
   ): Promise<ImageSetLayer> {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot addImageSetLayer without linking to WWTInstance');
 
     // Mirror the layer state into the reactivity system.
-    const wwtLayer = await Vue.$wwt.inst.addImageSetLayer(options);
+    const wwtLayer = await WWTEngineVuexModule.$wwt.inst.addImageSetLayer(options);
     const guidText = wwtLayer.id.toString();
     Vue.set(this.imagesetLayers, guidText, new ImageSetLayerState(wwtLayer));
 
@@ -929,7 +932,7 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
   async loadFitsLayer(
     options: LoadFitsLayerOptions
   ): Promise<ImageSetLayer> {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot loadFitsLayer without linking to WWTInstance');
 
     const addImageSetLayerOptions: AddImageSetLayerOptions = {
@@ -939,25 +942,25 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
       goto: options.gotoTarget
     };
 
-    return Vue.$wwt.inst.addImageSetLayer(addImageSetLayerOptions);
+    return WWTEngineVuexModule.$wwt.inst.addImageSetLayer(addImageSetLayerOptions);
   }
 
   @Mutation
   setImageSetLayerOrder(options: SetLayerOrderOptions): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setImageSetLayerOrder without linking to WWTInstance');
 
-    Vue.$wwt.inst.setImageSetLayerOrder(options);
+    WWTEngineVuexModule.$wwt.inst.setImageSetLayerOrder(options);
     this.activeLayers = activeLayersList();
   }
 
 
   @Mutation
   stretchFitsLayer(options: StretchFitsLayerOptions): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot stretchFitsLayer without linking to WWTInstance');
 
-    Vue.$wwt.inst.stretchFitsLayer(options);
+    WWTEngineVuexModule.$wwt.inst.stretchFitsLayer(options);
 
     // Update the reactive mirror.
     const state = this.imagesetLayers[options.id];
@@ -970,10 +973,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   setFitsLayerColormap(options: SetFitsLayerColormapOptions): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot setFitsLayerColormap without linking to WWTInstance');
 
-    Vue.$wwt.inst.setFitsLayerColormap(options);
+    WWTEngineVuexModule.$wwt.inst.setFitsLayerColormap(options);
 
     // Update the reactive mirror.
     const state = this.imagesetLayers[options.id];
@@ -984,10 +987,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   applyFitsLayerSettings(options: ApplyFitsLayerSettingsOptions): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot applyFitsLayerSettings without linking to WWTInstance');
 
-    Vue.$wwt.inst.applyFitsLayerSettings(options);
+    WWTEngineVuexModule.$wwt.inst.applyFitsLayerSettings(options);
 
     // Update the reactive mirror.
     const state = this.imagesetLayers[options.id];
@@ -1006,10 +1009,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
   async createTableLayer(
     options: CreateTableLayerParams
   ): Promise<SpreadSheetLayer> {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot createTableLayer without linking to WWTInstance');
 
-    const layer = Vue.$wwt.inst.lm.createSpreadsheetLayer(
+    const layer = WWTEngineVuexModule.$wwt.inst.lm.createSpreadsheetLayer(
       options.referenceFrame,
       options.name,
       options.dataCsv
@@ -1050,10 +1053,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   applyTableLayerSettings(options: ApplyTableLayerSettingsOptions): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot applyTableLayerSettings without linking to WWTInstance');
 
-    Vue.$wwt.inst.applyTableLayerSettings(options);
+    WWTEngineVuexModule.$wwt.inst.applyTableLayerSettings(options);
 
     // Mirror changes in the reactive framework.
     const state = this.spreadSheetLayers[options.id];
@@ -1067,9 +1070,9 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   updateTableLayer(options: UpdateTableLayerOptions): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot updateTableLayer without linking to WWTInstance');
-    Vue.$wwt.inst.updateTableLayer(options);
+    WWTEngineVuexModule.$wwt.inst.updateTableLayer(options);
 
     // Nothing to mirror in reactive-land -- this call affects the table data.
   }
@@ -1081,7 +1084,7 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   get layerForHipsCatalog() {
     return function (name: string): SpreadSheetLayer | null {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot get layerForHipsCatalog without linking to WWTInstance');
 
       const id = Guid.createFrom(name).toString();
@@ -1091,7 +1094,7 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   get spreadsheetStateForHipsCatalog() {
     return (name: string): SpreadSheetLayerSettingsInterfaceRO | null => {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot get spreadsheetStateForHipsCatalog without linking to WWTInstance');
 
       const id = Guid.createFrom(name).toString();
@@ -1107,7 +1110,7 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   get spreadsheetStateById() {
     return (id: string): SpreadSheetLayerSettingsInterfaceRO | null => {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot get spreadsheetStateById without linking to WWTInstance');
 
       return this.spreadSheetLayers[id] || null;
@@ -1116,7 +1119,7 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   get spreadSheetLayer() {
     return (catalog: CatalogLayerInfo): SpreadSheetLayer | null => {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot get spreadSheetLayer without linking to WWTInstance');
 
       const key = catalogLayerKey(catalog);
@@ -1126,7 +1129,7 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   get spreadsheetState() {
     return (catalog: CatalogLayerInfo): SpreadSheetLayerSettingsInterfaceRO | null => {
-      if (Vue.$wwt.inst === null)
+      if (WWTEngineVuexModule.$wwt.inst === null)
         throw new Error('cannot get spreadsheetState without linking to WWTInstance');
 
       const key = catalogLayerKey(catalog);
@@ -1136,10 +1139,10 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Action({ rawError: true })
   async addCatalogHipsByName(options: AddCatalogHipsByNameOptions): Promise<Imageset> {
-    if (Vue.$wwt.inst == null)
+    if (WWTEngineVuexModule.$wwt.inst == null)
       throw new Error('cannot addCatalogHipsByName without linking to WWTInstance');
 
-    const imgset = await Vue.$wwt.inst.addCatalogHipsByName(options);
+    const imgset = await WWTEngineVuexModule.$wwt.inst.addCatalogHipsByName(options);
 
     // Mirror the spreadsheet layer aspect into the reactivity system.
 
@@ -1161,17 +1164,17 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Action({ rawError: true })
   getCatalogHipsDataInView(options: GetCatalogHipsDataInViewOptions): Promise<InViewReturnMessage> {
-    if (Vue.$wwt.inst == null)
+    if (WWTEngineVuexModule.$wwt.inst == null)
       throw new Error('cannot getCatalogHipsDataInView without linking to WWTInstance');
-    return Vue.$wwt.inst.getCatalogHipsDataInView(options);
+    return WWTEngineVuexModule.$wwt.inst.getCatalogHipsDataInView(options);
   }
 
   @Mutation
   removeCatalogHipsByName(name: string): void {
-    if (Vue.$wwt.inst == null)
+    if (WWTEngineVuexModule.$wwt.inst == null)
       throw new Error('cannot removeCatalogHipsByName without linking to WWTInstance');
 
-    Vue.$wwt.inst.ctl.removeCatalogHipsByName(name);
+    WWTEngineVuexModule.$wwt.inst.ctl.removeCatalogHipsByName(name);
 
     // Un-mirror the spreadsheet layer aspect from the reactivity system. Here
     // we leverage the quasi-hack that the GUID of the spreadsheet layer is set
@@ -1187,22 +1190,22 @@ export class WWTEngineVuexModule extends VuexModule implements WWTEngineVuexStat
 
   @Mutation
   addAnnotation(ann: Annotation): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot addAnnotation without linking to WWTInstance');
-    Vue.$wwt.inst.si.addAnnotation(ann);
+    WWTEngineVuexModule.$wwt.inst.si.addAnnotation(ann);
   }
 
   @Mutation
   removeAnnotation(ann: Annotation): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot removeAnnotation without linking to WWTInstance');
-    Vue.$wwt.inst.si.removeAnnotation(ann);
+    WWTEngineVuexModule.$wwt.inst.si.removeAnnotation(ann);
   }
 
   @Mutation
   clearAnnotations(): void {
-    if (Vue.$wwt.inst === null)
+    if (WWTEngineVuexModule.$wwt.inst === null)
       throw new Error('cannot clearAnnotations without linking to WWTInstance');
-    Vue.$wwt.inst.si.clearAnnotations();
+    WWTEngineVuexModule.$wwt.inst.si.clearAnnotations();
   }
 }
