@@ -146,3 +146,18 @@ export function isModifyAllSelectabilityMessage(o: any): o is ModifyAllSelectabi
   return o.type === 'modify_all_selectability' &&
     typeof o.selectable === 'boolean';
 }
+
+export interface ModifySelectionProximityMessage {
+
+  /** The tag identifying this message type */
+  type: "modify_selection_proximity";
+
+  /** The proximity, in pixels, to use for point selection */
+  proximity: number;
+}
+
+/** A type-guard function for [[ModifySelectionProximityMessage]] */
+export function isModifySelectionProximityMessage(o: any): o is ModifySelectionProximityMessage {  // eslint-disable-line @typescript-eslint/no-explicit-any
+  return o.type === 'modify_selection_proximity' &&
+    typeof o.proximity === 'number';
+}

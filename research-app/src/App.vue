@@ -1889,6 +1889,10 @@ const App = defineComponent({
         "modify_all_selectability",
         this.handleModifyAllSelectability
       );
+      this.messageHandlers.set(
+        "modify_selection_proximity",
+        this.handleModifySelectionProximity
+      );
 
       // Ignore incoming view_state messages. When testing the app, you might want
       // to launch it as (e.g.)
@@ -2688,6 +2692,15 @@ const App = defineComponent({
           selectable: msg.selectable,
         })
       );
+      return true;
+    },
+
+    handleModifySelectionProximity(
+      msg: selections.ModifySelectionProximityMessage
+    ): boolean {
+      if (!selections.isModifySelectionProximityMessage(msg)) return false;
+
+      this.distanceThreshold = msg.proximity;
       return true;
     },
 
