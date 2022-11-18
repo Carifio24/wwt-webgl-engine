@@ -79,6 +79,9 @@ steps:
   - bash: cranko npm lerna-workaround
     displayName: Fake internal version requirements for Lerna
 
+  - bash: yarn set version berry
+    displayName: Set Yarn version
+
   # With various versions of NPM we currently (July 2021) get bitten by:
   #   https://github.com/vuejs/vue-cli/issues/6270
   # Passing --legacy-peer-deps to NPM masks the issue. I guess we should
