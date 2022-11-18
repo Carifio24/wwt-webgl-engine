@@ -79,11 +79,11 @@ steps:
   - bash: cranko npm lerna-workaround
     displayName: Fake internal version requirements for Lerna
 
-  - bash: yarn plugin import workspace-tools
-    displayName: Import Yarn workspace plugin
-
   - bash: yarn set version berry
     displayName: Set Yarn version
+
+  - bash: yarn plugin import workspace-tools
+    displayName: Import Yarn workspace plugin
 
   # With various versions of NPM we currently (July 2021) get bitten by:
   #   https://github.com/vuejs/vue-cli/issues/6270
