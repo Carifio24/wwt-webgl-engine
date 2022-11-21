@@ -92,7 +92,7 @@ steps:
   - bash: yarn install --no-immutable
     displayName: Yarn setup
 
-  - bash: yarn list @wwtelescope/engine-pinia
+  - bash: yarn info @wwtelescope/engine-pinia
     displayName: Show engine-pinia version
 
 - ${{ if parameters.setupGit }}:
