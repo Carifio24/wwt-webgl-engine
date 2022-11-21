@@ -92,6 +92,9 @@ steps:
   - bash: yarn install --no-immutable
     displayName: Yarn setup
 
+  - bash: yarn list @wwtelescope/engine-pinia
+    displayName: Show engine-pinia version
+
 - ${{ if parameters.setupGit }}:
   - bash: |
       cranko github install-credential-helper
