@@ -3,16 +3,16 @@
   "name": "wwt-webgl-engine-monorepo",
   "workspaces": [
     "astro",
-    "embed",
-    "embed-common",
-    "embed-creator",
+    "engine-types",
+    "research-app-messages",
+    "tests",
     "engine",
     "engine-helpers",
     "engine-pinia",
-    "engine-types",
-    "research-app",
-    "research-app-messages",
-    "tests"
+    "embed-common",
+    "embed",
+    "embed-creator",
+    "research-app"
   ],
   "scripts": {
     "build": "yarn workspaces foreach run build",
