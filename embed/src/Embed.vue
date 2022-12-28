@@ -36,7 +36,45 @@
       </div>
     </transition>
 
-    <div id="left-content">
+    <div class="image-description" v-show="showImageDescription">
+      <a class="close-button" @click="showImageDescription = false">×</a>
+      <h1>
+        Interactively explore James Webb Space Telescope (JWST) Imagery!
+      </h1>
+
+			<p>
+				JWST launched on Dec 25th, 2021 - after a month long deployment and several months of precise mirror alignment and  instrument calibration, the first images were released to the public on July 11th and 12th.
+
+      <p>
+        Pan and zoom to explore these images interactively. Select the thumbnails (top left) to view JWST astro-imagery in context of the sky. Using the menu (top left), change the background imagery to compare against different surveys and wavelengths.
+			</p>
+			
+			<p>
+				Interactive created by <a href="https://twitter.com/ADavidWeigel">A. David Weigel</a>, <a href="https://twitter.com/pkgw">Peter K. G. Williams</a>, and Jon Carifio
+			</p>
+
+      <p class="more">
+        <!-- This trick redirects the click through the bit.ly link so we can count clicks -->
+        <a
+          target="_blank"
+          href="https://rocketcenter.com/INTUITIVEplanetarium"
+          @click.prevent="openSourceLink"
+          >🚀 Learn more about JWST at the <i>INTUITIVE</i><sup>®</sup> Planetarium at the U.S. Space & Rocket Center …</a
+        >
+      </p>
+
+      <!-- <p class="credits">
+        Credit: NASA, ESA, CSA, STScI; J. DePasquale, A. Koekemoer, A. Pagan (STScI).
+      </p> -->
+    </div>
+
+		<div class="image-name" v-if="curForegroundImagesetName !== null && showImageName" @click="showImageName = false">
+      <h1>
+			{{ curForegroundImagesetName }}
+      </h1>
+		</div>
+		
+		<div id="left-content">
       <folder-view
         v-if="collectionFolder !== null && showFolderView"
         id="folder-view"
@@ -66,6 +104,11 @@
                   v-close-popover
                   @click="selectTool('choose-background')"
                   ><font-awesome-icon icon="mountain" /> Choose background</a
+                >
+              </li>
+              <li>
+                <a href="#" v-close-popover @click="toggleImageDescription()"
+                  ><font-awesome-icon icon="toggle-off" /> Toggle description</a
                 >
               </li>
               <li v-show="showPlaybackControls">
@@ -171,7 +214,7 @@
             :style="{ backgroundColor: network.color, width: 'fit-content' }"
             :description="description"
             :url="url"
-            :title="title"
+            :title="description"
             :hashtags="hashtagString"
             :quote="description"
             twitter-user="WWTelescope"
@@ -184,17 +227,36 @@
             ></font-awesome-icon>
             <span>{{ network.text }}</span>
           </ShareNetwork>
+          <a
+            href="https://bit.ly/wwtdonate22"
+            target="_blank"
+            class="support-button"
+            style="background-color: #f056b0; width: fit-content"
+          >
+            <font-awesome-icon
+              class="heart-icon"
+              :style="{ padding: '0px 4px 0px 2px' }"
+              icon="heart"
+              size="lg"
+            ></font-awesome-icon>
+            <span>Support WWT</span>
+          </a>
         </div>
         <p>
           Powered by
-          <a href="https://worldwidetelescope.org/home/"
+          <a href="https://worldwidetelescope.org/home/" target="_blank"
             >AAS WorldWide Telescope</a
           >
-          <a href="https://worldwidetelescope.org/home/"
+          <a href="https://worldwidetelescope.org/home/" target="_blank"
             ><img alt="WWT Logo" src="./assets/logo_wwt.png"
           /></a>
-          <a href="https://aas.org/"
+          <a href="https://aas.org/" target="_blank"
             ><img alt="AAS Logo" src="./assets/logo_aas.png"
+          /></a>
+          <a
+            href="https://github.com/pkgw/wwt-webgl-engine/tree/special-2022-jwst-ceers#readme"
+            target="_blank"
+            ><img alt="GitHub Logo" src="./assets/logo_github.png"
           /></a>
         </p>
       </div>
@@ -246,12 +308,20 @@ const skyBackgroundImagesets: BackgroundImageset[] = [
     "Optical (Terapixel DSS)",
     "Digitized Sky Survey (Color)"
   ),
+	new BackgroundImageset(
+    "PanSTARRS1 3Pi (Optical)",
+    "PanSTARRS1 3Pi"
+  ),
+	new BackgroundImageset(
+    "NASA Deep Star Maps (Optical)",
+    "NASA SVS Deep Star Maps 2020 (Synthetic, Optical)"
+  ),
   new BackgroundImageset(
     "Low-frequency radio (VLSS)",
     "VLSS: VLA Low-frequency Sky Survey (Radio)"
   ),
   new BackgroundImageset("Infrared (2MASS)", "2Mass: Imagery (Infrared)"),
-  new BackgroundImageset("Infrared (SFD dust map)", "SFD Dust Map (Infrared)"),
+  new BackgroundImageset("GLIMPSE 360 (IR)", "GLIMPSE 360"),
   new BackgroundImageset("Ultraviolet (GALEX)", "GALEX (Ultraviolet)"),
   new BackgroundImageset(
     "X-Ray (ROSAT RASS)",
@@ -279,7 +349,6 @@ export default class Embed extends WWTAwareComponent {
   @Prop({ default: "" }) jwstWtmlUrl!: string;
   @Prop({ default: "" }) url!: string;
   @Prop({ default: "" }) thumbnailUrl!: string;
-  @Prop({ default: "" }) bgWtml!: string;
   @Prop({ default: "" }) bgName!: string;
 
   componentState = ComponentState.LoadingResources;
@@ -288,11 +357,13 @@ export default class Embed extends WWTAwareComponent {
   fullscreenModeActive = false;
   tourPlaybackJustEnded = false;
   windowShape = defaultWindowShape;
+	
+	collectionFolder: Folder | null = null;
 
-  collectionFolder: Folder | null = null;
-  title = "Explore JWST’s first images in full resolution!";
-  description = "Pan and zoom into the new images on a sky map using AAS WorldWide Telescope.";
-  hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
+  // This is the Tweet text:
+  description =
+    "Interactively explore a collection of the James Webb Space Telescope astroimagery in context of the sky!";
+  hashtags = ["jwst", "unfoldtheuniverse", "1yearofwebb", "wwt"];
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -303,28 +374,10 @@ export default class Embed extends WWTAwareComponent {
     { name: "twitter", color: "#1da1f2", text: "Tweet" },
   ];
 
-  // @Meta
-  // getMetaInfo() {
-  //   return {
-  //     title: this.title,
-  //     meta: [
-  //       { property: "og:type", content: "website" },
-  //       { property: "og:url", content: this.url },
-  //       { property: "og:title", content: this.title },
-  //       { property: "og:site_name", content: "WorldWide Telescope" },
-  //       { property: "og:description", content: this.description },
-  //       { property: "og:image", content: this.thumbnailUrl.replace("https", "http") },
-  //       { property: "og:image:secure_url", content: this.thumbnailUrl },
-  //       { property: "og:image:type", content: "image/jpeg" },
-  //       { property: "og:image:width", content: "96" },
-  //       { property: "og:image:height", content: "45" }
-  //     ],
-  //   }
-  // }
-
   get showFolderView() {
     const children = this.collectionFolder?.get_children();
     return children !== null && children !== undefined && children.length > 1;
+    //return false;
   }
 
   get isLoadingState() {
@@ -335,12 +388,34 @@ export default class Embed extends WWTAwareComponent {
     return this.componentState == ComponentState.ReadyToStart;
   }
 
+  showImageDescription = true;
+	showImageName = false;
+
+  toggleImageDescription() {
+    this.showImageDescription = !this.showImageDescription;
+  }
+	
+	toggleImageName() {
+    this.showImageName = !this.showImageName;
+  }
+
+  openSourceLink() {
+    // Custom link to the target URL so that we can count clicks.
+    window.open("https://bit.ly/wwt-rcip");
+  }
+
   get coordText() {
     if (this.wwtRenderType == ImageSetType.sky) {
       return `${fmtHours(this.wwtRARad)} ${fmtDegLat(this.wwtDecRad)}`;
     }
 
     return `${fmtDegLon(this.wwtRARad)} ${fmtDegLat(this.wwtDecRad)}`;
+  }
+
+	get curForegroundImagesetName() {
+    if (this.wwtForegroundImageset == null) return "";
+    return this.wwtForegroundImageset.get_name();
+		
   }
 
   get curBackgroundImagesetName() {
@@ -482,18 +557,59 @@ export default class Embed extends WWTAwareComponent {
             this.setupForImageset(options);
           }
         }
-
-        this.loadImageCollection({
-          url: this.bgWtml,
+				
+				this.loadImageCollection({
+          url: this.jwstWtmlUrl,
           loadChildFolders: true,
-        }).then((_folder) => {
+        }).then((folder) => {
           this.curBackgroundImagesetName = this.bgName;
           this.backgroundImagesets.unshift(
-            new BackgroundImageset("unWISE", "unwise")
+            new BackgroundImageset("unWISE (IR)","unWISE color, from W2 and W1 bands")
           );
-        });
-
+				});
+				
+				/*
         this.loadImageCollection({
+          url: this.jwstWtmlUrl,
+          loadChildFolders: true,
+        }).then((folder) => {
+          this.curBackgroundImagesetName = this.bgName;
+          this.backgroundImagesets.unshift(
+            new BackgroundImageset("JWST - Pillars of Creation (NIRCam)", "Webb Takes a Stunning, Star-Filled Portrait of the Pillars of Creation")
+          );
+				});
+				
+				this.loadImageCollection({
+          url: this.jwstWtmlUrl,
+          loadChildFolders: true,
+        }).then((folder) => {
+          this.curBackgroundImagesetName = this.bgName;
+          this.backgroundImagesets.unshift(
+            new BackgroundImageset("JWST - Pillars of Creation (MIRI)", "Pillars of Creation (MIRI Image)")
+          );
+				});
+				
+				this.loadImageCollection({
+          url: this.jwstWtmlUrl,
+          loadChildFolders: true,
+        }).then((folder) => {
+          this.curBackgroundImagesetName = this.bgName;
+          this.backgroundImagesets.unshift(
+            new BackgroundImageset("HST - Pillars of Creation (Visible)", "New Hubble View of the Pillars of Creation — Visible")
+          );
+				});
+				
+				this.loadImageCollection({
+          url: this.jwstWtmlUrl,
+          loadChildFolders: true,
+        }).then((folder) => {
+          this.curBackgroundImagesetName = this.bgName;
+          this.backgroundImagesets.unshift(
+            new BackgroundImageset("HST - Pillars of Creation (Infrared)", "New Hubble View of the Pillars of Creation — Infrared")
+          );
+				});
+				*/
+				this.loadImageCollection({
           url: this.jwstWtmlUrl,
           loadChildFolders: true,
         }).then((folder) => {
@@ -502,15 +618,16 @@ export default class Embed extends WWTAwareComponent {
           if (children === null) {
             return;
           }
-          if (children.length === 1) {
-            const item = children[0];
+
+          for (const item of children) {
             if (item instanceof Place) {
               this.gotoTarget({
                 place: item,
                 noZoom: false,
-                instant: true,
+                instant: false,
                 trackObject: true,
               });
+              break;
             }
           }
         });
@@ -686,6 +803,22 @@ export default class Embed extends WWTAwareComponent {
     this.tourPlaybackJustEnded = false;
   }
 
+	@Watch("curForegroundImagesetName")
+	onCurForegroundImagesetNameChanged()
+	{
+		if(this.curForegroundImagesetName != null){
+			this.showImageName = true;
+		}
+	}
+	
+	@Watch("curBackgroundImagesetName")
+	onCurBackgroundImagesetNameChanged()
+	{
+		if(this.curBackgroundImagesetName != null){
+			this.currentTool = "crossfade";
+		}
+	}
+
   @Watch("wwtTourCompletions")
   onTourCompletionsChanged(_count: number) {
     this.tourPlaybackJustEnded = true;
@@ -712,6 +845,28 @@ export default class Embed extends WWTAwareComponent {
 </script>
 
 <style lang="less">
+@font-face {
+  font-family: "Roboto Condensed";
+  font-style: normal;
+  font-weight: 400;
+  src: url(./assets/googlewebfont-RobotoCondensed-Regular.ttf)
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto Condensed";
+  font-style: italic;
+  font-weight: 400;
+  src: url(./assets/googlewebfont-RobotoCondensed-Italic.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto Condensed";
+  font-style: normal;
+  font-weight: 700;
+  src: url(./assets/googlewebfont-RobotoCondensed-Bold.ttf) format("truetype");
+}
+
 html {
   height: 100%;
   margin: 0;
@@ -839,6 +994,137 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1;
+  }
+}
+
+.image-description {
+  position: absolute;
+  bottom: 7rem;
+  left: 0px;
+  width: calc(~"min(100% - 2rem, 40rem)");
+  max-height: 25%;
+  margin-left: 50vw;
+  transform: translateX(-50%);
+  overflow-y: auto;
+  color: #fff;
+  font-family: "Roboto Condensed", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 85%;
+  background-color: rgba(255, 255, 255, 0.07);
+	border-radius: 20px;
+  padding: 0.5rem;
+	
+	&::-webkit-scrollbar {
+    padding: 1px;
+    height: 3px;
+		width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #1671e0;
+    border-radius: 10px;
+  }
+
+	&:hover {
+		box-sizing: content-box;
+		box-shadow: 0px 0px 6px 0px #1671e0;
+		transition: all 200ms ease-out;
+  }
+
+  .close-button {
+    float: right;
+    font-size: 2rem;
+    width: 1rem;
+    height: 1rem;
+    line-height: 1rem;
+    text-align: center;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  h1 {
+    font-size: 150%;
+    font-weight: bold;
+    margin: 0px 0px 1rem 0px;
+  }
+
+  .more {
+    font-weight: bold;
+  }
+
+  .credits {
+    font-style: italic;
+    font-size: 90%;
+    margin: 0px;
+  }
+
+  a {
+    color: #b4defa;
+    text-decoration: none;
+
+    &:hover {
+      color: #1671e0;
+    }
+  }
+}
+
+.image-name {
+  position: absolute;
+  top: 2rem;
+  left: 0px;
+	width: auto;
+	height: auto;
+  max-width: calc(~"min(40%, 40rem)");
+  max-height: 15%;
+  margin-left: 50vw;
+	text-align: center;
+	align-items: center;
+  transform: translateX(-50%);
+  overflow-y: auto;
+  color: #fff;
+  font-family: "Roboto Condensed", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 85%;
+  background-color: rgba(255, 255, 255, 0.07);
+	border-radius: 20px;
+  padding: 0.5rem;
+	text-overflow: ellipsis;
+  overflow: hidden;
+	text-shadow: 1px 1px 3px #000000;
+
+  &:hover {
+		box-sizing: content-box;
+		box-shadow: 0px 0px 6px 0px #1671e0;
+		transition: all 200ms ease-out;
+  }
+
+  h1 {
+    font-size: 130%;
+    font-weight: bold;
+    margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+  }
+
+  .more {
+    font-weight: bold;
+  }
+
+  .credits {
+    font-style: italic;
+    font-size: 90%;
+    margin: 0px;
+  }
+
+  a {
+    color: #b4defa;
+    text-decoration: none;
+
+    &:hover {
+      color: #1671e0;
+    }
   }
 }
 
@@ -1104,14 +1390,19 @@ ul.tool-menu {
   padding: 4px 8px;
 }
 
+.support-button {
+  border-radius: 10px;
+  padding: 4px 8px;
+}
+
 #left-content {
   position: absolute;
   left: 0.5rem;
   top: 0.5rem;
-  pointer-events: none;
-  height: calc(100% - 2rem);
+  height: 40%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+	z-index: 11;
 }
 </style>

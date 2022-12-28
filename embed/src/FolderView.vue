@@ -77,7 +77,10 @@ export default class FolderView extends Vue {
       const imageset = item.get_backgroundImageset();
       if (imageset !== null) {
         this.setForegroundImageByName(imageset.get_name());
+				//item.getElementsByTagName("Description")[];
       }
+			//const image_name = item.get_name();
+			//console.log(image_name);
       this.gotoTarget({
         place: item,
         noZoom: false,
@@ -101,22 +104,27 @@ export default class FolderView extends Vue {
   display: flex;
   flex-direction: var(--flex-direction);
   width: auto;
+	height: 100%;
   overflow-x: auto;
+  overflow-y: auto;
   background: black;
 
-  &::-webkit-scrollbar {
+	&::-webkit-scrollbar {
     padding: 1px;
     height: 3px;
+		width: 10px;
   }
 
   &::-webkit-scrollbar-track {
-    background: black;
+    background: rgba(255, 255, 255, 0.07);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: white;
-    border-radius: 1px;
+    background: #1671e0;
+    border-radius: 10px;
   }
+	
+	
 
   //width: 100%;
   //justify-content: space-around;
@@ -136,9 +144,14 @@ export default class FolderView extends Vue {
     object-fit: cover;
     border-radius: 2px;
   }
+	
+	&:hover {
+		border: 1px solid #1671e0;
+		transition: all 200ms ease-out;
+  }
 
   &.selected {
-    border: 1px solid dodgerblue;
+    border: 1px solid #1671e0;
   }
 }
 

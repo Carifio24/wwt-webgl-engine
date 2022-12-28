@@ -16,6 +16,7 @@ import {
   faSearchPlus,
   faSlidersH,
   faStar,
+  faToggleOff,
   faUndoAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -62,6 +63,7 @@ library.add(faSearchMinus);
 library.add(faSearchPlus);
 library.add(faSlidersH);
 library.add(faStar);
+library.add(faToggleOff);
 library.add(faUndoAlt);
 library.add(faFacebook);
 library.add(faTwitter);
@@ -81,10 +83,9 @@ new Vue({
       props: {
         "wwtNamespace": "wwt-embed",
         "embedSettings": settings,
-        "jwstWtmlUrl": "http://data1.wwtassets.org/packages/2022/07_jwst/jwst_first_v2.wtml",
-        "url": "https://web.wwtassets.org/specials/2022/jwst-release/",
-        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-release/preview.jpg",
-        "bgWtml": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/jwst_smacs0723.wtml",
+        "jwstWtmlUrl": "https://data1.wwtassets.org/packages/2022/12_jwst/anniversary/jwst_draft_1.wtml",
+        "url": "https://web.wwtassets.org/specials/2022/jwst-anniversary/",
+        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-anniversary/preview.jpg",
         "bgName": "unwise"
       }
     });
