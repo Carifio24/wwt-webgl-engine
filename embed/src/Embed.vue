@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <WorldWideTelescope
       wwt-namespace="wwt-embed"
       v-bind:style="{
@@ -37,12 +37,28 @@
     </transition>
 
     <div id="left-content">
-      <folder-view
+      <!-- <folder-view
         v-if="collectionFolder !== null && showFolderView"
         id="folder-view"
         flex-direction="column"
         :root-folder="collectionFolder"
-      />
+      /> -->
+      <ul id="left-controls">
+        <li>
+          <font-awesome-icon
+            icon="video"
+            size="lg"
+            @click="selectBottomSheet('video')"
+        ></font-awesome-icon>
+        </li>
+        <li>
+          <font-awesome-icon
+            icon="file-alt"
+            size="lg"
+            @click="selectBottomSheet('text')"
+          ></font-awesome-icon>
+        </li>
+      </ul>
     </div>
 
     <ul id="controls">
@@ -199,7 +215,31 @@
         </p>
       </div>
     </div>
-  </div>
+
+    <v-bottom-sheet
+      id="video-bottom-sheet"
+      hide-overlay
+      persistent
+      v-model="showVideoSheet"
+    >
+      <video controls>
+        <source src="./assets/JWST-context.mp4" type="video/mp4">
+      </video>
+    </v-bottom-sheet>
+    <v-bottom-sheet
+      id="text-bottom-sheet"
+      hide-overlay
+      persistent
+      scrollable
+      v-model="showTextSheet"
+    >
+      <v-card class="pt-8 py-2 ">
+        <p>
+        Here is some informative text about the image that you're viewing. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </v-card>
+    </v-bottom-sheet>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -230,6 +270,7 @@ enum ComponentState {
 }
 
 type ToolType = "crossfade" | "choose-background" | "playback-controls" | null;
+type BottomSheetType = "text" | "video" | null;
 
 class BackgroundImageset {
   public imagesetName: string;
@@ -293,6 +334,8 @@ export default class Embed extends WWTAwareComponent {
   title = "Explore JWST’s first images in full resolution!";
   description = "Pan and zoom into the new images on a sky map using AAS WorldWide Telescope.";
   hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
+
+  bottomSheet: BottomSheetType = null;
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -576,6 +619,29 @@ export default class Embed extends WWTAwareComponent {
     }
   }
 
+  selectBottomSheet(name: BottomSheetType) {
+    if (this.bottomSheet == name) {
+      this.bottomSheet = null;
+    } else {
+      this.bottomSheet = name;
+    }
+  }
+
+  get showVideoSheet() {
+    return this.bottomSheet === 'video';
+  }
+  set showVideoSheet(_value) {
+    this.selectBottomSheet('video');
+  }
+
+  get showTextSheet() {
+    return this.bottomSheet === 'text';
+  }
+  set showTextSheet(_value) {
+    this.selectBottomSheet('text');
+  }
+
+
   doZoom(zoomIn: boolean) {
     if (zoomIn) {
       this.zoom(1 / 1.3);
@@ -854,6 +920,22 @@ body {
   gap: 25px;
 }
 
+#left-controls {
+  display: none;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+
+
+  li {
+    padding: 3px;
+    height: 22px;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+}
+
 #controls {
   position: absolute;
   z-index: 10;
@@ -1113,5 +1195,23 @@ ul.tool-menu {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+#video-bottom-sheet {
+  display: none;
+}
+
+.v-bottom-sheet {
+  background: black;
+}
+
+@media(max-width: 600px) {
+  #left-controls {
+    display: block;
+  }
+
+  #video-bottom-sheet {
+    display: inherit;
+  }
 }
 </style>

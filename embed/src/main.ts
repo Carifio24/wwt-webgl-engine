@@ -8,6 +8,7 @@ import {
   faCompress,
   faHeart,
   faExpand,
+  faFileAlt,
   faMountain,
   faPlay,
   faPause,
@@ -16,7 +17,10 @@ import {
   faSearchPlus,
   faSlidersH,
   faStar,
+  faTextHeight,
+  faTimes,
   faUndoAlt,
+  faVideo,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
@@ -30,6 +34,9 @@ import 'vue-slider-component/theme/default.css';
 import VueMeta from "vue-meta";
 import VueSocialSharing from "vue-social-sharing";
 
+import Vuetify from "vuetify";
+import "vuetify/dist/vuetify.min.css";
+
 import { createPlugin } from "@wwtelescope/engine-vuex";
 import { EmbedSettings } from "@wwtelescope/embed-common";
 import FolderView from "./FolderView.vue";
@@ -42,8 +49,13 @@ Vue.use(VTooltip);
 Vue.use(Vuex);
 Vue.use(VueMeta);
 Vue.use(VueSocialSharing);
+Vue.use(Vuetify);
 
 const store = new Vuex.Store({});
+
+const vuetify = new Vuetify({
+  theme: { dark: true }
+});
 
 Vue.use(createPlugin(), {
   store,
@@ -65,6 +77,10 @@ library.add(faStar);
 library.add(faUndoAlt);
 library.add(faFacebook);
 library.add(faTwitter);
+library.add(faVideo);
+library.add(faTextHeight);
+library.add(faTimes);
+library.add(faFileAlt);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.component('vue-slider', VueSlider);
@@ -75,15 +91,16 @@ const settings = EmbedSettings.fromQueryParams(queryParams.entries());
 
 new Vue({
   store,
+  vuetify,
   el: "#app",
   render: createElement => {
     return createElement(Embed, {
       props: {
         "wwtNamespace": "wwt-embed",
         "embedSettings": settings,
-        "jwstWtmlUrl": "http://data1.wwtassets.org/packages/2022/07_jwst/jwst_first_v2.wtml",
-        "url": "https://web.wwtassets.org/specials/2022/jwst-release/",
-        "thumbnailUrl": "https://web.wwtassets.org/specials/2022/jwst-release/preview.jpg",
+        "jwstWtmlUrl": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/index.wtml",
+        "url": "https://web.wwtassets.org/specials/2022/jwst-first/draft2/",
+        "thumbnailUrl": "https://cdn.worldwidetelescope.org/thumbnails/jwst.jpg",
         "bgWtml": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/jwst_smacs0723.wtml",
         "bgName": "unwise"
       }
