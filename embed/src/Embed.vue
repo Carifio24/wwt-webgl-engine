@@ -225,13 +225,13 @@
       </video>
     </v-bottom-sheet> -->
 
-    <v-bottom-sheet
+    <v-dialog
       id="video-bottom-sheet"
       fullscreen
       v-model="showVideoSheet"
       transition="slide-y-transition"
     >
-      <div class="video-wrapper" style="height: 100%; text-align: center;">
+      <div class="video-wrapper">
         <font-awesome-icon
           class="video-close-icon"
           icon="times"
@@ -242,7 +242,7 @@
           <source src="./assets/JWST-context.mp4" type="video/mp4">
         </video>
       </div>
-    </v-bottom-sheet>
+    </v-dialog>
 
     <v-bottom-sheet
       id="text-bottom-sheet"
@@ -564,6 +564,7 @@ export default class Embed extends WWTAwareComponent {
           if (children.length === 1) {
             const item = children[0];
             if (item instanceof Place) {
+              item.set_zoomLevel(0.277); // To match the video
               this.gotoTarget({
                 place: item,
                 noZoom: false,
@@ -984,6 +985,12 @@ body {
   .clickable {
     cursor: pointer;
   }
+
+  select {
+    background: white;
+    color: black;
+    border-radius: 3px;
+  }
 }
 
 .playback-controls {
@@ -1224,12 +1231,18 @@ ul.tool-menu {
   background: black;
 }
 
+.v-dialog--fullscreen {
+  background: black;
+  overflow-y: hidden;
+}
+
 .info-text {
-  height: 300px;
+  height: 35vh;
 }
 
 .video-wrapper {
   height: 100%;
+  background: black;
 }
 
 .video-close-icon {
@@ -1258,14 +1271,6 @@ video {
 }
 
 @media(orientation: landscape) {
-  .info-text {
-    height: 150px;
-  }
-
-  // .video-wrapper {
-  //   width: 100%;
-  // }
-
   video {
     height: 100%;
     object-fit: contain;
