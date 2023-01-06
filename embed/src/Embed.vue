@@ -9,7 +9,7 @@
     ></WorldWideTelescope>
 
     <transition name="fade">
-      <div class="modal" id="modal-loading" v-show="isLoadingState">
+      <div class="modal" id="modal-loading" v-show="isLoadingState || hubbleLayer == null">
         <div class="container">
           <div class="spinner"></div>
           <p>Loading …</p>
@@ -36,106 +36,32 @@
       </div>
     </transition>
 
-    <div id="left-content">
-      <!-- <folder-view
-        v-if="collectionFolder !== null && showFolderView"
-        id="folder-view"
-        flex-direction="column"
-        :root-folder="collectionFolder"
-      /> -->
-      <ul id="left-controls">
-        <font-awesome-icon
-          id="video-icon"
-          icon="video"
-          size="lg"
-          @click="selectBottomSheet('video')"
-      ></font-awesome-icon>
-        <font-awesome-icon
-          id="text-icon"
-          icon="file-alt"
-          size="lg"
-          @click="selectBottomSheet('text')"
-        ></font-awesome-icon>
-      </ul>
-    </div>
-
-    <ul id="controls">
-      <li v-show="showToolMenu">
-        <v-popover placement="left">
-          <font-awesome-icon
-            class="tooltip-target"
-            icon="sliders-h"
-            size="lg"
-          ></font-awesome-icon>
-          <template slot="popover">
-            <ul class="tooltip-content tool-menu">
-              <li v-show="showCrossfader">
-                <a href="#" v-close-popover @click="selectTool('crossfade')"
-                  ><font-awesome-icon icon="adjust" /> Crossfade</a
-                >
-              </li>
-              <li v-show="showBackgroundChooser">
-                <a
-                  href="#"
-                  v-close-popover
-                  @click="selectTool('choose-background')"
-                  ><font-awesome-icon icon="mountain" /> Choose background</a
-                >
-              </li>
-              <li v-show="showPlaybackControls">
-                <a
-                  href="#"
-                  v-close-popover
-                  @click="selectTool('playback-controls')"
-                  ><font-awesome-icon icon="redo" /> Tour player controls</a
-                >
-              </li>
-              <li>
-                <a
-                  href="https://worldwidetelescope.org/connect/"
-                  target="_blank"
-                  v-close-popover
-                  ><font-awesome-icon icon="heart" /> Connect with WWT!</a
-                >
-              </li>
-            </ul>
-          </template>
-        </v-popover>
-      </li>
-      <li v-show="!wwtIsTourPlaying">
-        <font-awesome-icon
-          icon="search-plus"
-          size="lg"
-          @click="doZoom(true)"
-        ></font-awesome-icon>
-      </li>
-      <li v-show="!wwtIsTourPlaying">
-        <font-awesome-icon
-          icon="search-minus"
-          size="lg"
-          @click="doZoom(false)"
-        ></font-awesome-icon>
-      </li>
-      <li v-show="fullscreenAvailable">
-        <font-awesome-icon
-          v-bind:icon="fullscreenModeActive ? 'compress' : 'expand'"
-          size="lg"
-          class="nudgeright1"
-          @click="toggleFullscreen()"
-        ></font-awesome-icon>
-      </li>
-    </ul>
+    <font-awesome-icon
+      id="video-icon"
+      class="control-icon"
+      icon="video"
+      size="lg"
+      @click="selectBottomSheet('video')"
+  ></font-awesome-icon>
+    <font-awesome-icon
+      id="text-icon"
+      class="control-icon"
+      icon="book-open"
+      size="lg"
+      @click="selectBottomSheet('text')"
+    ></font-awesome-icon>
 
     <div id="bottom-content">
       <div id="tools">
         <div class="tool-container">
           <template v-if="currentTool == 'crossfade'">
-            <span>Foreground opacity:</span>
+            <span class="ui-text">Hubble</span>
             <input
               class="opacity-range"
               type="range"
-              v-model="foregroundOpacity"
+              v-model="crossfadeOpacity"
             />
+            <span class="ui-text">Webb</span>
           </template>
           <template v-else-if="currentTool == 'choose-background'">
             <span>Background imagery:</span>
@@ -226,14 +152,14 @@
     </v-bottom-sheet> -->
 
     <v-dialog
-      id="video-bottom-sheet"
+      id="video-dialog"
       fullscreen
       v-model="showVideoSheet"
       transition="slide-y-transition"
     >
       <div class="video-wrapper">
         <font-awesome-icon
-          class="video-close-icon"
+          class="close-icon"
           icon="times"
           size="lg"
           @click="showVideoSheet = false"
@@ -247,9 +173,17 @@
     <v-bottom-sheet
       id="text-bottom-sheet"
       scrollable
+      hide-overlay
+      persistent
       v-model="showTextSheet"
     >
       <v-card class="pt-8 py-2">
+        <font-awesome-icon
+          class="close-icon"
+          icon="times"
+          size="lg"
+          @click="showTextSheet = false"
+        ></font-awesome-icon>
         <v-card-text class="info-text">
           Here is some informative text about the image that you're viewing. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
         </v-card-text>
@@ -264,7 +198,7 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import * as screenfull from "screenfull";
 
 import { fmtDegLat, fmtDegLon, fmtHours } from "@wwtelescope/astro";
-import { Folder, FolderUp, Place, Imageset } from "@wwtelescope/engine";
+import { Folder, FolderUp, Place, Imageset, ImageSetLayer } from "@wwtelescope/engine";
 import { ImageSetType } from "@wwtelescope/engine-types";
 import {
   SetupForImagesetOptions,
@@ -272,6 +206,7 @@ import {
 } from "@wwtelescope/engine-vuex";
 import { CreditMode, EmbedSettings } from "@wwtelescope/embed-common";
 import { Meta } from "@sophosoft/vue-meta-decorator";
+import { applyImageSetLayerSetting } from "@wwtelescope/engine-helpers";
 
 /** The overall state of the WWT embed component. */
 enum ComponentState {
@@ -338,6 +273,7 @@ export default class Embed extends WWTAwareComponent {
   @Prop({ default: "" }) thumbnailUrl!: string;
   @Prop({ default: "" }) bgWtml!: string;
   @Prop({ default: "" }) bgName!: string;
+  @Prop({ default: "" }) hubbleWtmlUrl!: string;
 
   componentState = ComponentState.LoadingResources;
   backgroundImagesets: BackgroundImageset[] = [];
@@ -352,6 +288,9 @@ export default class Embed extends WWTAwareComponent {
   hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
 
   bottomSheet: BottomSheetType = null;
+  hubbleLayer: ImageSetLayer | null = null;
+  
+  cfOpacity: number = 50;
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -411,12 +350,15 @@ export default class Embed extends WWTAwareComponent {
     this.setBackgroundImageByName(name);
   }
 
-  get foregroundOpacity() {
-    return this.wwtForegroundOpacity;
+  get crossfadeOpacity() {
+    return this.cfOpacity;
   }
 
-  set foregroundOpacity(o: number) {
+  set crossfadeOpacity(o: number) {
     this.setForegroundOpacity(o);
+    if (this.hubbleLayer) {
+      applyImageSetLayerSetting(this.hubbleLayer, ["opacity", 1 - 0.01 * o]);
+    }
   }
 
   get fullscreenAvailable() {
@@ -455,7 +397,7 @@ export default class Embed extends WWTAwareComponent {
     );
   }
 
-  created() {
+  async created() {
     let prom = this.waitForReady().then(() => {
       for (const s of this.embedSettings.asSettings()) {
         this.applySetting(s);
@@ -553,6 +495,27 @@ export default class Embed extends WWTAwareComponent {
         });
 
         this.loadImageCollection({
+          url: this.hubbleWtmlUrl,
+          loadChildFolders: false
+        }).then((folder) => {
+          const children = folder.get_children();
+          if (children == null) { return; }
+          const item = children[0] as Place;
+          const imageset = item.get_backgroundImageset() ?? item.get_studyImageset();
+          if (imageset === null) { return; }
+          this.addImageSetLayer({
+            url: imageset.get_url(),
+            mode: "autodetect",
+            name: "Hubble Carina",
+            goto: false
+          }).then((layer) => {
+            this.hubbleLayer = layer;
+            console.log(this.hubbleLayer);
+            applyImageSetLayerSetting(layer , ["opacity", 0.5]);
+          });
+        });
+
+        this.loadImageCollection({
           url: this.jwstWtmlUrl,
           loadChildFolders: true,
         }).then((folder) => {
@@ -571,6 +534,7 @@ export default class Embed extends WWTAwareComponent {
                 instant: true,
                 trackObject: true,
               });
+              this.setForegroundOpacity(50);
             }
           }
         });
@@ -1208,23 +1172,31 @@ ul.tool-menu {
   padding: 4px 8px;
 }
 
-#left-content {
+.control-icon {
+  pointer-events: auto;
+  background: black;
+  border: 3px solid black;
+  border-radius: 10px;
+}
+
+#text-icon {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+#video-icon {
   position: absolute;
   left: 0.5rem;
   top: 0.5rem;
-  pointer-events: none;
-  height: calc(100% - 2rem);
+}
 
-  #text-icon {
-    pointer-events: auto;
-    position: absolute;
-    bottom: 0;
-  }
-
-  #video-icon {
-    pointer-events: auto;
-    position: absolute;
-  }
+.ui-text {
+  color: white;
+  background: black;
+  padding: 0px 2px;
+  border: 2px solid white;
+  border-radius: 10px;
 }
 
 .v-bottom-sheet {
@@ -1245,7 +1217,7 @@ ul.tool-menu {
   background: black;
 }
 
-.video-close-icon {
+.close-icon {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -1265,7 +1237,7 @@ video {
     display: block;
   }
 
-  #video-bottom-sheet {
+  #video-dialog {
     display: inherit;
   }
 }

@@ -21,6 +21,7 @@ import {
   faTimes,
   faUndoAlt,
   faVideo,
+  faBookOpen
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
@@ -81,6 +82,7 @@ library.add(faVideo);
 library.add(faTextHeight);
 library.add(faTimes);
 library.add(faFileAlt);
+library.add(faBookOpen);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.component('vue-slider', VueSlider);
@@ -98,12 +100,13 @@ new Vue({
       props: {
         "wwtNamespace": "wwt-embed",
         "embedSettings": settings,
-        "jwstWtmlUrl": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/index.wtml",
+        "jwstWtmlUrl": "https://jcarifio.com/jwst_carina.wtml",
+        "hubbleWtmlUrl": "https://jcarifio.com/carina_nebula.wtml",
         //"jwstWtmlUrl": "http://data1.wwtassets.org/packages/2022/07_jwst/jwst_first_v2.wtml",
         "url": "https://web.wwtassets.org/specials/2022/jwst-first/draft2/",
         "thumbnailUrl": "https://cdn.worldwidetelescope.org/thumbnails/jwst.jpg",
         "bgWtml": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/jwst_smacs0723.wtml",
-        "bgName": "Optical (Terapixel DSS)"
+        "bgName": "unwise"
       }
     });
   }
