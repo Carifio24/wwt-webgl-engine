@@ -125,7 +125,7 @@
             <span>{{ network.text }}</span>
           </ShareNetwork>
         </div>
-        <p>
+        <p class="ui-text">
           Powered by
           <a href="https://worldwidetelescope.org/home/"
             >AAS WorldWide Telescope</a
@@ -171,22 +171,124 @@
     </v-dialog>
 
     <v-bottom-sheet
-      id="text-bottom-sheet"
-      scrollable
+      id="text-bottom-sheet"  
       hide-overlay
       persistent
       v-model="showTextSheet"
     >
-      <v-card class="pt-8 py-2">
+      <v-card>
+      <!-- <v-container height="11px">
         <font-awesome-icon
           class="close-icon"
           icon="times"
-          size="lg"
           @click="showTextSheet = false"
         ></font-awesome-icon>
-        <v-card-text class="info-text">
-          Here is some informative text about the image that you're viewing. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
-        </v-card-text>
+      </v-container> -->
+      <v-tabs
+        v-model="tab"
+        height="32px"
+        dense
+        grow
+      >
+        <v-tabs-slider color="white"></v-tabs-slider>
+
+        <v-tab>Information</v-tab>
+        <v-tab>Using WWT</v-tab>
+      </v-tabs>
+
+        <v-tabs-items v-model="tab" id="mobile-tabs" class="pb-2 no-bottom-border-radius">
+          <v-tab-item class="scrollable">
+            <v-card class="no-bottom-border-radius">
+              <v-card-text class="info-text no-bottom-border-radius">
+                What looks much like craggy mountains on a moonlit evening is actually the edge of a nearby, young, star-forming region NGC 3324 in the Carina Nebula. Captured in infrared light by the Near-Infrared Camera (NIRCam) on NASA’s James Webb Space Telescope, this image reveals previously obscured areas of star birth.
+                <br>Called the Cosmic Cliffs, the region is actually the edge of a gigantic, gaseous cavity within NGC 3324, roughly 7,600 light-years away. The cavernous area has been carved from the nebula by the intense ultraviolet radiation and stellar winds from extremely massive, hot, young stars located in the center of the bubble, above the area shown in this image. The high-energy radiation from these stars is sculpting the nebula’s wall by slowly eroding it away.  
+                NIRCam – with its crisp resolution and unparalleled sensitivity – unveils hundreds of previously hidden stars, and even numerous background galaxies. Several prominent features in this image are described below.
+                <br>•	The “steam” that appears to rise from the celestial “mountains” is actually hot, ionized gas and hot dust streaming away from the nebula due to intense, ultraviolet radiation. 
+                <br>•	Dramatic pillars rise above the glowing wall of gas, resisting the blistering ultraviolet radiation from the young stars.
+                <br>•	Bubbles and cavities are being blown by the intense radiation and stellar winds of newborn stars.
+                <br>•	Protostellar jets and outflows, which appear in gold, shoot from dust-enshrouded, nascent stars.
+                <br>•	A “blow-out” erupts at the top-center of the ridge, spewing gas and dust into the interstellar medium. 
+                <br>•	An unusual “arch” appears, looking like a bent-over cylinder.
+                <br>This period of very early star formation is difficult to capture because, for an individual star, it lasts only about 50,000 to 100,000 years – but Webb’s extreme sensitivity and exquisite spatial resolution have chronicled this rare event.
+                Located roughly 7,600 light-years away, NGC 3324 was first catalogued by James Dunlop in 1826. Visible from the Southern Hemisphere, it is located at the northwest corner of the Carina Nebula (NGC 3372), which resides in the constellation Carina. The Carina Nebula is home to the Keyhole Nebula and the active, unstable supergiant star called Eta Carinae. 
+                NIRCam was built by a team at the University of Arizona and Lockheed Martin’s Advanced Technology Center.
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item class="scrollable">
+            <v-card class="no-bottom-border-radius">
+              <v-card-text class="info-text no-bottom-border-radius">
+                <v-container>
+            <v-row>
+              <v-col cols="8">
+                <div
+                  style="min-height: 120px;"
+                >
+                  <p>
+                    The frame below provides an <b>interactive view </b>of the night sky, using images from real observations.
+                  </p>
+                  <p>
+                    The brighter band you see going diagonally across the frame (before you try the controls) is caused by stars and dust in our home galaxy, called the <b>Milky Way.</b>
+                  </p>
+                  <p>
+                    You can explore this view and see what is in the night sky, as astronomers have been doing for centuries. <b>Pan</b> (click and drag) and <b>zoom</b> (scroll in and out) to see parts of the sky beyond this view.
+                  </p>
+                </div>
+              </v-col>
+              <v-col cols="4" lg="3">
+                <v-row>
+                  <v-col
+                    cols="12"
+                    lg="4"
+                  >
+                    <v-chip
+                      label
+                      outlined
+                    >
+                      Pan
+                    </v-chip>
+                  </v-col>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      lg="8"
+                      class="pt-2"
+                    >
+                      <strong>click + drag</strong><br>
+                      (or use <strong class="codeFont">I-J-K-L</strong> keys)
+                    </v-col>
+                  </v-row>
+                </v-row>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    lg="4"
+                  >
+                    <v-chip
+                      label
+                      outlined
+                    >
+                      Zoom
+                    </v-chip>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    lg="8"
+                    class="pt-2"
+                  >
+                    <strong>scroll in and out</strong><br>
+                    (or use <strong class="codeFont">Z-X</strong> keys)
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-container>                  
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
       </v-card>
     </v-bottom-sheet>
   </v-app>
@@ -283,14 +385,15 @@ export default class Embed extends WWTAwareComponent {
   windowShape = defaultWindowShape;
 
   collectionFolder: Folder | null = null;
-  title = "Explore JWST’s first images in full resolution!";
-  description = "Pan and zoom into the new images on a sky map using AAS WorldWide Telescope.";
-  hashtags = ["jwst", "wwt", "unfoldtheuniverse"];
+  title = "Compare JWST and Hubble images of Carina";
+  description = "Pan, zoom, and compare the images using AAS WorldWide Telescope.";
+  hashtags = ["jwst", "hubble", "wwt", "carina", "unfoldtheuniverse"];
 
   bottomSheet: BottomSheetType = null;
   hubbleLayer: ImageSetLayer | null = null;
   
   cfOpacity: number = 50;
+  tab: number = 0;
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -319,6 +422,11 @@ export default class Embed extends WWTAwareComponent {
   //     ],
   //   }
   // }
+
+  get mobile() {
+    // @ts-ignore
+    return this.$vuetify.breakpoint.sm;
+  }
 
   get showFolderView() {
     const children = this.collectionFolder?.get_children();
@@ -1230,6 +1338,19 @@ video {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.scrollable {
+  overflow-y: auto;
+}
+
+.no-bottom-border-radius {
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+#mobile-tabs {
+  padding-bottom: 2px !important;
 }
 
 @media(max-width: 600px) {
