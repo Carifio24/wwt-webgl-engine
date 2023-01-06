@@ -44,20 +44,18 @@
         :root-folder="collectionFolder"
       /> -->
       <ul id="left-controls">
-        <li>
-          <font-awesome-icon
-            icon="video"
-            size="lg"
-            @click="selectBottomSheet('video')"
+        <font-awesome-icon
+          id="video-icon"
+          icon="video"
+          size="lg"
+          @click="selectBottomSheet('video')"
+      ></font-awesome-icon>
+        <font-awesome-icon
+          id="text-icon"
+          icon="file-alt"
+          size="lg"
+          @click="selectBottomSheet('text')"
         ></font-awesome-icon>
-        </li>
-        <li>
-          <font-awesome-icon
-            icon="file-alt"
-            size="lg"
-            @click="selectBottomSheet('text')"
-          ></font-awesome-icon>
-        </li>
       </ul>
     </div>
 
@@ -216,7 +214,7 @@
       </div>
     </div>
 
-    <v-bottom-sheet
+    <!-- <v-bottom-sheet
       id="video-bottom-sheet"
       hide-overlay
       persistent
@@ -225,18 +223,36 @@
       <video controls>
         <source src="./assets/JWST-context.mp4" type="video/mp4">
       </video>
+    </v-bottom-sheet> -->
+
+    <v-bottom-sheet
+      id="video-bottom-sheet"
+      fullscreen
+      v-model="showVideoSheet"
+      transition="slide-y-transition"
+    >
+      <div class="video-wrapper" style="height: 100%; text-align: center;">
+        <font-awesome-icon
+          class="video-close-icon"
+          icon="times"
+          size="lg"
+          @click="showVideoSheet = false"
+        ></font-awesome-icon>
+        <video controls>
+          <source src="./assets/JWST-context.mp4" type="video/mp4">
+        </video>
+      </div>
     </v-bottom-sheet>
+
     <v-bottom-sheet
       id="text-bottom-sheet"
-      hide-overlay
-      persistent
       scrollable
       v-model="showTextSheet"
     >
-      <v-card class="pt-8 py-2 ">
-        <p>
-        Here is some informative text about the image that you're viewing. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
+      <v-card class="pt-8 py-2">
+        <v-card-text class="info-text">
+          Here is some informative text about the image that you're viewing. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+        </v-card-text>
       </v-card>
     </v-bottom-sheet>
   </v-app>
@@ -921,7 +937,6 @@ body {
 }
 
 #left-controls {
-  display: none;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -1192,17 +1207,44 @@ ul.tool-menu {
   top: 0.5rem;
   pointer-events: none;
   height: calc(100% - 2rem);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
 
-#video-bottom-sheet {
-  display: none;
+  #text-icon {
+    pointer-events: auto;
+    position: absolute;
+    bottom: 0;
+  }
+
+  #video-icon {
+    pointer-events: auto;
+    position: absolute;
+  }
 }
 
 .v-bottom-sheet {
   background: black;
+}
+
+.info-text {
+  height: 300px;
+}
+
+.video-wrapper {
+  height: 100%;
+}
+
+.video-close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 15;
+}
+
+video {
+  object-fit: fill;
+  width: 100%;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 @media(max-width: 600px) {
@@ -1212,6 +1254,21 @@ ul.tool-menu {
 
   #video-bottom-sheet {
     display: inherit;
+  }
+}
+
+@media(orientation: landscape) {
+  .info-text {
+    height: 150px;
+  }
+
+  // .video-wrapper {
+  //   width: 100%;
+  // }
+
+  video {
+    height: 100%;
+    object-fit: contain;
   }
 }
 </style>
