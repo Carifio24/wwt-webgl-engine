@@ -224,7 +224,58 @@
             <v-card class="no-bottom-border-radius">
               <v-card-text class="info-text no-bottom-border-radius">
                 <v-container>
-            <v-row>
+                  <v-row>
+                    <v-col cols="4">
+                      <v-chip
+                        label
+                        outlined
+                      >
+                        Pan
+                      </v-chip>
+                    </v-col>
+                    <v-col cols="8" class="pt-2">
+                      <strong>click + drag</strong><br>
+                      (or use <strong class="codeFont">I-J-K-L</strong> keys)
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="4">
+                      <v-chip
+                        label
+                        outlined
+                      >
+                        Zoom
+                      </v-chip>
+                    </v-col>
+                    <v-col cols="8" class="pt-2">
+                      <strong>scroll in and out</strong><br>
+                      (or use <strong class="codeFont">Z-X</strong> keys)
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <div
+                        style="min-height: 120px;"
+                      >
+                        <p>
+                          The frame above provides an <b>interactive view </b>of the night sky, powered by WorldWide Telescope (WWT), using images from real observations.
+                        </p>
+                        <p>
+                          The brighter band you see going diagonally across the frame (before you try the controls) is caused by stars and dust in our home galaxy, called the <b>Milky Way.</b>
+                        </p>
+                        <p>
+                          You can explore this view and see what is in the night sky, as astronomers have been doing for centuries. <b>Pan</b> (click and drag) and <b>zoom</b> (scroll in and out) to see parts of the sky beyond this view.
+                        </p>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-container>
+                    
+
+
+
+
+            <!-- <v-row>
               <v-col cols="8">
                 <div
                   style="min-height: 120px;"
@@ -289,7 +340,12 @@
                 </v-row>
               </v-col>
             </v-row>
-          </v-container>                  
+
+
+
+ -->
+
+                </v-container>                  
               </v-card-text>
             </v-card>
           </v-tab-item>
