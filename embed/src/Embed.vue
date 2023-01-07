@@ -446,7 +446,7 @@ export default class Embed extends WWTAwareComponent {
   windowShape = defaultWindowShape;
 
   collectionFolder: Folder | null = null;
-  title = "Compare JWST and Hubble images of Carina";
+  title = "Compare JWST and Hubble images of Carina!";
   description = "Pan, zoom, and compare the images using AAS WorldWide Telescope.";
   hashtags = ["jwst", "hubble", "wwt", "carina", "unfoldtheuniverse"];
 
