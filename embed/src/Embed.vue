@@ -36,32 +36,36 @@
       </div>
     </transition>
 
-    <font-awesome-icon
-      id="video-icon"
-      class="control-icon"
-      icon="video"
-      size="lg"
-      @click="selectBottomSheet('video')"
-  ></font-awesome-icon>
-    <font-awesome-icon
-      id="text-icon"
-      class="control-icon"
-      icon="book-open"
-      size="lg"
-      @click="selectBottomSheet('text')"
-    ></font-awesome-icon>
+    <div id="video-icon-wrapper" class="control-icon-wrapper">
+      <font-awesome-icon
+        id="video-icon"
+        class="control-icon"
+        icon="video"
+        size="lg"
+        @click="selectBottomSheet('video')"
+      ></font-awesome-icon>
+    </div>
+    <div id="text-icon-wrapper" class="control-icon-wrapper">
+      <font-awesome-icon
+        id="text-icon"
+        class="control-icon"
+        icon="book-open"
+        size="lg"
+        @click="selectBottomSheet('text')"
+      ></font-awesome-icon>
+    </div>
 
     <div id="bottom-content">
       <div id="tools">
         <div class="tool-container">
           <template v-if="currentTool == 'crossfade'">
-            <span class="ui-text">Hubble</span>
+            <span class="ui-text slider-label">Hubble</span>
             <input
               class="opacity-range"
               type="range"
               v-model="crossfadeOpacity"
             />
-            <span class="ui-text">Webb</span>
+            <span class="ui-text slider-label">JWST</span>
           </template>
           <template v-else-if="currentTool == 'choose-background'">
             <span>Background imagery:</span>
@@ -101,8 +105,23 @@
         </div>
       </div>
 
-      <div id="credits" v-show="embedSettings.creditMode == CreditMode.Default">
-        <div id="network-sharing-container">
+      <div id="credits" class="ui-text" v-show="embedSettings.creditMode == CreditMode.Default">
+        <div>
+          Powered by
+          <a href="https://worldwidetelescope.org/home/"
+            >AAS WorldWide Telescope</a
+          >
+        </div>
+        <div id="icons-container">
+          <a href="https://worldwidetelescope.org/home/"
+            ><img alt="CosmicDS Logo" src="./assets/logo_cosmicds.jpg"
+          /></a>
+          <a href="https://worldwidetelescope.org/home/"
+            ><img alt="WWT Logo" src="./assets/logo_wwt.png"
+          /></a>
+          <a href="https://aas.org/"
+            ><img alt="AAS Logo" src="./assets/logo_aas.png"
+          /></a>
           <ShareNetwork
             v-for="network in networks"
             :key="network.name"
@@ -118,25 +137,11 @@
           >
             <font-awesome-icon
               :class="`${network.name}-icon`"
-              :style="{ padding: '0px 4px 0px 2px' }"
               :icon="['fab', network.name]"
               size="lg"
             ></font-awesome-icon>
-            <span>{{ network.text }}</span>
           </ShareNetwork>
         </div>
-        <p class="ui-text">
-          Powered by
-          <a href="https://worldwidetelescope.org/home/"
-            >AAS WorldWide Telescope</a
-          >
-          <a href="https://worldwidetelescope.org/home/"
-            ><img alt="WWT Logo" src="./assets/logo_wwt.png"
-          /></a>
-          <a href="https://aas.org/"
-            ><img alt="AAS Logo" src="./assets/logo_aas.png"
-          /></a>
-        </p>
       </div>
     </div>
 
@@ -1096,6 +1101,9 @@ body {
   font-size: 70%;
   justify-self: flex-end;
   align-self: flex-end;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   p {
     margin: 0;
@@ -1122,6 +1130,11 @@ body {
     height: 24px;
     vertical-align: middle;
     margin: 2px;
+  }
+
+  svg {
+    vertical-align: middle;
+    height: 24px;
   }
 }
 
@@ -1270,41 +1283,54 @@ ul.tool-menu {
   flex-shrink: 1;
 }
 
+
 .facebook-button {
-  border-radius: 3px;
+  border-radius: 8px;
   padding: 4px;
 }
 
 .twitter-button {
   border-radius: 10px;
-  padding: 4px 8px;
+  padding: 4px;
 }
 
 .control-icon {
   pointer-events: auto;
-  background: black;
-  border: 3px solid black;
-  border-radius: 10px;
 }
 
-#text-icon {
+.control-icon-wrapper {
+  color: #F0AB52;
+  background: #040404;
+  padding: 6px;
+  border: 1px solid #F0AB52;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+}
+
+#text-icon-wrapper {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
 }
 
-#video-icon {
+#video-icon-wrapper {
   position: absolute;
   left: 0.5rem;
   top: 0.5rem;
 }
 
 .ui-text {
-  color: white;
+  color: #F0AB52;
   background: black;
-  padding: 0px 2px;
-  border: 2px solid white;
+  padding: 5px 5px;
+  border: 2px solid black;
   border-radius: 10px;
+}
+
+.slider-label {
+  font-weight: bold;
+  padding: 5px 10px;
 }
 
 .v-bottom-sheet {
