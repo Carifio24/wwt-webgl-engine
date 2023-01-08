@@ -855,7 +855,7 @@ export default class Embed extends WWTAwareComponent {
 
 <style lang="less">
 html {
-  height: 100%;
+  height: 100vh;
   margin: 0;
   padding: 0;
   background-color: #000;
@@ -863,7 +863,7 @@ html {
 
 body {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -873,14 +873,14 @@ body {
 
 #app {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   margin: 0;
 
   .wwtelescope-component {
     position: relative;
     top: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     border-style: none;
     border-width: 0;
     margin: 0;
@@ -987,7 +987,7 @@ body {
 #bottom-content {
   display: flex;
   flex-direction: column;
-  position: absolute;
+  position: fixed;
   bottom: 0.5rem;
   right: 0.5rem;
   width: calc(100% - 1rem);
