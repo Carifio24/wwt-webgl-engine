@@ -113,7 +113,7 @@
           >
         </div>
         <div id="icons-container">
-          <a href="https://worldwidetelescope.org/home/"
+          <a href="https://www.cosmicds.cfa.harvard.edu/"
             ><img alt="CosmicDS Logo" src="./assets/logo_cosmicds.jpg"
           /></a>
           <a href="https://worldwidetelescope.org/home/"
@@ -122,7 +122,7 @@
           <a href="https://aas.org/"
             ><img alt="AAS Logo" src="./assets/logo_aas.png"
           /></a>
-          <ShareNetwork
+          <!-- <ShareNetwork
             v-for="network in networks"
             :key="network.name"
             :network="network.name"
@@ -140,21 +140,23 @@
               :icon="['fab', network.name]"
               size="lg"
             ></font-awesome-icon>
-          </ShareNetwork>
+          </ShareNetwork> -->
         </div>
       </div>
     </div>
 
-    <!-- <v-bottom-sheet
-      id="video-bottom-sheet"
-      hide-overlay
-      persistent
-      v-model="showVideoSheet"
+    <v-dialog
+      id="intro-dialog"
+      v-model="showIntroDialog"
     >
-      <video controls>
-        <source src="./assets/JWST-context.mp4" type="video/mp4">
-      </video>
-    </v-bottom-sheet> -->
+      <v-card id="intro-card">
+        <v-card-text id="intro-text">
+          Want to see in the infrared, like JWST can? Watch the video (<font-awesome-icon icon="video"/>), check out the guide <span style="white-space: nowrap">(<font-awesome-icon icon="book-open"/>)</span>, or just start playing right now!
+          <br><br><br><br>
+          This mini data story is brought to you by NASA's SciAct CosmicDS program and WorldWide Telescope.
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
     <v-dialog
       id="video-dialog"
@@ -221,10 +223,10 @@
             </v-card>
           </v-tab-item>
           <v-tab-item class="scrollable">
-            <v-card class="no-bottom-border-radius">
+            <v-card class="no-bottom-border-radius" style="height: 100%;">
               <v-card-text class="info-text no-bottom-border-radius">
                 <v-container>
-                  <v-row>
+                  <v-row align="center">
                     <v-col cols="4">
                       <v-chip
                         label
@@ -234,11 +236,11 @@
                       </v-chip>
                     </v-col>
                     <v-col cols="8" class="pt-2">
-                      <strong>click + drag</strong><br>
-                      (or use <strong class="codeFont">I-J-K-L</strong> keys)
+                      <strong>{{ mobile ? "click + drag" : "press + drag" }}</strong><br>
+                      <span v-if="!mobile">(or use <strong class="codeFont">I-J-K-L</strong> keys)</span>
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row align="center">
                     <v-col cols="4">
                       <v-chip
                         label
@@ -248,8 +250,8 @@
                       </v-chip>
                     </v-col>
                     <v-col cols="8" class="pt-2">
-                      <strong>scroll in and out</strong><br>
-                      (or use <strong class="codeFont">Z-X</strong> keys)
+                      <strong>{{ mobile ? "pinch in and out" : "scroll in and out" }}</strong><br>
+                      <span v-if="!mobile">(or use <strong class="codeFont">Z-X</strong> keys)</span>
                     </v-col>
                   </v-row>
                   <v-row>
@@ -269,83 +271,7 @@
                       </div>
                     </v-col>
                   </v-row>
-                </v-container>
-                    
-
-
-
-
-            <!-- <v-row>
-              <v-col cols="8">
-                <div
-                  style="min-height: 120px;"
-                >
-                  <p>
-                    The frame below provides an <b>interactive view </b>of the night sky, using images from real observations.
-                  </p>
-                  <p>
-                    The brighter band you see going diagonally across the frame (before you try the controls) is caused by stars and dust in our home galaxy, called the <b>Milky Way.</b>
-                  </p>
-                  <p>
-                    You can explore this view and see what is in the night sky, as astronomers have been doing for centuries. <b>Pan</b> (click and drag) and <b>zoom</b> (scroll in and out) to see parts of the sky beyond this view.
-                  </p>
-                </div>
-              </v-col>
-              <v-col cols="4" lg="3">
-                <v-row>
-                  <v-col
-                    cols="12"
-                    lg="4"
-                  >
-                    <v-chip
-                      label
-                      outlined
-                    >
-                      Pan
-                    </v-chip>
-                  </v-col>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      lg="8"
-                      class="pt-2"
-                    >
-                      <strong>click + drag</strong><br>
-                      (or use <strong class="codeFont">I-J-K-L</strong> keys)
-                    </v-col>
-                  </v-row>
-                </v-row>
-                <v-row>
-                  <v-col
-                    cols="12"
-                    lg="4"
-                  >
-                    <v-chip
-                      label
-                      outlined
-                    >
-                      Zoom
-                    </v-chip>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col
-                    cols="12"
-                    lg="8"
-                    class="pt-2"
-                  >
-                    <strong>scroll in and out</strong><br>
-                    (or use <strong class="codeFont">Z-X</strong> keys)
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-
-
-
- -->
-
-                </v-container>                  
+                </v-container>              
               </v-card-text>
             </v-card>
           </v-tab-item>
@@ -455,6 +381,7 @@ export default class Embed extends WWTAwareComponent {
   
   cfOpacity: number = 50;
   tab: number = 0;
+  showIntroDialog = true;
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -486,7 +413,7 @@ export default class Embed extends WWTAwareComponent {
 
   get mobile() {
     // @ts-ignore
-    return this.$vuetify.breakpoint.sm;
+    return this.$vuetify.breakpoint.mobile;
   }
 
   get showFolderView() {
@@ -679,7 +606,6 @@ export default class Embed extends WWTAwareComponent {
             goto: false
           }).then((layer) => {
             this.hubbleLayer = layer;
-            console.log(this.hubbleLayer);
             applyImageSetLayerSetting(layer , ["opacity", 0.5]);
           });
         });
@@ -696,7 +622,7 @@ export default class Embed extends WWTAwareComponent {
           if (children.length === 1) {
             const item = children[0];
             if (item instanceof Place) {
-              item.set_zoomLevel(0.277); // To match the video
+              item.set_zoomLevel(0.8);
               this.gotoTarget({
                 place: item,
                 noZoom: false,
@@ -1431,8 +1357,13 @@ video {
   border-bottom-right-radius: 0px !important;
 }
 
-#mobile-tabs {
-  padding-bottom: 2px !important;
+// #mobile-tabs {
+//   padding-bottom: 2px !important;
+// }
+
+#intro-text {
+  padding: 16px;
+  font-weight: bold;
 }
 
 @media(max-width: 600px) {

@@ -5,11 +5,13 @@ import Vuex from "vuex";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faAdjust,
+  faBookOpen,
   faCompress,
   faHeart,
   faExpand,
   faFileAlt,
   faMountain,
+  faQuestion,
   faPlay,
   faPause,
   faRedo,
@@ -21,7 +23,6 @@ import {
   faTimes,
   faUndoAlt,
   faVideo,
-  faBookOpen
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
@@ -83,6 +84,7 @@ library.add(faTextHeight);
 library.add(faTimes);
 library.add(faFileAlt);
 library.add(faBookOpen);
+library.add(faQuestion);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.component('vue-slider', VueSlider);
@@ -103,9 +105,10 @@ new Vue({
         "jwstWtmlUrl": "https://jcarifio.com/jwst_carina.wtml",
         "hubbleWtmlUrl": "https://jcarifio.com/carina_nebula.wtml",
         //"jwstWtmlUrl": "http://data1.wwtassets.org/packages/2022/07_jwst/jwst_first_v2.wtml",
-        "url": "https://web.wwtassets.org/specials/2022/jwst-first/draft2/",
+        "url": "https://carifio24.github.io/wwt-webgl-engine/",
         "thumbnailUrl": "https://cdn.worldwidetelescope.org/thumbnails/jwst.jpg",
         "bgWtml": "https://data1.wwtassets.org/packages/2022/07_jwst/smacs0723/jwst_smacs0723.wtml",
+        //"bgName": "Optical (Terapixel DSS)"
         "bgName": "unwise"
       }
     });
