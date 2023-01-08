@@ -172,7 +172,7 @@
           @click="showVideoSheet = false"
         ></font-awesome-icon>
         <video controls>
-          <source src="./assets/JWST-context.mp4" type="video/mp4">
+          <source src="./assets/carina_demo.mp4" type="video/mp4">
         </video>
       </div>
     </v-dialog>
