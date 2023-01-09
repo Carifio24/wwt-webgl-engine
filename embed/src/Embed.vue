@@ -1404,11 +1404,19 @@ video {
   border-bottom-right-radius: 0px !important;
 }
 
-// #mobile-tabs {
-//   padding-bottom: 2px !important;
-// }
+#mobile-tabs {
+  // padding-bottom: 2px !important;
+
+  .v-card__text {
+    font-size: ~"max(14px, calc(0.8em + 0.15vw))";
+    padding-top: ~"max(2vw, 16px)";
+    padding-left: ~"max(4vw, 16px)";
+    padding-right: ~"max(4vw, 16px)";
+  }
+}
 
 #intro-text {
+  font-size: ~"max(14px, calc(0.8em + 0.2vw))";
   padding: 16px;
   font-weight: bold;
 
