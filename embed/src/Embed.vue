@@ -37,15 +37,22 @@
     </transition>
 
     <div id="top-content">
-      <div id="video-icon-wrapper" class="control-icon-wrapper">
-        <font-awesome-icon
-          id="video-icon"
-          class="control-icon"
-          icon="video"
-          size="lg"
-          @click="selectBottomSheet('video')"
-        ></font-awesome-icon>
-      </div>
+      <v-tooltip right>
+        <template v-slot:activator="{ on, attrs }">
+          <div id="video-icon-wrapper" class="control-icon-wrapper">
+            <font-awesome-icon
+              v-on="on"
+              v-bind="attrs"
+              id="video-icon"
+              class="control-icon"
+              icon="video"
+              size="lg"
+              @click="selectBottomSheet('video')"
+            ></font-awesome-icon>
+          </div>
+        </template>
+        <span>Watch video</span>
+      </v-tooltip>
       <div id="show-layers-wrapper">
         <button
           id="show-layers-button"
@@ -54,15 +61,22 @@
           {{ showLayers ? "Hide Images" : "Show Images" }}
         </button>
       </div>
-      <div id="text-icon-wrapper" class="control-icon-wrapper">
-        <font-awesome-icon
-          id="text-icon"
-          class="control-icon"
-          icon="book-open"
-          size="lg"
-          @click="selectBottomSheet('text')"
-        ></font-awesome-icon>
-      </div>
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
+          <div id="text-icon-wrapper" class="control-icon-wrapper">
+            <font-awesome-icon
+              v-on="on"
+              v-bind="attrs"
+              id="text-icon"
+              class="control-icon"
+              icon="book-open"
+              size="lg"
+              @click="selectBottomSheet('text')"
+            ></font-awesome-icon>
+          </div>
+        </template>
+        <span>Learn more</span>
+      </v-tooltip>
     </div>
 
     <div id="bottom-content">
