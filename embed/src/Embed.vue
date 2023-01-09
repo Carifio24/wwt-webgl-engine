@@ -9,7 +9,7 @@
     ></WorldWideTelescope>
 
     <transition name="fade">
-      <div class="modal" id="modal-loading" v-show="isLoadingState || hubbleLayer == null">
+      <div class="modal" id="modal-loading" v-show="isLoadingState">
         <div class="container">
           <div class="spinner"></div>
           <p>Loading …</p>
@@ -36,27 +36,37 @@
       </div>
     </transition>
 
-    <div id="video-icon-wrapper" class="control-icon-wrapper">
-      <font-awesome-icon
-        id="video-icon"
-        class="control-icon"
-        icon="video"
-        size="lg"
-        @click="selectBottomSheet('video')"
-      ></font-awesome-icon>
-    </div>
-    <div id="text-icon-wrapper" class="control-icon-wrapper">
-      <font-awesome-icon
-        id="text-icon"
-        class="control-icon"
-        icon="book-open"
-        size="lg"
-        @click="selectBottomSheet('text')"
-      ></font-awesome-icon>
+    <div id="top-content">
+      <div id="video-icon-wrapper" class="control-icon-wrapper">
+        <font-awesome-icon
+          id="video-icon"
+          class="control-icon"
+          icon="video"
+          size="lg"
+          @click="selectBottomSheet('video')"
+        ></font-awesome-icon>
+      </div>
+      <div id="show-layers-wrapper">
+        <button
+          id="show-layers-button"
+          class="ui-text"
+          @click="showLayers = !showLayers">
+          {{ showLayers ? "Hide Images" : "Show Images" }}
+        </button>
+      </div>
+      <div id="text-icon-wrapper" class="control-icon-wrapper">
+        <font-awesome-icon
+          id="text-icon"
+          class="control-icon"
+          icon="book-open"
+          size="lg"
+          @click="selectBottomSheet('text')"
+        ></font-awesome-icon>
+      </div>
     </div>
 
     <div id="bottom-content">
-      <div id="tools">
+      <div id="tools" v-if="showLayers">
         <div class="tool-container">
           <template v-if="currentTool == 'crossfade'">
             <span class="ui-text slider-label">Hubble</span>
@@ -153,7 +163,7 @@
         <v-card-text id="intro-text">
           Want to see in the infrared, like JWST can? Watch the video (<font-awesome-icon icon="video"/>), check out the guide <span style="white-space: nowrap">(<font-awesome-icon icon="book-open"/>)</span>, or just start playing right now!
           <br><br><br><br>
-          This mini data story is brought to you by NASA's SciAct CosmicDS program and WorldWide Telescope.
+          This mini data story is brought to you by NASA's SciAct <a href="https://www.cosmicds.cfa.harvard.edu/">CosmicDS program</a> and <a href="https://www.worldwidetelescope.org/home/">AAS WorldWide Telescope</a>.
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -378,10 +388,12 @@ export default class Embed extends WWTAwareComponent {
 
   bottomSheet: BottomSheetType = null;
   hubbleLayer: ImageSetLayer | null = null;
+  jwstLayer: ImageSetLayer | null = null;
   
   cfOpacity: number = 50;
   tab: number = 0;
   showIntroDialog = true;
+  showLayers = true;
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -422,11 +434,11 @@ export default class Embed extends WWTAwareComponent {
   }
 
   get isLoadingState() {
-    return this.componentState == ComponentState.LoadingResources;
+    return this.componentState == ComponentState.LoadingResources || !this.layersLoaded;
   }
 
   get isReadyToStartState() {
-    return this.componentState == ComponentState.ReadyToStart;
+    return this.componentState == ComponentState.ReadyToStart && this.layersLoaded;
   }
 
   get coordText() {
@@ -451,9 +463,12 @@ export default class Embed extends WWTAwareComponent {
   }
 
   set crossfadeOpacity(o: number) {
-    this.setForegroundOpacity(o);
     if (this.hubbleLayer) {
       applyImageSetLayerSetting(this.hubbleLayer, ["opacity", 1 - 0.01 * o]);
+    }
+    console.log(this.jwstLayer);
+    if (this.jwstLayer) {
+      applyImageSetLayerSetting(this.jwstLayer, ["opacity", 0.01 * o]);
     }
   }
 
@@ -612,26 +627,29 @@ export default class Embed extends WWTAwareComponent {
 
         this.loadImageCollection({
           url: this.jwstWtmlUrl,
-          loadChildFolders: true,
+          loadChildFolders: false
         }).then((folder) => {
-          this.collectionFolder = folder;
           const children = folder.get_children();
-          if (children === null) {
-            return;
-          }
-          if (children.length === 1) {
-            const item = children[0];
-            if (item instanceof Place) {
-              item.set_zoomLevel(0.8);
-              this.gotoTarget({
-                place: item,
-                noZoom: false,
-                instant: true,
-                trackObject: true,
-              });
-              this.setForegroundOpacity(50);
-            }
-          }
+          if (children == null) { return; }
+          const item = children[0] as Place;
+          const imageset = item.get_backgroundImageset() ?? item.get_studyImageset();
+          if (imageset === null) { return; }
+          this.gotoTarget({
+            place: item,
+            noZoom: false,
+            instant: true,
+            trackObject: true
+          });
+          this.setForegroundOpacity(0);
+          this.addImageSetLayer({
+            url: imageset.get_url(),
+            mode: "autodetect",
+            name: "JWST Carina",
+            goto: false
+          }).then((layer) => {
+            this.jwstLayer = layer;
+            applyImageSetLayerSetting(layer , ["opacity", 0.5]);
+          });
         });
 
         if (!backgroundWasInitialized) {
@@ -701,6 +719,10 @@ export default class Embed extends WWTAwareComponent {
     } else {
       this.bottomSheet = name;
     }
+  }
+
+  get layersLoaded() {
+    return this.hubbleLayer != null && this.jwstLayer != null;
   }
 
   get showVideoSheet() {
@@ -831,6 +853,23 @@ export default class Embed extends WWTAwareComponent {
   @Watch("wwtTourCompletions")
   onTourCompletionsChanged(_count: number) {
     this.tourPlaybackJustEnded = true;
+  }
+
+  @Watch("componentState")
+  onComponentStateChanged(state: ComponentState) {
+    if (state === ComponentState.Started) {
+      this.showIntroDialog = true;
+    }
+  }
+
+  @Watch("showLayers")
+  onShowLayersChanged(show: boolean) {
+    if (this.hubbleLayer) {
+      applyImageSetLayerSetting(this.hubbleLayer, ["enabled", show]);
+    }
+    if (this.jwstLayer) {
+      applyImageSetLayerSetting(this.jwstLayer, ["enabled", show]);
+    }
   }
 
   // This property is used to achieve a widescreen effect when playing tours
@@ -993,7 +1032,16 @@ body {
   width: calc(100% - 1rem);
   pointer-events: none;
   align-items: center;
-  gap: 25px;
+  gap: 5px;
+}
+
+#bottom-row {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #left-controls {
@@ -1080,7 +1128,7 @@ body {
 
 #credits {
   color: #ddd;
-  font-size: 70%;
+  font-size: calc(0.7em + 0.2vw);
   justify-self: flex-end;
   align-self: flex-end;
   display: flex;
@@ -1290,16 +1338,13 @@ ul.tool-menu {
   align-items: center;
 }
 
-#text-icon-wrapper {
+#top-content {
   position: absolute;
   top: 0.5rem;
-  right: 0.5rem;
-}
-
-#video-icon-wrapper {
-  position: absolute;
   left: 0.5rem;
-  top: 0.5rem;
+  width: calc(100% - 1rem);
+  display: flex;
+  justify-content: space-between;
 }
 
 .ui-text {
@@ -1308,10 +1353,12 @@ ul.tool-menu {
   padding: 5px 5px;
   border: 2px solid black;
   border-radius: 10px;
+  font-size: calc(0.7em + 0.2vw);
 }
 
 .slider-label {
   font-weight: bold;
+  font-size: calc(0.8em + 0.5vw);
   padding: 5px 10px;
 }
 
@@ -1364,6 +1411,19 @@ video {
 #intro-text {
   padding: 16px;
   font-weight: bold;
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      font-style: italic;
+    }
+  }
+}
+
+#show-layers-button {
+  font-size: calc(0.75em + 0.5vw);
+  pointer-events: auto;
 }
 
 @media(max-width: 600px) {
