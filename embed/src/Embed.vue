@@ -466,10 +466,10 @@ export default class Embed extends WWTAwareComponent {
     if (this.hubbleLayer) {
       applyImageSetLayerSetting(this.hubbleLayer, ["opacity", 1 - 0.01 * o]);
     }
-    console.log(this.jwstLayer);
     if (this.jwstLayer) {
       applyImageSetLayerSetting(this.jwstLayer, ["opacity", 0.01 * o]);
     }
+    this.cfOpacity = o;
   }
 
   get fullscreenAvailable() {
