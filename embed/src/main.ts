@@ -102,8 +102,8 @@ new Vue({
       props: {
         "wwtNamespace": "wwt-embed",
         "embedSettings": settings,
-        "jwstWtmlUrl": "https://jcarifio.com/jwst_carina.wtml",
-        "hubbleWtmlUrl": "https://jcarifio.com/carina_nebula.wtml",
+        "jwstWtmlUrl": "https://carifio24.github.io/wwt-webgl-engine/jwst_carina.wtml",
+        "hubbleWtmlUrl": "https://carifio24.github.io/wwt-webgl-engine/carina_nebula.wtml",
         //"jwstWtmlUrl": "http://data1.wwtassets.org/packages/2022/07_jwst/jwst_first_v2.wtml",
         "url": "https://carifio24.github.io/wwt-webgl-engine/",
         "thumbnailUrl": "https://cdn.worldwidetelescope.org/thumbnails/jwst.jpg",
