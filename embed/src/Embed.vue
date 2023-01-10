@@ -1556,6 +1556,7 @@ video {
   height: fit-content;
   max-width: 70vw;
   max-height: 70vh;
+  object-fit: contain;
 }
 
 #show-layers-button {
