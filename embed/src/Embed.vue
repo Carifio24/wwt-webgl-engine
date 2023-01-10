@@ -648,11 +648,14 @@ export default class Embed extends WWTAwareComponent {
           const item = children[0] as Place;
           const imageset = item.get_backgroundImageset() ?? item.get_studyImageset();
           if (imageset === null) { return; }
-          this.gotoTarget({
-            place: item,
-            noZoom: false,
+
+          const D2R = Math.PI / 180.0;
+          this.gotoRADecZoom({
+            raRad: D2R * imageset.get_centerX(),
+            decRad: D2R * imageset.get_centerY(),
+            zoomDeg: 0.8595,
+            rollRad: 1.794,
             instant: true,
-            trackObject: true
           });
           this.setForegroundOpacity(0);
           this.addImageSetLayer({
@@ -699,6 +702,7 @@ export default class Embed extends WWTAwareComponent {
   }
 
   mounted() {
+    console.log(this);
     if (screenfull.isEnabled) {
       screenfull.on("change", this.onFullscreenEvent);
     }
