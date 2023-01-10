@@ -75,32 +75,14 @@
         </template>
         <span>Watch video</span>
       </v-tooltip>
-      <div id="show-layers-wrapper">
+      <div id="center-buttons-wrapper">
         <button
           id="show-layers-button"
           class="ui-text"
           @click="showLayers = !showLayers">
           {{ showLayers ? "Hide Images" : "Show Images" }}
         </button>
-      </div>
-      <div id="right-button-container">
-        <v-tooltip left>
-          <template v-slot:activator="{ on, attrs }">
-            <div id="text-icon-wrapper" class="control-icon-wrapper">
-              <font-awesome-icon
-                v-on="on"
-                v-bind="attrs"
-                id="text-icon"
-                class="control-icon"
-                icon="book-open"
-                size="lg"
-                @click="selectBottomSheet('text')"
-              ></font-awesome-icon>
-            </div>
-          </template>
-          <span>Learn more</span>
-        </v-tooltip>
-        <v-tooltip left>
+        <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <div id="text-icon-wrapper" class="control-icon-wrapper">
               <font-awesome-icon
@@ -117,6 +99,22 @@
           <span>Return to Carina</span>
         </v-tooltip>
       </div>
+      <v-tooltip left>
+        <template v-slot:activator="{ on, attrs }">
+          <div id="text-icon-wrapper" class="control-icon-wrapper">
+            <font-awesome-icon
+              v-on="on"
+              v-bind="attrs"
+              id="text-icon"
+              class="control-icon"
+              icon="book-open"
+              size="lg"
+              @click="selectBottomSheet('text')"
+            ></font-awesome-icon>
+          </div>
+        </template>
+        <span>Learn more</span>
+      </v-tooltip>
     </div>
 
     <div id="bottom-content">
@@ -251,8 +249,8 @@
       >
         <v-tabs-slider color="white"></v-tabs-slider>
 
-        <v-tab>Information</v-tab>
-        <v-tab>Using WWT</v-tab>
+        <v-tab><h3>Information</h3></v-tab>
+        <v-tab><h3>Using WWT</h3></v-tab>
       </v-tabs>
       <font-awesome-icon
         id="close-text-icon"
@@ -1449,6 +1447,11 @@ ul.tool-menu {
   justify-content: space-between;
   align-items: flex-start;
 
+  #center-buttons-wrapper {
+    display: flex;
+    flex-direction: row;
+  }
+
   #right-button-container {
     display: flex;
     flex-direction: column;
@@ -1526,7 +1529,7 @@ video {
   // padding-bottom: 2px !important;
 
   .v-card__text {
-    font-size: ~"max(14px, calc(0.8em + 0.15vw))";
+    font-size: ~"max(14px, calc(0.8em + 0.3vw))";
     padding-top: ~"max(2vw, 16px)";
     padding-left: ~"max(4vw, 16px)";
     padding-right: ~"max(4vw, 16px)";
