@@ -83,22 +83,40 @@
           {{ showLayers ? "Hide Images" : "Show Images" }}
         </button>
       </div>
-      <v-tooltip left>
-        <template v-slot:activator="{ on, attrs }">
-          <div id="text-icon-wrapper" class="control-icon-wrapper">
-            <font-awesome-icon
-              v-on="on"
-              v-bind="attrs"
-              id="text-icon"
-              class="control-icon"
-              icon="book-open"
-              size="lg"
-              @click="selectBottomSheet('text')"
-            ></font-awesome-icon>
-          </div>
-        </template>
-        <span>Learn more</span>
-      </v-tooltip>
+      <div id="right-button-container">
+        <v-tooltip left>
+          <template v-slot:activator="{ on, attrs }">
+            <div id="text-icon-wrapper" class="control-icon-wrapper">
+              <font-awesome-icon
+                v-on="on"
+                v-bind="attrs"
+                id="text-icon"
+                class="control-icon"
+                icon="book-open"
+                size="lg"
+                @click="selectBottomSheet('text')"
+              ></font-awesome-icon>
+            </div>
+          </template>
+          <span>Learn more</span>
+        </v-tooltip>
+        <v-tooltip left>
+          <template v-slot:activator="{ on, attrs }">
+            <div id="text-icon-wrapper" class="control-icon-wrapper">
+              <font-awesome-icon
+                v-on="on"
+                v-bind="attrs"
+                id="reset-icon"
+                class="control-icon"
+                icon="redo"
+                size="lg"
+                @click="resetView(false)"
+              ></font-awesome-icon>
+            </div>
+          </template>
+          <span>Return to Carina</span>
+        </v-tooltip>
+      </div>
     </div>
 
     <div id="bottom-content">
@@ -854,7 +872,7 @@ export default class Embed extends WWTAwareComponent {
     return "play";
   }
 
-  resetView() {
+  resetView(instant: boolean = true) {
     const D2R = Math.PI / 180.0;
     if (this.jwstLayer === null) { return; }
     const imageset = this.jwstLayer.get_imageSet();
@@ -863,7 +881,7 @@ export default class Embed extends WWTAwareComponent {
       decRad: D2R * imageset.get_centerY(),
       zoomDeg: 0.8595,
       rollRad: 1.799,
-      instant: true,
+      instant: instant,
     });
   }
 
@@ -1429,6 +1447,13 @@ ul.tool-menu {
   width: calc(100% - 1rem);
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+
+  #right-button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 .ui-text {
