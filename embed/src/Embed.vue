@@ -1428,6 +1428,7 @@ ul.tool-menu {
 .video-wrapper {
   height: 100%;
   background: black;
+  text-align: center;
 }
 
 .close-icon {
@@ -1438,11 +1439,9 @@ ul.tool-menu {
 }
 
 video {
-  object-fit: fill;
-  width: 100%;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+  height: 100%;
+  width: auto;
+  object-fit: contain;
 }
 
 .scrollable {
@@ -1491,13 +1490,6 @@ video {
 
   #video-dialog {
     display: inherit;
-  }
-}
-
-@media(orientation: landscape) {
-  video {
-    height: 100%;
-    object-fit: contain;
   }
 }
 </style>
