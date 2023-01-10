@@ -264,11 +264,11 @@
             <v-card class="no-bottom-border-radius">
               <v-card-text class="info-text no-bottom-border-radius">
                  <h4>Explore!</h4>
-As scientists, we learn by observing and noticing. Explore these images of the Carina Nebula and see what you can find.
-• Look for stars that are “invisible” to our eyes because they are blocked by dust but shine in JWST’s infrared image.
-• Look near the edge of the dusty, dense clouds in the JWST image. See if you can find bright yellow arcs that indicate gas and dust being blown away by young forming stars.
-• Scan the dark blue region of the JWST image and see if you can find reddish smudgy objects that might be galaxies. Switch over to the Hubble image. Do you see those galaxies in the Hubble image?
-<br><br>
+As scientists, we learn by observing and noticing. Explore these images of the Carina Nebula and see what you can find.<br>
+• Look for stars that are “invisible” to our eyes because they are blocked by dust but shine in JWST’s infrared image.<br>
+• Look near the edge of the dusty, dense clouds in the JWST image. See if you can find bright yellow arcs that indicate gas and dust being blown away by young forming stars.<br>
+• Scan the dark blue region of the JWST image and see if you can find reddish smudgy objects that might be galaxies. Switch over to the Hubble image. Do you see those galaxies in the Hubble image?<br>
+<br>
 <h4>Images as “data”</h4>
 When you think about scientific data, pictures might not immediately spring to mind, but in astronomy, images are some of the most important pieces of data available.
 <br><br>
