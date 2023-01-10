@@ -14,7 +14,7 @@
         absolute
         opacity="0.6"
       >
-        <div style="height: fit-content;">
+        <div style="width: fit-content;">
           <v-img
             id="splash-screen"
             :src="imageLocation"
@@ -24,6 +24,7 @@
           >
             <font-awesome-icon
               id="close-splash-icon"
+              class="control-icon"
               icon="times"
               size="lg"
               @click="showSplashScreen = false"
@@ -108,13 +109,13 @@
       <div id="tools" v-if="showLayers">
         <div class="tool-container">
           <template v-if="currentTool == 'crossfade'">
-            <span class="ui-text slider-label">Hubble</span>
+            <span class="ui-text slider-label">Hubble<br><span class="light-type">(Visible)</span></span>
             <input
               class="opacity-range"
               type="range"
               v-model="crossfadeOpacity"
             />
-            <span class="ui-text slider-label">JWST</span>
+            <span class="ui-text slider-label">JWST<br><span class="light-type">(Infrared)</span></span>
           </template>
           <template v-else-if="currentTool == 'choose-background'">
             <span>Background imagery:</span>
@@ -664,15 +665,6 @@ export default class Embed extends WWTAwareComponent {
           const item = children[0] as Place;
           const imageset = item.get_backgroundImageset() ?? item.get_studyImageset();
           if (imageset === null) { return; }
-
-          const D2R = Math.PI / 180.0;
-          this.gotoRADecZoom({
-            raRad: D2R * imageset.get_centerX(),
-            decRad: D2R * imageset.get_centerY(),
-            zoomDeg: 0.8595,
-            rollRad: 1.794,
-            instant: true,
-          });
           this.setForegroundOpacity(0);
           this.addImageSetLayer({
             url: imageset.get_url(),
@@ -681,6 +673,7 @@ export default class Embed extends WWTAwareComponent {
             goto: false
           }).then((layer) => {
             this.jwstLayer = layer;
+            this.resetView();
             applyImageSetLayerSetting(layer , ["opacity", 0.5]);
           });
         });
@@ -825,6 +818,19 @@ export default class Embed extends WWTAwareComponent {
     }
 
     return "play";
+  }
+
+  resetView() {
+    const D2R = Math.PI / 180.0;
+    if (this.jwstLayer === null) { return; }
+    const imageset = this.jwstLayer.get_imageSet();
+    this.gotoRADecZoom({
+      raRad: D2R * imageset.get_centerX(),
+      decRad: D2R * imageset.get_centerY(),
+      zoomDeg: 0.8595,
+      rollRad: 1.794,
+      instant: true,
+    });
   }
 
   tourPlaybackButtonClicked() {
@@ -1360,6 +1366,10 @@ ul.tool-menu {
 
 .control-icon {
   pointer-events: auto;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .control-icon-wrapper {
@@ -1394,6 +1404,12 @@ ul.tool-menu {
   font-weight: bold;
   font-size: calc(0.8em + 0.5vw);
   padding: 5px 10px;
+  text-align: center;
+  line-height: 20px;
+
+  .light-type {
+    font-size: calc(0.56em + 0.35vw);
+  }
 }
 
 .v-bottom-sheet {
