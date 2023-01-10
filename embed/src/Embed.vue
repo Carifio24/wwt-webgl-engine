@@ -8,6 +8,31 @@
       }"
     ></WorldWideTelescope>
 
+    <v-fade-transition>
+      <v-overlay
+        v-if="showSplashScreen"
+        absolute
+        opacity="0.6"
+      >
+        <div style="height: fit-content;">
+          <v-img
+            id="splash-screen"
+            :src="imageLocation"
+            max-width="70vw"
+            max-height="70vh"
+            contain
+          >
+            <font-awesome-icon
+              id="close-splash-icon"
+              icon="times"
+              size="lg"
+              @click="showSplashScreen = false"
+            ></font-awesome-icon>
+          </v-img>
+        </div>
+      </v-overlay>
+    </v-fade-transition>
+
     <transition name="fade">
       <div class="modal" id="modal-loading" v-show="isLoadingState">
         <div class="container">
@@ -168,19 +193,6 @@
         </div>
       </div>
     </div>
-
-    <v-dialog
-      id="intro-dialog"
-      v-model="showIntroDialog"
-    >
-      <v-card id="intro-card">
-        <v-card-text id="intro-text">
-          Want to see in the infrared, like JWST can? Watch the video (<font-awesome-icon icon="video"/>), check out the guide <span style="white-space: nowrap">(<font-awesome-icon icon="book-open"/>)</span>, or just start playing right now!
-          <br><br><br><br>
-          This mini data story is brought to you by NASA's SciAct <a href="https://www.cosmicds.cfa.harvard.edu/">CosmicDS program</a> and <a href="https://www.worldwidetelescope.org/home/">AAS WorldWide Telescope</a>.
-        </v-card-text>
-      </v-card>
-    </v-dialog>
 
     <v-dialog
       id="video-dialog"
@@ -406,7 +418,7 @@ export default class Embed extends WWTAwareComponent {
   
   cfOpacity: number = 50;
   tab: number = 0;
-  showIntroDialog = true;
+  showSplashScreen = true;
   showLayers = true;
 
   get hashtagString() {
@@ -440,6 +452,10 @@ export default class Embed extends WWTAwareComponent {
   get mobile() {
     // @ts-ignore
     return this.$vuetify.breakpoint.mobile;
+  }
+
+  get imageLocation() {
+    return require(`./assets/Carina Nebula Splash Screen${this.mobile ? ' Mobile' : ''}.png`);
   }
 
   get showFolderView() {
@@ -876,7 +892,7 @@ export default class Embed extends WWTAwareComponent {
   @Watch("componentState")
   onComponentStateChanged(state: ComponentState) {
     if (state === ComponentState.Started) {
-      this.showIntroDialog = true;
+      this.showSplashScreen = true;
     }
   }
 
@@ -1433,18 +1449,18 @@ video {
   }
 }
 
-#intro-text {
-  font-size: ~"max(14px, calc(0.8em + 0.2vw))";
-  padding: 16px;
-  font-weight: bold;
+#close-splash-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #F0AB52;
+}
 
-  a {
-    text-decoration: none;
-
-    &:hover {
-      font-style: italic;
-    }
-  }
+#splash-screen {
+  // width: 1624px;
+  // height: 2030px;
+  width: fit-content;
+  height: fit-content;
 }
 
 #show-layers-button {
