@@ -227,6 +227,7 @@
       <v-tabs
         v-model="tab"
         height="32px"
+        id="tabs"
         dense
         grow
       >
@@ -235,8 +236,14 @@
         <v-tab>Information</v-tab>
         <v-tab>Using WWT</v-tab>
       </v-tabs>
-
-        <v-tabs-items v-model="tab" id="tabs" class="pb-2 no-bottom-border-radius">
+      <font-awesome-icon
+        id="close-text-icon"
+        class="control-icon"
+        icon="times"
+        size="lg"
+        @click="showTextSheet = false"
+      ></font-awesome-icon>
+        <v-tabs-items v-model="tab" id="tab-items" class="pb-2 no-bottom-border-radius">
           <v-tab-item class="scrollable">
             <v-card class="no-bottom-border-radius">
               <v-card-text class="info-text no-bottom-border-radius">
@@ -855,7 +862,7 @@ export default class Embed extends WWTAwareComponent {
       raRad: D2R * imageset.get_centerX(),
       decRad: D2R * imageset.get_centerY(),
       zoomDeg: 0.8595,
-      rollRad: 1.794,
+      rollRad: 1.799,
       instant: true,
     });
   }
@@ -1487,6 +1494,10 @@ video {
 }
 
 #tabs {
+  width: calc(100% - 3em);
+}
+
+#tab-items {
   // padding-bottom: 2px !important;
 
   .v-card__text {
@@ -1496,6 +1507,13 @@ video {
     padding-right: ~"max(4vw, 16px)";
   }
 
+}
+
+#close-text-icon {
+  position: absolute;
+  top: 0.25em;
+  right: calc((3em - 0.6875em) / 3); // font-awesome-icons have width 0.6875em
+  color: white;
 }
 
 #close-splash-icon {
