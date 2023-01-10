@@ -761,7 +761,6 @@ export default class Embed extends WWTAwareComponent {
   }
 
   mounted() {
-    console.log(this);
     if (screenfull.isEnabled) {
       screenfull.on("change", this.onFullscreenEvent);
     }
