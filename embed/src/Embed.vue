@@ -159,7 +159,7 @@
         <div>
           Powered by
           <a href="https://worldwidetelescope.org/home/"
-            >AAS WorldWide Telescope</a
+            >WorldWide Telescope</a
           >
         </div>
         <div id="icons-container">
@@ -169,8 +169,8 @@
           <a href="https://worldwidetelescope.org/home/"
             ><img alt="WWT Logo" src="./assets/logo_wwt.png"
           /></a>
-          <a href="https://aas.org/"
-            ><img alt="AAS Logo" src="./assets/logo_aas.png"
+          <a href="https://science.nasa.gov/learners"
+            ><img alt="SciAct Logo" src="./assets/logo_sciact.png"
           /></a>
           <!-- <ShareNetwork
             v-for="network in networks"
