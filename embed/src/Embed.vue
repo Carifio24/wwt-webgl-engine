@@ -14,23 +14,19 @@
         absolute
         opacity="0.6"
       >
-        <div style="width: fit-content;">
-          <v-img
-            id="splash-screen"
-            :src="imageLocation"
-            max-width="70vw"
-            max-height="70vh"
-            contain
-          >
-            <font-awesome-icon
-              id="close-splash-icon"
-              class="control-icon"
-              icon="times"
-              size="lg"
-              @click="showSplashScreen = false"
-            ></font-awesome-icon>
-          </v-img>
-        </div>
+        <img
+          id="splash-screen"
+          :src="imageLocation"
+          v-click-outside="closeSplashScreenIfLoaded"
+          max-width="70vw"
+          max-height="70vh"
+          contain
+        >
+          <a
+            style="position: absolute; top: 6%; left: 89.5%; height: 3%; width: 2%;"
+            @click="showSplashScreen = false">
+          </a>
+        </img>
       </v-overlay>
     </v-fade-transition>
 
@@ -240,7 +236,7 @@
         <v-tab>Using WWT</v-tab>
       </v-tabs>
 
-        <v-tabs-items v-model="tab" id="mobile-tabs" class="pb-2 no-bottom-border-radius">
+        <v-tabs-items v-model="tab" id="tabs" class="pb-2 no-bottom-border-radius">
           <v-tab-item class="scrollable">
             <v-card class="no-bottom-border-radius">
               <v-card-text class="info-text no-bottom-border-radius">
@@ -256,6 +252,20 @@
                 <br>This period of very early star formation is difficult to capture because, for an individual star, it lasts only about 50,000 to 100,000 years – but Webb’s extreme sensitivity and exquisite spatial resolution have chronicled this rare event.
                 Located roughly 7,600 light-years away, NGC 3324 was first catalogued by James Dunlop in 1826. Visible from the Southern Hemisphere, it is located at the northwest corner of the Carina Nebula (NGC 3372), which resides in the constellation Carina. The Carina Nebula is home to the Keyhole Nebula and the active, unstable supergiant star called Eta Carinae. 
                 NIRCam was built by a team at the University of Arizona and Lockheed Martin’s Advanced Technology Center.
+                <br><br><br>
+                <h3>Credits:</h3>
+                <h4>CosmicDS Mini Stories Team:</h4>
+                Jon Carifio<br>
+                John Lewis<br>
+                Pat Udomprasert<br>
+                Alyssa Goodman<br>
+                Mary Dussault<br>
+                Sue Sunbury<br>
+                <br>
+                <h4>WorldWide Telescope Team:</h4>
+                Peter Williams<br>
+                David Weigel<br>
+                Jon Carifio<br>
               </v-card-text>
             </v-card>
           </v-tab-item>
@@ -306,6 +316,23 @@
                           You can explore this view and see what is in the night sky, as astronomers have been doing for centuries. <b>Pan</b> (click and drag) and <b>zoom</b> (scroll in and out) to see parts of the sky beyond this view.
                         </p>
                       </div>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <h3>Credits:</h3>
+                      <h4>CosmicDS Mini Stories Team:</h4>
+                      Jon Carifio<br>
+                      John Lewis<br>
+                      Pat Udomprasert<br>
+                      Alyssa Goodman<br>
+                      Mary Dussault<br>
+                      Sue Sunbury<br>
+                      <br>
+                      <h4>WorldWide Telescope Team:</h4>
+                      Peter Williams<br>
+                      David Weigel<br>
+                      Jon Carifio<br>
                     </v-col>
                   </v-row>
                 </v-container>              
@@ -456,7 +483,7 @@ export default class Embed extends WWTAwareComponent {
   }
 
   get imageLocation() {
-    return require(`./assets/Carina Nebula Splash Screen${this.mobile ? ' Mobile' : ''}.png`);
+    return require(`./assets/Carina Nebula Splash Screen${this.mobile ? ' Mobile' : ''} Close.png`);
   }
 
   get showFolderView() {
@@ -831,6 +858,12 @@ export default class Embed extends WWTAwareComponent {
       rollRad: 1.794,
       instant: true,
     });
+  }
+
+  closeSplashScreenIfLoaded() {
+    if (this.componentState == ComponentState.Started) {
+      this.showSplashScreen = false;
+    }
   }
 
   tourPlaybackButtonClicked() {
@@ -1453,7 +1486,7 @@ video {
   border-bottom-right-radius: 0px !important;
 }
 
-#mobile-tabs {
+#tabs {
   // padding-bottom: 2px !important;
 
   .v-card__text {
@@ -1462,6 +1495,7 @@ video {
     padding-left: ~"max(4vw, 16px)";
     padding-right: ~"max(4vw, 16px)";
   }
+
 }
 
 #close-splash-icon {
@@ -1471,11 +1505,12 @@ video {
   color: #F0AB52;
 }
 
+
 #splash-screen {
-  // width: 1624px;
-  // height: 2030px;
   width: fit-content;
   height: fit-content;
+  max-width: 70vw;
+  max-height: 70vh;
 }
 
 #show-layers-button {
