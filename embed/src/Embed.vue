@@ -263,18 +263,21 @@
           <v-tab-item class="scrollable">
             <v-card class="no-bottom-border-radius">
               <v-card-text class="info-text no-bottom-border-radius">
-                What looks much like craggy mountains on a moonlit evening is actually the edge of a nearby, young, star-forming region NGC 3324 in the Carina Nebula. Captured in infrared light by the Near-Infrared Camera (NIRCam) on NASA’s James Webb Space Telescope, this image reveals previously obscured areas of star birth.
-                <br>Called the Cosmic Cliffs, the region is actually the edge of a gigantic, gaseous cavity within NGC 3324, roughly 7,600 light-years away. The cavernous area has been carved from the nebula by the intense ultraviolet radiation and stellar winds from extremely massive, hot, young stars located in the center of the bubble, above the area shown in this image. The high-energy radiation from these stars is sculpting the nebula’s wall by slowly eroding it away.  
-                NIRCam – with its crisp resolution and unparalleled sensitivity – unveils hundreds of previously hidden stars, and even numerous background galaxies. Several prominent features in this image are described below.
-                <br>•	The “steam” that appears to rise from the celestial “mountains” is actually hot, ionized gas and hot dust streaming away from the nebula due to intense, ultraviolet radiation. 
-                <br>•	Dramatic pillars rise above the glowing wall of gas, resisting the blistering ultraviolet radiation from the young stars.
-                <br>•	Bubbles and cavities are being blown by the intense radiation and stellar winds of newborn stars.
-                <br>•	Protostellar jets and outflows, which appear in gold, shoot from dust-enshrouded, nascent stars.
-                <br>•	A “blow-out” erupts at the top-center of the ridge, spewing gas and dust into the interstellar medium. 
-                <br>•	An unusual “arch” appears, looking like a bent-over cylinder.
-                <br>This period of very early star formation is difficult to capture because, for an individual star, it lasts only about 50,000 to 100,000 years – but Webb’s extreme sensitivity and exquisite spatial resolution have chronicled this rare event.
-                Located roughly 7,600 light-years away, NGC 3324 was first catalogued by James Dunlop in 1826. Visible from the Southern Hemisphere, it is located at the northwest corner of the Carina Nebula (NGC 3372), which resides in the constellation Carina. The Carina Nebula is home to the Keyhole Nebula and the active, unstable supergiant star called Eta Carinae. 
-                NIRCam was built by a team at the University of Arizona and Lockheed Martin’s Advanced Technology Center.
+                 <h4>Explore!</h4>
+As scientists, we learn by observing and noticing. Explore these images of the Carina Nebula and see what you can find.
+• Look for stars that are “invisible” to our eyes because they are blocked by dust but shine in JWST’s infrared image.
+• Look near the edge of the dusty, dense clouds in the JWST image. See if you can find bright yellow arcs that indicate gas and dust being blown away by young forming stars.
+• Scan the dark blue region of the JWST image and see if you can find reddish smudgy objects that might be galaxies. Switch over to the Hubble image. Do you see those galaxies in the Hubble image?
+<br><br>
+<h4>Images as “data”</h4>
+When you think about scientific data, pictures might not immediately spring to mind, but in astronomy, images are some of the most important pieces of data available.
+<br><br>
+Images show us the structure of objects in space, which here provides clues on how stars form and evolve. In the Hubble and JWST images of the Carina Nebula, you can see regions of very high density dust and gas (the brown parts of the images) where new stars are being born. If you zoom out, you will see that the images are at the edge of what appears to be a larger bubble, which is the cavern of lower density gas carved out by winds from massive stars.
+<br><br>
+<h4>Visible vs Infrared Light</h4>
+Our eyes can detect visible light, but visible light is only a small part of a broader spectrum of light that has different energies, ranging from gamma rays and x-rays to infrared light and radio waves. Images from each part of the spectrum can tell a different part of the story about objects in space.
+<br><br>
+The Hubble Space Telescope takes pictures in visible light, like our eyes. The James Webb Space Telescope takes pictures in infrared light. Some “night vision” cameras image objects in the dark using infrared light. Animals and people “glow” in infrared in the dark because we usually have higher temperatures than our surroundings.
                 <br><br><br>
                 <h3>Credits:</h3>
                 <h4>CosmicDS Mini Stories Team:</h4>
@@ -307,7 +310,7 @@
                     </v-col>
                     <v-col cols="8" class="pt-2">
                       <strong>{{ mobile ? "click + drag" : "press + drag" }}</strong><br>
-                      <span v-if="!mobile">(or use <strong class="codeFont">I-J-K-L</strong> keys)</span>
+                
                     </v-col>
                   </v-row>
                   <v-row align="center">
@@ -321,7 +324,7 @@
                     </v-col>
                     <v-col cols="8" class="pt-2">
                       <strong>{{ mobile ? "pinch in and out" : "scroll in and out" }}</strong><br>
-                      <span v-if="!mobile">(or use <strong class="codeFont">Z-X</strong> keys)</span>
+                      
                     </v-col>
                   </v-row>
                   <v-row>
