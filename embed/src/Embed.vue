@@ -381,9 +381,6 @@
                           The frame above provides an <b>interactive view </b>of the night sky, powered by WorldWide Telescope (WWT), using images from real observations.
                         </p>
                         <p>
-                          The brighter band you see going diagonally across the frame (before you try the controls) is caused by stars and dust in our home galaxy, called the <b>Milky Way.</b>
-                        </p>
-                        <p>
                           You can explore this view and see what is in the night sky, as astronomers have been doing for centuries. <b>Pan</b> (click and drag) and <b>zoom</b> (scroll in and out) to see parts of the sky beyond this view.
                         </p>
                       </div>
