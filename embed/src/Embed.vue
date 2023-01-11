@@ -59,7 +59,9 @@
     </transition>
 
     <div id="top-content">
-      <v-tooltip right>
+      <v-tooltip
+        right
+      >
         <template v-slot:activator="{ on, attrs }">
           <div id="video-icon-wrapper" class="control-icon-wrapper">
             <font-awesome-icon
@@ -69,6 +71,7 @@
               class="control-icon"
               icon="video"
               size="lg"
+              :tabindex="mobile ? -1 : 0"
               @click="selectBottomSheet('video')"
             ></font-awesome-icon>
           </div>
@@ -263,21 +266,21 @@
           <v-tab-item class="scrollable">
             <v-card class="no-bottom-border-radius">
               <v-card-text class="info-text no-bottom-border-radius">
-                 <h4>Explore!</h4>
-As scientists, we learn by observing and noticing. Explore these images of the Carina Nebula and see what you can find.<br>
-• Look for stars that are “invisible” to our eyes because they are blocked by dust but shine in JWST’s infrared image.<br>
-• Look near the edge of the dusty, dense clouds in the JWST image. See if you can find bright yellow arcs that indicate gas and dust being blown away by young forming stars.<br>
-• Scan the dark blue region of the JWST image and see if you can find reddish smudgy objects that might be galaxies. Switch over to the Hubble image. Do you see those galaxies in the Hubble image?<br>
-<br>
-<h4>Images as “data”</h4>
-When you think about scientific data, pictures might not immediately spring to mind, but in astronomy, images are some of the most important pieces of data available.
-<br><br>
-Images show us the structure of objects in space, which here provides clues on how stars form and evolve. In the Hubble and JWST images of the Carina Nebula, you can see regions of very high density dust and gas (the brown parts of the images) where new stars are being born. If you zoom out, you will see that the images are at the edge of what appears to be a larger bubble, which is the cavern of lower density gas carved out by winds from massive stars.
-<br><br>
-<h4>Visible vs Infrared Light</h4>
-Our eyes can detect visible light, but visible light is only a small part of a broader spectrum of light that has different energies, ranging from gamma rays and x-rays to infrared light and radio waves. Images from each part of the spectrum can tell a different part of the story about objects in space.
-<br><br>
-The Hubble Space Telescope takes pictures in visible light, like our eyes. The James Webb Space Telescope takes pictures in infrared light. Some “night vision” cameras image objects in the dark using infrared light. Animals and people “glow” in infrared in the dark because we usually have higher temperatures than our surroundings.
+                <h4>Explore!</h4>
+                As scientists, we learn by observing and noticing. Explore these images of the Carina Nebula and see what you can find.<br>
+                • Look for stars that are “invisible” to our eyes because they are blocked by dust but shine in JWST’s infrared image.<br>
+                • Look near the edge of the dusty, dense clouds in the JWST image. See if you can find bright yellow arcs that indicate gas and dust being blown away by young forming stars.<br>
+                • Scan the dark blue region of the JWST image and see if you can find reddish smudgy objects that might be galaxies. Switch over to the Hubble image. Do you see those galaxies in the Hubble image?<br>
+                <br>
+                <h4>Images as “data”</h4>
+                When you think about scientific data, pictures might not immediately spring to mind, but in astronomy, images are some of the most important pieces of data available.
+                <br><br>
+                Images show us the structure of objects in space, which here provides clues on how stars form and evolve. In the Hubble and JWST images of the Carina Nebula, you can see regions of very high density dust and gas (the brown parts of the images) where new stars are being born. If you zoom out, you will see that the images are at the edge of what appears to be a larger bubble, which is the cavern of lower density gas carved out by winds from massive stars.
+                <br><br>
+                <h4>Visible vs Infrared Light</h4>
+                Our eyes can detect visible light, but visible light is only a small part of a broader spectrum of light that has different energies, ranging from gamma rays and x-rays to infrared light and radio waves. Images from each part of the spectrum can tell a different part of the story about objects in space.
+                <br><br>
+                The Hubble Space Telescope takes pictures in visible light, like our eyes. The James Webb Space Telescope takes pictures in infrared light. Some “night vision” cameras image objects in the dark using infrared light. Animals and people “glow” in infrared in the dark because we usually have higher temperatures than our surroundings.
                 <br><br><br>
                 <h3>Credits:</h3>
                 <h4>CosmicDS Mini Stories Team:</h4>
