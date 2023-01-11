@@ -271,9 +271,8 @@
           size="lg"
           @click="showVideoSheet = false"
         ></font-awesome-icon>
-        <video controls>
-          <!-- <source src="https://carifio24.github.io/wwt-webgl-engine/Carina New Take.mov" type="video/mp4"> -->
-          <source src="./assets/carina_demo.mp4" type="video/mp4">
+        <video controls id="info-video">
+          <source src="./assets/Carina Final.mp4" type="video/mp4">
         </video>
       </div>
     </v-dialog>
@@ -869,8 +868,12 @@ export default class Embed extends WWTAwareComponent {
   get showVideoSheet() {
     return this.bottomSheet === 'video';
   }
-  set showVideoSheet(_value) {
+  set showVideoSheet(value: boolean) {
     this.selectBottomSheet('video');
+    if (!value) {
+      const video = document.querySelector("#info-video") as HTMLVideoElement;
+      video.pause();
+    }
   }
 
   get showTextSheet() {
@@ -1589,11 +1592,16 @@ ul.tool-menu {
   top: 10px;
   right: 10px;
   z-index: 15;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 video {
   height: 100%;
   width: auto;
+  max-width: 100%;
   object-fit: contain;
 }
 
