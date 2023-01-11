@@ -166,13 +166,19 @@
       <div id="tools" v-if="showLayers">
         <div class="tool-container">
           <template v-if="currentTool == 'crossfade'">
-            <span class="ui-text slider-label">Hubble<br><span class="light-type">(Visible)</span></span>
+            <span
+              class="ui-text slider-label"
+              @click="crossfadeOpacity = 0"
+            >Hubble<br><span class="light-type">(Visible)</span></span>
             <input
               class="opacity-range"
               type="range"
               v-model="crossfadeOpacity"
             />
-            <span class="ui-text slider-label">JWST<br><span class="light-type">(Infrared)</span></span>
+            <span
+              class="ui-text slider-label"
+              @click="crossfadeOpacity = 100"
+            >JWST<br><span class="light-type">(Infrared)</span></span>
           </template>
           <template v-else-if="currentTool == 'choose-background'">
             <span>Background imagery:</span>
@@ -266,6 +272,7 @@
           @click="showVideoSheet = false"
         ></font-awesome-icon>
         <video controls>
+          <!-- <source src="https://carifio24.github.io/wwt-webgl-engine/Carina New Take.mov" type="video/mp4"> -->
           <source src="./assets/carina_demo.mp4" type="video/mp4">
         </video>
       </div>
@@ -335,7 +342,7 @@
                 <br>
                 <h4>WorldWide Telescope Team:</h4>
                 Peter Williams<br>
-                David Weigel<br>
+                A. David Weigel<br>
                 Jon Carifio<br>
               </v-card-text>
             </v-card>
@@ -399,7 +406,7 @@
                       <br>
                       <h4>WorldWide Telescope Team:</h4>
                       Peter Williams<br>
-                      David Weigel<br>
+                      A. David Weigel<br>
                       Jon Carifio<br>
                     </v-col>
                   </v-row>
@@ -551,7 +558,7 @@ export default class Embed extends WWTAwareComponent {
 
   get smallSize() {
     // @ts-ignore
-    return this.$vuetify.breakpoint.mobile;
+    return this.$vuetify.breakpoint.smAndDown;
   }
 
   get mobile() {
@@ -1546,6 +1553,10 @@ ul.tool-menu {
 
   .light-type {
     font-size: calc(0.56em + 0.35vw);
+  }
+
+  &:hover {
+    cursor: pointer;
   }
 }
 
