@@ -1596,6 +1596,7 @@ video {
 
 #tabs {
   width: calc(100% - 3em);
+  align-self: left;
 }
 
 #tab-items {
@@ -1652,6 +1653,12 @@ video {
 //   color: #F0AB52EF;
 // }
 
+// This prevents the tabs from having some extra space to the left when the screen is small
+// (around 400px or less)
+.v-tabs:not(.v-tabs--vertical).v-tabs--right>.v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-slide-group--has-affixes) .v-slide-group__next, .v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)>.v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-slide-group--has-affixes) .v-slide-group__prev {
+  display: none;
+}
+
 @media(max-width: 600px) {
   #left-controls {
     display: block;
@@ -1659,6 +1666,17 @@ video {
 
   #video-dialog {
     display: inherit;
+  }
+
+  #tabs h3 {
+    font-size: 1em;
+  }
+
+}
+
+@media(max-width: 300px) {
+  #tabs h3 {
+    font-size: 0.67em;
   }
 }
 </style>
