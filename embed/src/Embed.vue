@@ -385,11 +385,11 @@
                         style="min-height: 120px;"
                       >
                         <p>
-                          The frame above provides an <b>interactive view </b>of the night sky, powered by WorldWide Telescope (WWT), using images from real observations.
+                          The frame above provides an <b>interactive view </b>of the night sky, powered by WorldWide Telescope (WWT). Here you can see a portion of the Carina Nebula imaged by the <a href="https://hubblesite.org/">Hubble Space Telescope</a> and the <a href="https://webbtelescope.org/">James Webb Space Telescope</a>. These colorful images are overlaid against a background of the whole sky.
                         </p>
-                        <p>
-                          You can explore this view and see what is in the night sky, as astronomers have been doing for centuries. <b>Pan</b> (click and drag) and <b>zoom</b> (scroll in and out) to see parts of the sky beyond this view.
-                        </p>
+                        <p>You can zoom out to see where these images fit within a larger cloud of gas and dust.</p>
+                        <p>You can zoom in to see stunning detail within both images.</p>
+                        <p>You can switch between the Hubble and Webb images and compare their views by using the slider, or you can hide both images and explore the whole sky. Click the reset button if you want to return to the location of the Carina Nebula.</p>
                       </div>
                     </v-col>
                   </v-row>
@@ -1571,6 +1571,10 @@ ul.tool-menu {
 
 .info-text {
   height: 35vh;
+
+  & a {
+    text-decoration: none;
+  }
 }
 
 .video-wrapper {
