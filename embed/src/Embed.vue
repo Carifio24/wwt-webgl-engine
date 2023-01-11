@@ -60,19 +60,28 @@
 
     <div id="top-content">
       <v-tooltip
+        v-model="showTooltip['video']"
+        :open-on-click="false"
+        :open-on-focus="false"
+        :open-on-hover="true"
         right
       >
         <template v-slot:activator="{ on, attrs }">
-          <div id="video-icon-wrapper" class="control-icon-wrapper">
+          <div
+            @mouseover="showTooltip['video'] = true"
+            @mouseleave="showTooltip['video'] = false"
+            id="video-icon-wrapper"
+            class="control-icon-wrapper"
+            v-on="on"
+            v-bind="attrs"
+            @click="selectBottomSheet('video')"
+          >
             <font-awesome-icon
-              v-on="on"
-              v-bind="attrs"
               id="video-icon"
               class="control-icon"
               icon="video"
               size="lg"
-              :tabindex="mobile ? -1 : 0"
-              @click="selectBottomSheet('video')"
+              
             ></font-awesome-icon>
           </div>
         </template>
@@ -85,34 +94,56 @@
           @click="showLayers = !showLayers">
           {{ showLayers ? "Hide Images" : "Show Images" }}
         </button>
-        <v-tooltip bottom>
+        <v-tooltip
+          bottom
+          :open-on-click="false"
+          :open-on-focus="false"
+          :open-on-hover="true"
+          v-model="showTooltip['reset']"
+        >
           <template v-slot:activator="{ on, attrs }">
-            <div id="text-icon-wrapper" class="control-icon-wrapper">
+            <div
+              @mouseover="showTooltip['reset'] = true"
+              @mouseleave="showTooltip['reset'] = false"
+              id="reset-icon-wrapper"
+              class="control-icon-wrapper"
+              v-on="on"
+              v-bind="attrs"
+              @click="resetView(false)"
+            >
               <font-awesome-icon
-                v-on="on"
-                v-bind="attrs"
                 id="reset-icon"
                 class="control-icon"
                 icon="redo"
                 size="lg"
-                @click="resetView(false)"
               ></font-awesome-icon>
             </div>
           </template>
           <span>Return to Carina</span>
         </v-tooltip>
       </div>
-      <v-tooltip left>
+      <v-tooltip
+        left
+        :open-on-click="false"
+        :open-on-focus="false"
+        :open-on-hover="true"
+        v-model="showTooltip['text']"
+      >
         <template v-slot:activator="{ on, attrs }">
-          <div id="text-icon-wrapper" class="control-icon-wrapper">
+          <div
+            id="text-icon-wrapper"
+            class="control-icon-wrapper"
+            @mouseover="showTooltip['text'] = true"
+            @mouseleave="showTooltip['text'] = false"
+            v-on="on"
+            v-bind="attrs"
+            @click="selectBottomSheet('text')"
+          >
             <font-awesome-icon
-              v-on="on"
-              v-bind="attrs"
               id="text-icon"
               class="control-icon"
               icon="book-open"
               size="lg"
-              @click="selectBottomSheet('text')"
             ></font-awesome-icon>
           </div>
         </template>
@@ -312,7 +343,7 @@
                       </v-chip>
                     </v-col>
                     <v-col cols="8" class="pt-2">
-                      <strong>{{ mobile ? "click + drag" : "press + drag" }}</strong><br>
+                      <strong>{{ touchscreen ? "press + drag" : "click + drag" }}</strong><br>
                 
                     </v-col>
                   </v-row>
@@ -326,7 +357,7 @@
                       </v-chip>
                     </v-col>
                     <v-col cols="8" class="pt-2">
-                      <strong>{{ mobile ? "pinch in and out" : "scroll in and out" }}</strong><br>
+                      <strong>{{ touchscreen ? "pinch in and out" : "scroll in and out" }}</strong><br>
                       
                     </v-col>
                   </v-row>
@@ -477,6 +508,8 @@ export default class Embed extends WWTAwareComponent {
   tab: number = 0;
   showSplashScreen = true;
   showLayers = true;
+  touchscreen: boolean = false;
+  showTooltip = {};
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -506,9 +539,13 @@ export default class Embed extends WWTAwareComponent {
   //   }
   // }
 
-  get mobile() {
+  get mobileSize() {
     // @ts-ignore
     return this.$vuetify.breakpoint.mobile;
+  }
+
+  get mobile() {
+    return this.mobileSize && this.touchscreen;
   }
 
   get imageLocation() {
@@ -596,6 +633,8 @@ export default class Embed extends WWTAwareComponent {
   }
 
   async created() {
+    this.touchscreen = matchMedia('(hover: none)').matches;
+
     let prom = this.waitForReady().then(() => {
       for (const s of this.embedSettings.asSettings()) {
         this.applySetting(s);
@@ -798,6 +837,9 @@ export default class Embed extends WWTAwareComponent {
   selectBottomSheet(name: BottomSheetType) {
     if (this.bottomSheet == name) {
       this.bottomSheet = null;
+      this.$nextTick(() => {
+        this.blurActiveElement();
+      });
     } else {
       this.bottomSheet = name;
     }
@@ -819,6 +861,13 @@ export default class Embed extends WWTAwareComponent {
   }
   set showTextSheet(_value) {
     this.selectBottomSheet('text');
+  }
+
+  blurActiveElement() {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement) {
+      active.blur();
+    }
   }
 
 
@@ -1441,6 +1490,11 @@ ul.tool-menu {
   border-radius: 20px;
   display: flex;
   align-items: center;
+  pointer-events: auto;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 #top-content {
@@ -1502,6 +1556,7 @@ ul.tool-menu {
   height: 100%;
   background: black;
   text-align: center;
+  z-index: 1000;
 }
 
 .close-icon {
