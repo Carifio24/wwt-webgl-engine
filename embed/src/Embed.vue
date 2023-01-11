@@ -60,7 +60,7 @@
 
     <div id="top-content">
       <v-tooltip
-        v-model="showTooltip['video']"
+        v-model="showTooltipVideo"
         :open-on-click="false"
         :open-on-focus="false"
         :open-on-hover="true"
@@ -69,15 +69,15 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <div
-            @mouseover="showTooltip['video'] = true"
-            @mouseleave="showTooltip['video'] = false"
+            @mouseover="showTooltipVideo = true"
+            @mouseleave="showTooltipVideo = false"
             id="video-icon-wrapper"
             class="control-icon-wrapper"
             v-on="on"
             v-bind="attrs"
             @click="() => {
               selectBottomSheet('video');
-              showTooltip['video'] = false;
+              showTooltipVideo = false;
             }"
           >
             <font-awesome-icon
@@ -103,19 +103,19 @@
           :open-on-click="false"
           :open-on-focus="false"
           :open-on-hover="true"
-          v-model="showTooltip['reset']"
+          v-model="showTooltipReset"
         >
           <template v-slot:activator="{ on, attrs }">
             <div
-              @mouseover="showTooltip['reset'] = true"
-              @mouseleave="showTooltip['reset'] = false"
+              @mouseover="showTooltipReset = true"
+              @mouseleave="showTooltipReset = false"
               id="reset-icon-wrapper"
               class="control-icon-wrapper"
               v-on="on"
               v-bind="attrs"
               @click="() => {
                 resetView(false);
-                showTooltip['reset'] = false
+                showTooltipReset = false;
               }"
             >
               <font-awesome-icon
@@ -135,19 +135,19 @@
         :open-on-click="false"
         :open-on-focus="false"
         :open-on-hover="true"
-        v-model="showTooltip['text']"
+        v-model="showTooltipText"
       >
         <template v-slot:activator="{ on, attrs }">
           <div
             id="text-icon-wrapper"
             class="control-icon-wrapper"
-            @mouseover="showTooltip['text'] = true"
-            @mouseleave="showTooltip['text'] = false"
+            @mouseover="showTooltipText = true"
+            @mouseleave="showTooltipText = false"
             v-on="on"
             v-bind="attrs"
             @click="() => {
               selectBottomSheet('text');
-              showTooltip['text'] = false;
+              showTooltipText = false;
             }"
           >
             <font-awesome-icon
@@ -520,7 +520,9 @@ export default class Embed extends WWTAwareComponent {
   showSplashScreen = true;
   showLayers = true;
   touchscreen: boolean = false;
-  showTooltip = {};
+  showTooltipText = false;
+  showTooltipVideo = false;
+  showTooltipReset = false;
 
   get hashtagString() {
     return this.hashtags.join(",");
@@ -1624,8 +1626,8 @@ video {
 
 
 #splash-screen {
-  width: fit-content;
-  height: fit-content;
+  width: auto;
+  height: auto;
   max-width: ~"min(70vw, 1624px)";
   max-height: ~"min(70vh, 2030px)";
   object-fit: contain;
@@ -1634,9 +1636,9 @@ video {
 #splash-close {
   position: absolute;
   top: 5.5%;
-  left: 89.1%;
+  left: 89%;
   height: 4%;
-  width: 3.6%;
+  width: 3.8%;
   border: 1px solid red;
 }
 
