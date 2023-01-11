@@ -1639,7 +1639,7 @@ video {
   left: 89%;
   height: 4%;
   width: 3.8%;
-  border: 1px solid red;
+  //border: 1px solid red;
 }
 
 #show-layers-button {
