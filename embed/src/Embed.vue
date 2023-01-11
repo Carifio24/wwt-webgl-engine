@@ -331,7 +331,7 @@
                 Pat Udomprasert<br>
                 Alyssa Goodman<br>
                 Mary Dussault<br>
-                Sue Sunbury<br>
+                Evaluator: Sue Sunbury<br>
                 <br>
                 <h4>WorldWide Telescope Team:</h4>
                 Peter Williams<br>
@@ -398,7 +398,7 @@
                       Pat Udomprasert<br>
                       Alyssa Goodman<br>
                       Mary Dussault<br>
-                      Sue Sunbury<br>
+                      Evaluator: Sue Sunbury<br>
                       <br>
                       <h4>WorldWide Telescope Team:</h4>
                       Peter Williams<br>
