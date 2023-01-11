@@ -1625,6 +1625,11 @@ video {
   pointer-events: auto;
 }
 
+.v-tooltip__content {
+  background: #040404EF;
+  color: #F0AB52EF;
+}
+
 @media(max-width: 600px) {
   #left-controls {
     display: block;
