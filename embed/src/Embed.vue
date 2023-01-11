@@ -23,7 +23,7 @@
           contain
         >
           <a
-            style="position: absolute; top: 6%; left: 89.5%; height: 3%; width: 2%;"
+            id="splash-close"
             @click="showSplashScreen = false">
           </a>
         </img>
@@ -64,7 +64,8 @@
         :open-on-click="false"
         :open-on-focus="false"
         :open-on-hover="true"
-        right
+        :right="!smallSize"
+        :bottom="smallSize"
       >
         <template v-slot:activator="{ on, attrs }">
           <div
@@ -74,7 +75,10 @@
             class="control-icon-wrapper"
             v-on="on"
             v-bind="attrs"
-            @click="selectBottomSheet('video')"
+            @click="() => {
+              selectBottomSheet('video');
+              showTooltip['video'] = false;
+            }"
           >
             <font-awesome-icon
               id="video-icon"
@@ -109,7 +113,10 @@
               class="control-icon-wrapper"
               v-on="on"
               v-bind="attrs"
-              @click="resetView(false)"
+              @click="() => {
+                resetView(false);
+                showTooltip['reset'] = false
+              }"
             >
               <font-awesome-icon
                 id="reset-icon"
@@ -123,7 +130,8 @@
         </v-tooltip>
       </div>
       <v-tooltip
-        left
+        :left="!smallSize"
+        :bottom="smallSize"
         :open-on-click="false"
         :open-on-focus="false"
         :open-on-hover="true"
@@ -137,7 +145,10 @@
             @mouseleave="showTooltip['text'] = false"
             v-on="on"
             v-bind="attrs"
-            @click="selectBottomSheet('text')"
+            @click="() => {
+              selectBottomSheet('text');
+              showTooltip['text'] = false;
+            }"
           >
             <font-awesome-icon
               id="text-icon"
@@ -539,13 +550,13 @@ export default class Embed extends WWTAwareComponent {
   //   }
   // }
 
-  get mobileSize() {
+  get smallSize() {
     // @ts-ignore
     return this.$vuetify.breakpoint.mobile;
   }
 
   get mobile() {
-    return this.mobileSize && this.touchscreen;
+    return this.smallSize && this.touchscreen;
   }
 
   get imageLocation() {
@@ -1615,9 +1626,18 @@ video {
 #splash-screen {
   width: fit-content;
   height: fit-content;
-  max-width: 70vw;
-  max-height: 70vh;
+  max-width: ~"min(70vw, 1624px)";
+  max-height: ~"min(70vh, 2030px)";
   object-fit: contain;
+}
+
+#splash-close {
+  position: absolute;
+  top: 5.5%;
+  left: 89.1%;
+  height: 4%;
+  width: 3.6%;
+  border: 1px solid red;
 }
 
 #show-layers-button {
