@@ -227,7 +227,7 @@
         </div>
         <div id="icons-container">
           <a href="https://www.cosmicds.cfa.harvard.edu/"
-            ><img alt="CosmicDS Logo" src="./assets/logo_cosmicds.jpg"
+            ><img alt="CosmicDS Logo" src="./assets/cosmicds_logo_for_dark_backgrounds.png"
           /></a>
           <a href="https://worldwidetelescope.org/home/"
             ><img alt="WWT Logo" src="./assets/logo_wwt.png"
@@ -1061,7 +1061,7 @@ export default class Embed extends WWTAwareComponent {
 
 <style lang="less">
 html {
-  height: 100vh;
+  height: 100%;
   margin: 0;
   padding: 0;
   background-color: #000;
@@ -1069,7 +1069,7 @@ html {
 
 body {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -1079,14 +1079,14 @@ body {
 
 #app {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   margin: 0;
 
   .wwtelescope-component {
     position: relative;
     top: 0;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     border-style: none;
     border-width: 0;
     margin: 0;
@@ -1606,6 +1606,10 @@ video {
   border-bottom-right-radius: 0px !important;
 }
 
+.v-overlay {
+  height: 100vh;
+}
+
 #tabs {
   width: calc(100% - 3em);
   align-self: left;
@@ -1646,6 +1650,14 @@ video {
   object-fit: contain;
 }
 
+.v-overlay__content {
+  position: fixed;
+  margin: auto;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
 #splash-close {
   position: absolute;
   top: 5.5%;
@@ -1683,7 +1695,6 @@ video {
   #tabs h3 {
     font-size: 1em;
   }
-
 }
 
 @media(max-width: 300px) {
