@@ -404,6 +404,13 @@ namespace wwtlib
             return AddFitsImageSetLayer(layer, title);
         }
 
+        public static ImageSetLayer AddImageSetLayerWithSettings(Imageset imageset, string title, IImageSetLayerSettings settings)
+        {
+            ImageSetLayer layer = ImageSetLayer.Create(imageset);
+            layer.UpdateFrom(settings);
+            return AddFitsImageSetLayer(layer, title);
+        }
+
         public static ImageSetLayer AddImageSetLayerCallback(Imageset imageset, string title, ImagesetLoaded callback)
         {
             ImageSetLayer layer = ImageSetLayer.Create(imageset);

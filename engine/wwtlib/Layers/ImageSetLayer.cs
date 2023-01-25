@@ -293,5 +293,44 @@ namespace wwtlib
         {
              loaded = true;
         }
+
+        public void UpdateFrom(IImageSetLayerSettings settings)
+        {
+            Astronomical = settings.Astronomical ?? Astronomical;
+            if (settings.Color != null)
+            {
+                Color = settings.Color.Clone();
+            }
+            Enabled = settings.Enabled ?? Enabled;
+            if (settings.EndTime != null)
+            {
+                EndTime = new Date(settings.EndTime.GetTime());
+            }
+            FadeSpan = settings.FadeSpan ?? FadeSpan;
+            FadeType = settings.FadeType ?? FadeType;
+            if (settings.Name != null)
+            {
+                Name = settings.Name;
+            }
+            Opacity = settings.Opacity ?? Opacity;
+            Opened = settings.Opened ?? Opened;
+            if (settings.ReferenceFrame != null)
+            {
+                ReferenceFrame = settings.ReferenceFrame;
+            }
+
+            if (settings.StartTime != null)
+            {
+                StartTime = new Date(settings.StartTime.GetTime());
+            }
+            Version = settings.Version ?? Version;
+
+
+            if (settings.ColorMapperName != null)
+            {
+                ColorMapperName = settings.ColorMapperName;
+            }
+            OverrideDefaultLayer = settings.OverrideDefaultLayer ?? OverrideDefaultLayer;
+        }
     }
 }

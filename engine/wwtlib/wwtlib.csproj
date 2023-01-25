@@ -56,6 +56,7 @@
     <Compile Include="Hploc.cs" />
     <Compile Include="Layers\FitsImage.cs" />
     <Compile Include="Layers\FitsImageTile.cs" />
+    <Compile Include="Layers\ILayerSettings.cs" />
     <Compile Include="Pointing.cs" />
     <Compile Include="URLHelpers.cs" />
     <Compile Include="Annotation.cs" />

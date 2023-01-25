@@ -6,6 +6,8 @@ using System.Xml;
 using System.Html.Services;
 using System.Html.Media.Graphics;
 
+using System.Reflection;
+
 namespace wwtlib
 {
 
@@ -672,6 +674,38 @@ namespace wwtlib
                 dataReady(result);
             };
             reader. ReadAsArrayBuffer(blob);
+        }
+
+        public void UpdateFrom(ILayerSettings settings)
+        {
+            Astronomical = settings.Astronomical ?? Astronomical;
+            if (settings.Color != null)
+            {
+                Color = settings.Color.Clone();
+            }
+            Enabled = settings.Enabled ?? Enabled;
+            if (settings.EndTime != null)
+            {
+                EndTime = new Date(settings.EndTime.GetTime());
+            }
+            FadeSpan = settings.FadeSpan ?? FadeSpan;
+            FadeType = settings.FadeType ?? FadeType;
+            if (settings.Name != null)
+            {
+                Name = settings.Name;
+            }
+            Opacity = settings.Opacity ?? Opacity;
+            Opened = settings.Opened ?? Opened;
+            if (settings.ReferenceFrame != null)
+            {
+                ReferenceFrame = settings.ReferenceFrame;
+            }
+
+            if (settings.StartTime != null)
+            {
+                StartTime = new Date(settings.StartTime.GetTime());
+            }
+            Version = settings.Version ?? Version;
         }
 
 

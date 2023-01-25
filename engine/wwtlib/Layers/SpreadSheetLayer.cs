@@ -3004,6 +3004,93 @@ namespace wwtlib
                 triangleList.Clear();
             }
         }
+
+        public void UpdateFrom(ISpreadSheetLayerSettings settings)
+        {
+            Astronomical = settings.Astronomical ?? Astronomical;
+            if (settings.Color != null)
+            {
+                Color = settings.Color.Clone();
+            }
+            Enabled = settings.Enabled ?? Enabled;
+            if (settings.EndTime != null)
+            {
+                EndTime = new Date(settings.EndTime.GetTime());
+            }
+            FadeSpan = settings.FadeSpan ?? FadeSpan;
+            FadeType = settings.FadeType ?? FadeType;
+            if (settings.Name != null)
+            {
+                Name = settings.Name;
+            }
+            Opacity = settings.Opacity ?? Opacity;
+            Opened = settings.Opened ?? Opened;
+            if (settings.ReferenceFrame != null)
+            {
+                ReferenceFrame = settings.ReferenceFrame;
+            }
+
+            if (settings.StartTime != null)
+            {
+                StartTime = new Date(settings.StartTime.GetTime());
+            }
+            Version = settings.Version ?? Version;
+
+
+            AltColumn = settings.AltColumn ?? AltColumn;
+            AltType = settings.AltType ?? AltType;
+            AltUnit = settings.AltUnit ?? AltUnit;
+            barChartBitmask = settings.BarChartBitmask ?? BarChartBitmask;
+            if (settings.BeginRange != null)
+            {
+                BeginRange = new Date(settings.BeginRange.GetTime());
+            }
+            CartesianCustomScale = settings.CartesianCustomScale ?? CartesianCustomScale;
+            CartesianScale = settings.CartesianScale ?? CartesianScale;
+            ColorMapColumn = settings.ColorMapColumn ?? ColorMapColumn;
+            if (settings.ColorMapperName != null)
+            {
+                ColorMapperName = settings.ColorMapperName;
+            }
+            CoordinatesType = settings.CoordinatesType ?? CoordinatesType;
+            Decay = settings.Decay ?? Decay;
+            DynamicColor = settings.DynamicColor ?? DynamicColor;
+            DynamicData = settings.DynamicData ?? DynamicData;
+            EndDateColumn = settings.EndDateColumn ?? EndDateColumn;
+            if (settings.EndRange != null)
+            {
+                EndRange = new Date(settings.EndRange.GetTime());
+            }
+            GeometryColumn = settings.GeometryColumn ?? GeometryColumn;
+            HyperlinkColumn = settings.HyperlinkColumn ?? HyperlinkColumn;
+            LatColumn = settings.LatColumn ?? LatColumn;
+            LngColumn = settings.LngColumn ?? LngColumn;
+            MarkerColumn = settings.MarkerColumn ?? MarkerColumn;
+            MarkerIndex = settings.MarkerIndex ?? MarkerIndex;
+            MarkerScale = settings.MarkerScale ?? MarkerScale;
+            NameColumn = settings.NameColumn ?? NameColumn;
+            NormalizeColorMap = settings.NormalizeColorMap ?? NormalizeColorMap;
+            NormalizeColorMapMax = settings.NormalizeColorMapMax ?? NormalizeColorMapMax;
+            NormalizeColorMapMin = settings.NormalizeColorMapMin ?? NormalizeColorMapMin;
+            NormalizeSize = settings.NormalizeSize ?? NormalizeSize;
+            NormalizeSizeClip = settings.NormalizeSizeClip ?? NormalizeSizeClip;
+            NormalizeSizeMax = settings.NormalizeSizeMax ?? NormalizeSizeMax;
+            NormalizeSizeMin = settings.NormalizeSizeMin ?? NormalizeSizeMin;
+            PlotType = settings.PlotType ?? PlotType;
+            PointScaleType = settings.PointScaleType ?? PointScaleType;
+            RaUnits = settings.RaUnits ?? RaUnits;
+            ScaleFactor = settings.ScaleFactor ?? ScaleFactor;
+            ShowFarSide = settings.ShowFarSide ?? ShowFarSide;
+            SizeColumn = settings.SizeColumn ?? SizeColumn;
+            StartDateColumn = settings.StartDateColumn ?? StartDateColumn;
+            TimeSeries = settings.TimeSeries ?? TimeSeries;
+            XAxisColumn = settings.XAxisColumn ?? XAxisColumn;
+            XAxisReverse = settings.XAxisReverse ?? XAxisReverse;
+            YAxisColumn = settings.YAxisColumn ?? YAxisColumn;
+            YAxisReverse = settings.YAxisReverse ?? YAxisReverse;
+            ZAxisColumn = settings.ZAxisColumn ?? ZAxisColumn;
+            ZAxisReverse = settings.ZAxisReverse ?? ZAxisReverse;
+        }
     }
 
 
