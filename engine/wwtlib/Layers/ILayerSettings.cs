@@ -2,6 +2,12 @@
 
 namespace wwtlib
 {
+    // Unfortunately, ScriptSharp does not support derived interfaces
+    // so rather than just extend ILayerSettings, we need to repeat
+    // its content in each of the more specific interfaces
+
+    // Also, using the ? nullable notation breaks for enums,
+    // but Nullable<T> works fine, so we use that for enum fields
     public interface ILayerSettings
     {
         bool? Astronomical { get; set; }
