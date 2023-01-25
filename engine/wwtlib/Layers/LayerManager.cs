@@ -379,12 +379,21 @@ namespace wwtlib
 
         public static VoTableLayer AddVoTableLayer(VoTable table, string title)
         {
-            return LayerManager.AddVoTableLayerWithPlotType(table, title, PlotTypes.Circle);
+            return LayerManager.AddVoTableLayerWithPlotType(table, title, PlotTypes.Circle, null);
         }
 
-        public static VoTableLayer AddVoTableLayerWithPlotType(VoTable table, string title, PlotTypes plotType)
+        public static VoTableLayer AddVoTableLayerWithSettings(VoTable table, string title, IVoTableLayerSettings settings)
+        {
+            return LayerManager.AddVoTableLayerWithPlotType(table, title, PlotTypes.Circle, settings);
+        }
+
+        public static VoTableLayer AddVoTableLayerWithPlotType(VoTable table, string title, PlotTypes plotType, IVoTableLayerSettings settings)
         {
             VoTableLayer layer = VoTableLayer.Create(table, plotType);
+            if (settings != null)
+            {
+                layer.UpdateFrom(settings);
+            }
             layer.Name = title;
             layer.Astronomical = true;
             layer.ReferenceFrame = "Sky";
@@ -398,17 +407,19 @@ namespace wwtlib
             return layer;
         }
 
-        public static ImageSetLayer AddImageSetLayer(Imageset imageset, string title)
-        {
-            ImageSetLayer layer = ImageSetLayer.Create(imageset);
-            return AddFitsImageSetLayer(layer, title);
-        }
-
         public static ImageSetLayer AddImageSetLayerWithSettings(Imageset imageset, string title, IImageSetLayerSettings settings)
         {
             ImageSetLayer layer = ImageSetLayer.Create(imageset);
-            layer.UpdateFrom(settings);
+            if (settings != null)
+            {
+                layer.UpdateFrom(settings);
+            }
             return AddFitsImageSetLayer(layer, title);
+        }
+
+        public static ImageSetLayer AddImageSetLayer(Imageset imageset, string title)
+        {
+            return AddImageSetLayerWithSettings(imageset, title, null);
         }
 
         public static ImageSetLayer AddImageSetLayerCallback(Imageset imageset, string title, ImagesetLoaded callback)
@@ -2190,13 +2201,23 @@ namespace wwtlib
             //}
 
         }
-        public static SpreadSheetLayer CreateSpreadsheetLayer(string frame, string name, string data)
+
+        public static SpreadSheetLayer CreateSpreadsheetLayerWithSettings(string frame, string name, string data, ISpreadSheetLayerSettings settings)
         {
             SpreadSheetLayer layer = new SpreadSheetLayer();
             layer.LoadFromString(data, false, false, false, true);
             layer.Name = name;
+            if (settings != null)
+            {
+                layer.UpdateFrom(settings);
+            }
             LayerManager.AddSpreadsheetLayer(layer, frame);
             return layer;
+        }
+
+        public static SpreadSheetLayer CreateSpreadsheetLayer(string frame, string name, string data)
+        {
+            return CreateSpreadsheetLayerWithSettings(frame, name, data, null);
         }
 
         public static void AddSpreadsheetLayer(SpreadSheetLayer layer, string frame)
