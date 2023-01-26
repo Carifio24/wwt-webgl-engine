@@ -28,6 +28,7 @@ import {
   FolderType,
   ImageSetType,
   MarkerScales,
+  NullishReturn,
   PointScaleTypes,
   PlotTypes,
   ProjectionType,
@@ -171,6 +172,8 @@ export interface ImageSetLayerSettingsInterface extends LayerSettingsInterface, 
   set_overrideDefaultLayer(v: boolean): boolean;
 }
 
+export type PartialImageSetLayerSettingsInterfaceRO = NullishReturn<ImageSetLayerSettingsInterfaceRO>;
+
 /** Interface for querying generic Layer settings.
  *
  * The `RO` is short for "read-only".
@@ -205,6 +208,8 @@ export interface LayerSettingsInterface extends LayerSettingsInterfaceRO {
   set_startTime(v: Date): Date;
   set_version(v: number): number;
 }
+
+export type PartialLayerSettingsInterfaceRO = NullishReturn<LayerSettingsInterfaceRO>;
 
 export interface PolyAnnotationSettingsInterfaceRO extends AnnotationSettingsInterfaceRO {
   get_fill(): boolean;
@@ -335,6 +340,8 @@ export interface SpreadSheetLayerSettingsInterface extends LayerSettingsInterfac
   set_zAxisReverse(v: boolean): boolean;
 }
 
+export type PartialSpreadSheetLayerSettingsInterfaceRO = NullishReturn<SpreadSheetLayerSettingsInterfaceRO>;
+
 /** Interface for querying [[VoTableLayer]] settings.
  *
  * The `RO` is short for "read-only".
@@ -422,6 +429,8 @@ export interface VoTableLayerSettingsInterface extends LayerSettingsInterface, V
   set_zAxisColumn(v: number): number;
   set_zAxisReverse(v: boolean): boolean;
 }
+
+export type PartialVoTableLayerSettingsInterfaceRO = NullishReturn<VoTableLayerSettingsInterfaceRO>;
 
 // Now the actual types implemented in WWT.
 
@@ -974,7 +983,7 @@ export class ImageSetLayer extends Layer implements ImageSetLayerSettingsInterfa
   setImageScaleRaw(st: ScaleTypes, min: number, max: number): void;
   setImageZ(z: number): void;
 
-  updateFrom(settings: ImageSetLayerSettingsInterface): void;
+  updateFrom(settings: ImageSetLayerSettingsInterfaceRO | PartialImageSetLayerSettingsRO): void;
 }
 
 export namespace ImageSetLayer {
@@ -1899,7 +1908,7 @@ export class SpreadSheetLayer extends Layer implements SpreadSheetLayerSettingsI
 
   updateData(data: string, purgeOld: boolean, purgeAll: boolean, hasHeader: boolean): boolean;
 
-  updateFrom(settings: SpreadSheetLayerSettingsInterface): void;
+  updateFrom(settings: SpreadSheetLayerSettingsInterfaceRO | PartialSpreadSheetLayerSettingsInterfaceRO): void;
 }
 
 /** The full SpreadSheetLayerSetting type, which augments engine-types'
@@ -2314,7 +2323,7 @@ export class VoTableLayer extends Layer implements VoTableLayerSettingsInterface
 
   get_header(): string[];
 
-  updateFrom(settings: VoTableLayerSettingsInterface): void;
+  updateFrom(settings: VoTableLayerSettingsInterfaceRO | PartialVoTableLayerSettingsInterfaceRO): void;
 }
 
 export namespace VoTableLayer {

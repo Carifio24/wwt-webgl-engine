@@ -17,6 +17,7 @@ import {
 } from "@wwtelescope/engine-types";
 
 import {
+  PartialVoTableLayerSettingsInterfaceRO,
   VoTableLayerSetting,
   VoTableLayerSettingsInterface,
   VoTableLayerSettingsInterfaceRO,
@@ -67,7 +68,7 @@ const justVoTableLayerSettingNames = [
   "yAxisReverse",
   "zAxisColumn",
   "zAxisReverse",
-];
+] as const;
 
 /** A list of the names of the available settings for `VoTableLayer`
  * instances and their equivalents (things implementing
@@ -75,7 +76,7 @@ const justVoTableLayerSettingNames = [
  *
  * This is a superset of the names available for generic layers.
 */
-export const voTableLayerSettingNames = layerSettingNames.concat(justVoTableLayerSettingNames);
+export const voTableLayerSettingNames = [...layerSettingNames, ...justVoTableLayerSettingNames] as const;
 
 /** Type guard function for `VoTableLayerSetting`. */
 export function isVoTableLayerSetting(obj: [string, any]): obj is VoTableLayerSetting {  // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -514,4 +515,13 @@ export class VoTableLayerState extends LayerState implements VoTableLayerSetting
     this.zAxisReverse = v;
     return v;
   }
+}
+
+export function createPartialVoTableLayerSettingsRO(settings: any = {}): PartialVoTableLayerSettingsInterfaceRO {
+  const source: any = {};
+  for (const n of voTableLayerSettingNames) {
+    source[n] = settings[n] ?? undefined;
+    source['get_' + n] = function() { return this[n]; }
+  }
+  return source;
 }

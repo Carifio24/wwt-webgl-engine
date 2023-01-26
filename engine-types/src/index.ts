@@ -780,3 +780,24 @@ export function enumLookup<E extends StringEnum>(
   }
   return undefined;
 }
+
+/** Helper type mapper
+ * 
+ * This will take a function type
+ * (...args: A) -> R
+ * and return a function type
+ * (...args: A) -> R | null | undefined
+ */
+export type NullishFunc<F extends (...args: any[]) => any> =
+  F extends (...args: infer A) => infer R
+  ? (...args: A) => R | null | undefined
+  : never;
+
+  /** This will take in a type
+   * and return the same type
+   * but with all method signatures having been
+   * changed via NullishFunc (see above)
+   */
+export type NullishReturn<I> = {
+  [P in keyof I]: I[P] extends (...args: any[]) => any ? NullishFunc<I[P]> : I[P];
+}

@@ -26,11 +26,13 @@ import {
   SpaceTimeController,
   SpreadSheetLayer,
   SpreadSheetLayerSetting,
-  ImageSetLayerSettingsInterface,
+  ImageSetLayerSettingsInterfaceRO,
+  PartialImageSetLayerSettingsInterfaceRO,
 } from "@wwtelescope/engine";
 
 import {
   applyImageSetLayerSetting,
+  imageSetLayerSettingNames
 } from "./imagesetlayer";
 
 import {
@@ -102,6 +104,7 @@ export {
   extractSpreadSheetLayerSettings,
   isSpreadSheetLayerSetting,
   SpreadSheetLayerState,
+  spreadSheetLayerSettingNames
 } from "./spreadsheetlayer";
 
 export {
@@ -212,7 +215,7 @@ export interface AddImageSetLayerOptions {
   goto: boolean;
 
   /** Additional settings to apply to the created layer */
-  settings?: ImageSetLayerSettingsInterface;
+  settings?: ImageSetLayerSettingsInterfaceRO | PartialImageSetLayerSettingsInterfaceRO;
 }
 
 /** Options for [[WWTInstance.setImageSetLayerOrder]]. */

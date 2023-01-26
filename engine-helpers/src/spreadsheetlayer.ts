@@ -17,6 +17,7 @@ import {
 } from "@wwtelescope/engine-types";
 
 import {
+  PartialSpreadSheetLayerSettingsInterfaceRO,
   SpreadSheetLayerSetting,
   SpreadSheetLayerSettingsInterface,
   SpreadSheetLayerSettingsInterfaceRO,
@@ -76,7 +77,7 @@ const justSpreadSheetLayerSettingNames = [
   "yAxisReverse",
   "zAxisColumn",
   "zAxisReverse",
-];
+] as const;
 
 /** A list of the names of the available settings for `SpreadSheetLayer`
  * instances and their equivalents (things implementing
@@ -84,7 +85,7 @@ const justSpreadSheetLayerSettingNames = [
  *
  * This is a superset of the names available for generic layers.
 */
-export const spreadSheetLayerSettingNames = layerSettingNames.concat(justSpreadSheetLayerSettingNames);
+export const spreadSheetLayerSettingNames = [...layerSettingNames, ...justSpreadSheetLayerSettingNames] as const;
 
 /** Type guard function for `SpreadSheetLayerSetting`. */
 export function isSpreadSheetLayerSetting(obj: [string, any]): obj is SpreadSheetLayerSetting {  // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -622,4 +623,13 @@ export class SpreadSheetLayerState extends LayerState implements SpreadSheetLaye
     this.zAxisReverse = v;
     return v;
   }
+}
+
+export function createPartialSpreadSheetLayerSettingsRO(settings: any = {}): PartialSpreadSheetLayerSettingsInterfaceRO {
+  const source: any = {};
+  for (const n of spreadSheetLayerSettingNames) {
+    source[n] = settings[n] ?? undefined;
+    source['get_' + n] = function() { return this[n]; }
+  }
+  return source;
 }

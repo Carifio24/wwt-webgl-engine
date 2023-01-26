@@ -15,6 +15,7 @@ import {
   LayerSetting,
   LayerSettingsInterface,
   LayerSettingsInterfaceRO,
+  PartialLayerSettingsInterfaceRO
 } from "@wwtelescope/engine";
 
 /** A list of the names of the available settings for generic layers. */
@@ -28,7 +29,7 @@ export const layerSettingNames = [
   "opened",
   "referenceFrame",
   "version",
-];
+] as const;
 
 const layerSettingTypeInfo = {
   "color/Color": true,
@@ -213,4 +214,13 @@ export class LayerState implements LayerSettingsInterface {
     this.version = v;
     return v;
   }
+}
+
+export function createPartialLayerSettingsRO(settings: any = {}): PartialLayerSettingsInterfaceRO {
+  const source: any = {};
+  for (const n of layerSettingNames) {
+    source[n] = settings[n] ?? undefined;
+    source['get_' + n] = function() { return this[n]; }
+  }
+  return source;
 }

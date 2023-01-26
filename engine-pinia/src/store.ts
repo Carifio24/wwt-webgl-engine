@@ -50,7 +50,9 @@ import {
   StretchFitsLayerOptions,
   UpdateTableLayerOptions,
   WWTInstance,
+  spreadSheetLayerSettingNames,
 } from "@wwtelescope/engine-helpers";
+import { createPartialSpreadSheetLayerSettingsRO } from '@wwtelescope/engine-helpers/src/spreadsheetlayer';
 
 interface WWTLinkedCallback {
   (): void;
@@ -358,7 +360,7 @@ export interface CreateTableLayerParams {
   dataCsv: string;
 
   /** Additional settings to apply to the layer */
-  settings?: SpreadSheetLayerSettingsInterface;
+  settings?: Record<typeof spreadSheetLayerSettingNames[number],any>;
 }
 
 export interface TimeToRADecZoomParams {
@@ -970,7 +972,7 @@ export const engineStore = defineStore('wwt-engine', {
       if (this.$wwt.inst === null)
         throw new Error('cannot addImageSetLayer without linking to WWTInstance');
   
-      // Mirror the layer state into the reactivity system.
+      // Mirror the layer state into the reactivity system
       const wwtLayer = await this.$wwt.inst.addImageSetLayer(options);
       const guidText = wwtLayer.id.toString();
       this.imagesetLayers[guidText] = new ImageSetLayerState(wwtLayer);
@@ -1082,7 +1084,7 @@ export const engineStore = defineStore('wwt-engine', {
       }
 
       if (options.settings !== undefined) {
-        layer.updateFrom(options.settings);
+        layer.updateFrom(createPartialSpreadSheetLayerSettingsRO(options.settings));
       }
   
       // Currently, table creation is synchronous, but treat it as async

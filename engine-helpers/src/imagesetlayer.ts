@@ -13,6 +13,7 @@ import {
   ImageSetLayerSetting,
   ImageSetLayerSettingsInterface,
   ImageSetLayerSettingsInterfaceRO,
+  PartialImageSetLayerSettingsInterfaceRO,
 } from "@wwtelescope/engine";
 
 import {
@@ -26,7 +27,7 @@ import {
 const justImageSetLayerSettingNames = [
   "colorMapperName",
   "overrideDefaultLayer",
-];
+] as const;
 
 /** A list of the names of the available settings for `ImageSetLayer`
  * instances and their equivalents (things implementing
@@ -34,7 +35,7 @@ const justImageSetLayerSettingNames = [
  *
  * This is a superset of the names available for generic layers.
 */
-export const imageSetLayerSettingNames = layerSettingNames.concat(justImageSetLayerSettingNames);
+export const imageSetLayerSettingNames = [...layerSettingNames, ...justImageSetLayerSettingNames] as const;
 
 /** Type guard function for `ImageSetLayerSetting`. */
 export function isImageSetLayerSetting(obj: [string, any]): obj is ImageSetLayerSetting {
@@ -99,4 +100,13 @@ export class ImageSetLayerState extends LayerState implements ImageSetLayerSetti
     this.overrideDefaultLayer = v;
     return v;
   }
+}
+
+export function createPartialImageSetLayerSettingsRO(settings: any = {}): PartialImageSetLayerSettingsInterfaceRO {
+  const source: any = {};
+  for (const n of imageSetLayerSettingNames) {
+    source[n] = settings[n] ?? undefined;
+    source['get_' + n] = function() { return this[n]; }
+  }
+  return source;
 }
