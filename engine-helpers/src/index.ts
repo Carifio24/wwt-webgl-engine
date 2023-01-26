@@ -26,6 +26,7 @@ import {
   SpaceTimeController,
   SpreadSheetLayer,
   SpreadSheetLayerSetting,
+  ImageSetLayerSettingsInterface,
 } from "@wwtelescope/engine";
 
 import {
@@ -209,6 +210,9 @@ export interface AddImageSetLayerOptions {
   /** Whether to seek the view to the positon of the FITS file on the sky,
    * if/when it successfully loads. */
   goto: boolean;
+
+  /** Additional settings to apply to the created layer */
+  settings?: ImageSetLayerSettingsInterface;
 }
 
 /** Options for [[WWTInstance.setImageSetLayerOrder]]. */

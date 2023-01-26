@@ -27,6 +27,7 @@ import {
   Layer,
   LayerMap,
   SpreadSheetLayer,
+  SpreadSheetLayerSettingsInterface,
   SpreadSheetLayerSettingsInterfaceRO,
   WWTControl,
 } from "@wwtelescope/engine";
@@ -355,6 +356,9 @@ export interface CreateTableLayerParams {
 
   /** The table data, as big CSV string. */
   dataCsv: string;
+
+  /** Additional settings to apply to the layer */
+  settings?: SpreadSheetLayerSettingsInterface;
 }
 
 export interface TimeToRADecZoomParams {
@@ -961,7 +965,7 @@ export const engineStore = defineStore('wwt-engine', {
     // Imageset layers, including FITS layers
 
     async addImageSetLayer(
-      options: AddImageSetLayerOptions
+      options: AddImageSetLayerOptions,
     ): Promise<ImageSetLayer> {
       if (this.$wwt.inst === null)
         throw new Error('cannot addImageSetLayer without linking to WWTInstance');
@@ -1046,7 +1050,7 @@ export const engineStore = defineStore('wwt-engine', {
     // Spreadsheet layers
 
     async createTableLayer(
-      options: CreateTableLayerParams
+      options: CreateTableLayerParams,
     ): Promise<SpreadSheetLayer> {
       if (this.$wwt.inst === null)
         throw new Error('cannot createTableLayer without linking to WWTInstance');
@@ -1075,6 +1079,10 @@ export const engineStore = defineStore('wwt-engine', {
   
       if (options.referenceFrame == 'Sky') {
         layer.set_astronomical(true);
+      }
+
+      if (options.settings !== undefined) {
+        layer.updateFrom(options.settings);
       }
   
       // Currently, table creation is synchronous, but treat it as async

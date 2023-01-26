@@ -973,6 +973,8 @@ export class ImageSetLayer extends Layer implements ImageSetLayerSettingsInterfa
   setImageScalePhysical(st: ScaleTypes, min: number, max: number): void;
   setImageScaleRaw(st: ScaleTypes, min: number, max: number): void;
   setImageZ(z: number): void;
+
+  updateFrom(settings: ImageSetLayerSettingsInterface): void;
 }
 
 export namespace ImageSetLayer {
@@ -1096,9 +1098,11 @@ export namespace LayerManager {
 
   export function add(layer: Layer, updateTree: boolean): void;
   export function addFitsImageSetLayer(imageset: ImageSetLayer, title: string): ImageSetLayer;
+  export function addImageSetLayerWithSettings(imageset: Imageset, title: string, settings: ImageSetLayerSettingsInterface): ImageSetLayer;
   export function addImageSetLayer(imageset: Imageset, title: string): ImageSetLayer;
   export function addSpreadsheetLayer(layer: SpreadSheetLayer, frame: string): void;
   export function createSpreadsheetLayer(frame: string, name: string, data: string): SpreadSheetLayer;
+  export function createSpreadsheetLayerWithSettings(frame: string, name: string, data: string, settings: SpreadSheetLayerSettingsInterface): SpreadSheetLayer;
   export function deleteLayerByID(id: Guid, removeFromParent: boolean, updateTree: boolean): void;
 
   /** Add a new [[VoTableLayer]] to the manager with a default plot type.
@@ -1110,12 +1114,20 @@ export namespace LayerManager {
 
   /** Add a new [[VoTableLayer]] to the manager.
    *
+   * This is the same as [[addVoTableLayerWithSettings]] without any additional
+   * settings applied.
+   * */
+  export function addVoTableLayerWithPlotType(table: VoTable, title: string, plotType: PlotTypes): VoTableLayer;
+
+    /** Add a new [[VoTableLayer]] to the manager.
+   *
    * @param table The [[VoTable]] that will underlie the new layer.
    * @param title The name that will be given to the new layer.
    * @param plotType The point plotting type that the new layer will use.
+   * @param settings An object containing other settings to be applied to the layer.
    * @returns The newly-created layer.
    * */
-  export function addVoTableLayerWithPlotType(table: VoTable, title: string, plotType: PlotTypes): VoTableLayer;
+  export function addVoTableLayerWithSettings(table: VoTable, title: string, plotType: PlotTypes, settings: VoTableLayerSettingsInterface): VoTableLayer;
 
   export function getMoonFile(url: string): void;
   export function initLayers(): void;
@@ -1886,6 +1898,8 @@ export class SpreadSheetLayer extends Layer implements SpreadSheetLayerSettingsI
   guessHeaderAssignmentsFromVoTable(votable: VoTable): void;
 
   updateData(data: string, purgeOld: boolean, purgeAll: boolean, hasHeader: boolean): boolean;
+
+  updateFrom(settings: SpreadSheetLayerSettingsInterface): void;
 }
 
 /** The full SpreadSheetLayerSetting type, which augments engine-types'
@@ -2299,6 +2313,8 @@ export class VoTableLayer extends Layer implements VoTableLayerSettingsInterface
   set_zAxisReverse(v: boolean): boolean;
 
   get_header(): string[];
+
+  updateFrom(settings: VoTableLayerSettingsInterface): void;
 }
 
 export namespace VoTableLayer {
