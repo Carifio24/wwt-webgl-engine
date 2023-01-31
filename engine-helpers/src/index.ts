@@ -276,6 +276,9 @@ export interface ApplyTableLayerSettingsOptions {
 export interface AddCatalogHipsByNameOptions {
   /** The name of the HiPS catalog imageset to load. */
   name: string;
+
+  /** Initial settings to apply to the layer */
+  settings?: SpreadSheetLayerSetting[];
 }
 
 export interface GetCatalogHipsDataInViewOptions {
@@ -688,6 +691,15 @@ export class WWTInstance {
         reject();
       } else {
         this.ctl.renderContext.addCatalogHips(imgset, () => {
+          if (options.settings) {
+            const layer = imgset.get_hipsProperties()?.get_catalogSpreadSheetLayer();
+            if (layer !== undefined) {
+              this.applyTableLayerSettings({
+                id: layer.id.toString(),
+                settings: options.settings
+              });
+            }
+          }
           resolve(imgset);
         });
       }
