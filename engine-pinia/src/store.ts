@@ -27,6 +27,7 @@ import {
   Layer,
   LayerMap,
   SpreadSheetLayer,
+  SpreadSheetLayerSetting,
   SpreadSheetLayerSettingsInterfaceRO,
   WWTControl,
 } from "@wwtelescope/engine";
@@ -355,6 +356,9 @@ export interface CreateTableLayerParams {
 
   /** The table data, as big CSV string. */
   dataCsv: string;
+
+  /** Initial settings to apply to the layer */
+  settings?: SpreadSheetLayerSetting[];
 }
 
 export interface TimeToRADecZoomParams {
@@ -1056,6 +1060,12 @@ export const engineStore = defineStore('wwt-engine', {
         options.name,
         options.dataCsv
       );
+      if (options.settings) {
+        this.applyTableLayerSettings({
+          id: layer.id.toString(),
+          settings: options.settings
+        });
+      }
   
       // Value-add init copied from the pywwt JS component.
       // Override any column guesses:
