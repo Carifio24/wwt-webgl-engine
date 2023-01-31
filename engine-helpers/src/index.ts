@@ -206,9 +206,12 @@ export interface AddImageSetLayerOptions {
   /** A name to use for the new layer. */
   name: string;
 
-  /** Whether to seek the view to the positon of the FITS file on the sky,
+  /** Whether to seek the view to the position of the FITS file on the sky,
    * if/when it successfully loads. */
   goto: boolean;
+
+  /** Initial settings to apply to the layer */
+  settings?: ImageSetLayerSetting[];
 }
 
 /** Options for [[WWTInstance.setImageSetLayerOrder]]. */
@@ -604,6 +607,11 @@ export class WWTInstance {
   async addImageSetLayer(options: AddImageSetLayerOptions): Promise<ImageSetLayer> {
     return new Promise((resolve, _reject) => {
       this.si.addImageSetLayer(options.url, options.mode, options.name, options.goto, (layer) => {
+        if (options.settings) {
+          options.settings.forEach((setting) => {
+            applyImageSetLayerSetting(layer, setting);
+          });
+        }
         resolve(layer);
       })
     });
