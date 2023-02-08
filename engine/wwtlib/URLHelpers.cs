@@ -39,8 +39,8 @@ namespace wwtlib
         Dictionary<String, bool> flagship_static_lcpaths;
 
         public URLHelpers() {
-            this.origin_protocol = (string) Script.Literal("window.location.protocol");
-            this.origin_domain = (string) Script.Literal("window.location.hostname");
+            this.origin_protocol = EnvironmentUtils.isWindowUndefined() ? "" : (string)Script.Literal("window.location.protocol");
+            this.origin_domain = EnvironmentUtils.isWindowUndefined() ? "" : (string)Script.Literal("window.location.origin");
             this.force_https = (this.origin_protocol == "https:");
 
             this.domain_handling = new Dictionary<string, DomainHandling>();
@@ -191,7 +191,8 @@ namespace wwtlib
                         // origin. Since it looks relative, any weird
                         // templating stuff in the URL text *ought* not cause
                         // problems for the browser URL parsing ...
-                        url = (String) Script.Literal("(new URL({0}, window.location.href)).toString()", url);
+                        string location = EnvironmentUtils.isWindowUndefined() ? "" : "window.location.href";
+                        url = (String) Script.Literal("(new URL({0}, {1})).toString()", url, location);
                         return this.rewrite(url, URLRewriteMode.AsIfAbsolute);
                 }
             }

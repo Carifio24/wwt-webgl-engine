@@ -24,7 +24,10 @@ namespace wwtlib
 
         public void Close(ElementEvent e)
         {
-
+            if (EnvironmentUtils.isWindowUndefined())
+            {
+                return;
+            }
             DivElement menu = Document.GetElementById<DivElement>("histogram");
             DivElement closeBtn = Document.GetElementById<DivElement>("histogramClose");
             menu.Style.Display = "none";
@@ -42,6 +45,11 @@ namespace wwtlib
 
         public void Show(Vector2d position)
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return;
+            }
+
             tile = (SkyImageTile)TileCache.GetTile(0, 0, 0, layer.ImageSet, null);
 
             DivElement picker = Document.GetElementById<DivElement>("histogram");
@@ -126,6 +134,11 @@ namespace wwtlib
 
         public void OnPointerDown(ElementEvent e)
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return;
+            }
+
             CanvasElement canvas = Document.GetElementById<CanvasElement>("graph");
             int x = Mouse.OffsetX(canvas, e);
             int y = Mouse.OffsetY(canvas, e);
@@ -155,6 +168,10 @@ namespace wwtlib
 
         public void OnPointerMove(ElementEvent e)
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return;
+            }
             CanvasElement canvas = Document.GetElementById<CanvasElement>("graph");
             int x = Mouse.OffsetX(canvas, e);
             int y = Mouse.OffsetY(canvas, e);
@@ -241,6 +258,10 @@ namespace wwtlib
 
         public void Draw()
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return;
+            }
             CanvasElement canvas = Document.GetElementById<CanvasElement>("graph");
             CanvasContext2D ctx = (CanvasContext2D)canvas.GetContext(Rendering.Render2D);
             if (image != null)

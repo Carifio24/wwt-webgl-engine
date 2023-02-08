@@ -967,7 +967,7 @@ namespace wwtlib
             }
             string url =  GetFileStream(filename);
 
-            if (!string.IsNullOrWhiteSpace(url))
+            if (!string.IsNullOrWhiteSpace(url) && !EnvironmentUtils.isDocumentUndefined())
             {
                 ImageElement texture = (ImageElement)Document.CreateElement("img");
 

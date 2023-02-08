@@ -85,7 +85,7 @@ namespace wwtlib
 
         public virtual void MakeTexture()
         {
-            if (PrepDevice != null)
+            if (PrepDevice != null && !EnvironmentUtils.isDocumentUndefined())
             {
                 try
                 {
@@ -246,7 +246,7 @@ namespace wwtlib
                     return;
                 }
 
-                if (!Downloading && !ReadyToRender)
+                if (!Downloading && !ReadyToRender && !EnvironmentUtils.isDocumentUndefined())
                 {
                     Downloading = true;
                     texture = (ImageElement)Document.CreateElement("img");

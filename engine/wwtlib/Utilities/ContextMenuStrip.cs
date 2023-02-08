@@ -23,6 +23,10 @@ namespace wwtlib
 
         internal void NonMenuClick(ElementEvent e)
         {
+            if (EnvironmentUtils.isWindowUndefined())
+            {
+                return;
+            }
             DivElement menu = Document.GetElementById<DivElement>("contextmenu");
             menu.Style.Display = "none";
             Window.RemoveEventListener("click", NonMenuClick, false);
@@ -49,6 +53,10 @@ namespace wwtlib
 
         internal void Show(Vector2d position)
         {
+            if (EnvironmentUtils.isWindowUndefined())
+            {
+                return;
+            }
             DivElement menu = Document.GetElementById<DivElement>("contextmenu");
             while(menu.FirstChild != null)
             {
@@ -100,6 +108,10 @@ namespace wwtlib
         }
         internal void OpenSubMenu(ElementEvent e)
         {
+            if (EnvironmentUtils.isWindowUndefined())
+            {
+                return;
+            }
             TagMe me = (TagMe)(Object)e.CurrentTarget;
             ToolStripMenuItem child = me.ItemTag;
 

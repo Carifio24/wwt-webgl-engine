@@ -61,7 +61,7 @@ namespace wwtlib
         public void Load(string url)
         {
             URL = url;
-            if (!Downloading)
+            if (!Downloading && !EnvironmentUtils.isDocumentUndefined())
             {
                 Downloading = true;
                 ImageElement = (ImageElement)Document.CreateElement("img");
@@ -100,7 +100,7 @@ namespace wwtlib
 
         public void MakeTexture()
         {
-            if ( Tile.PrepDevice != null)
+            if ( Tile.PrepDevice != null && !EnvironmentUtils.isDocumentUndefined())
             {
                 //     PrepDevice.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, 1);
 

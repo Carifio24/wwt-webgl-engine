@@ -45,6 +45,10 @@ namespace wwtlib
 
         public Color GetColorFromClick(ElementEvent e)
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return null;
+            }
             ImageElement image = Document.GetElementById<ImageElement>("colorhex");
 
             CanvasElement canvas = (CanvasElement)Document.CreateElement("canvas");

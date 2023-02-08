@@ -1011,7 +1011,7 @@ namespace wwtlib
         private void CalculateTextSize()
         {
 
-            if (ctx == null || ce == null)
+            if (ctx == null || ce == null && !EnvironmentUtils.isDocumentUndefined())
             {
                 ce = (CanvasElement)Document.CreateElement("canvas");
                 ce.Height = (int)100;
@@ -1076,7 +1076,7 @@ namespace wwtlib
                 {
                     CalculateTextSize();
                 }
-                if (ctx == null || ce == null)
+                if (ctx == null || ce == null && !EnvironmentUtils.isDocumentUndefined())
                 {
                     ce = (CanvasElement) Document.CreateElement("canvas")  ;
                     ce.Height = (int)Height;
@@ -1964,7 +1964,7 @@ namespace wwtlib
 
         public override void PrepMultimedia()
         {
-            if (audio != null)
+            if (audio != null && EnvironmentUtils.isDocumentUndefined())
                 return;
 
             audio = (AudioElement)Document.CreateElement("audio");

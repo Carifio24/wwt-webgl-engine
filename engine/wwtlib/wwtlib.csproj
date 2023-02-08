@@ -45,6 +45,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EnvironmentUtils.cs" />
     <Compile Include="FitsProperties.cs" />
     <Compile Include="Imports.cs" />
     <Compile Include="HipsProperties.cs" />

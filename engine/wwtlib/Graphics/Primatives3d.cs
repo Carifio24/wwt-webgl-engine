@@ -935,7 +935,7 @@ namespace wwtlib
         {
             if (!init)
             {
-                if (renderContext.gl == null)
+                if (renderContext.gl == null && !EnvironmentUtils.isDocumentUndefined())
                 {
                     starProfile = (ImageElement)Document.CreateElement("img");
                     starProfile.AddEventListener("load", delegate (ElementEvent e)

@@ -43,6 +43,10 @@ namespace wwtlib
 
         public void Show(Vector2d position, Action callback)
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return;
+            }
             DivElement simpleInputElement = Document.GetElementById<DivElement>("simpleinput");
             DivElement modalElement = Document.GetElementById<DivElement>("simplemodal");
             modalElement.Style.Display = "block";
@@ -89,6 +93,10 @@ namespace wwtlib
 
         private void Close()
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return;
+            }
             DivElement simpleInputElement = Document.GetElementById<DivElement>("simplemodal");
             simpleInputElement.Style.Display = "none";
             //Window.RemoveEventListener("click", NonMenuClick, true);

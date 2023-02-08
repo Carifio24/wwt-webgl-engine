@@ -15,11 +15,15 @@ namespace wwtlib
     {
         static MainView()
         {
-            CanvasElement canvas = (CanvasElement) Document.GetElementById("canvas");
+            CanvasElement canvas = EnvironmentUtils.isDocumentUndefined() ? null : (CanvasElement) Document.GetElementById("canvas");
         }
 
         static void DrawTest()
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return;
+            }
             CanvasElement canvas = (CanvasElement) Document.GetElementById("canvas");
 
             CanvasContext2D ctx = (CanvasContext2D) canvas.GetContext(Rendering.Render2D);

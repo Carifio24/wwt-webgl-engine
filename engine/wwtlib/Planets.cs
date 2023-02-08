@@ -1864,7 +1864,7 @@ namespace wwtlib
         internal static ImageElement ringImage = null;
         public static void DrawSaturnsRings(RenderContext renderContext, bool front, double distance)
         {
-            if (RingsTriangleLists[0] == null)
+            if (RingsTriangleLists[0] == null && !EnvironmentUtils.isDocumentUndefined())
             {
                 ringImage =  (ImageElement)Document.CreateElement("img");
                 CrossDomainImage xdomimg = (CrossDomainImage)(object)ringImage;

@@ -21,9 +21,12 @@ namespace wwtlib
 
             temp.Height = 85;
             temp.Width = 1920;
-            temp.Canvas = (CanvasElement)Document.CreateElement("canvas");
-            temp.Canvas.Width = temp.Width;
-            temp.Canvas.Height = temp.Height;
+            if (!EnvironmentUtils.isDocumentUndefined())
+            {
+                temp.Canvas = (CanvasElement)Document.CreateElement("canvas");
+                temp.Canvas.Width = temp.Width;
+                temp.Canvas.Height = temp.Height;
+            }
             //temp.Canvas.Style.MarginBottom = "0";
             temp.Setup();
             temp.LoadImages();
@@ -316,7 +319,7 @@ namespace wwtlib
 
         public void LoadImages()
         {
-            if (!ImagesLoaded && !downloading)
+            if (!ImagesLoaded && !downloading && !EnvironmentUtils.isDocumentUndefined())
             {
                 ImageLoadCount = 0;
                 ImagesLoaded = false;
@@ -423,6 +426,7 @@ namespace wwtlib
 
         public void Refresh()
         {
+            Script.Literal("if (typeof window === 'undefined') { return; }");
             if (Width != Window.InnerWidth)
             {
                 Width = Window.InnerWidth;
@@ -577,7 +581,7 @@ namespace wwtlib
                             g.StrokeStyle = "rgb(0,0,0)";
                             g.Rect(Left + (int)((float)x * horzMultiple) + 2 + startOffset, Top + y * VertSpacing + 3, items[index].Thumbnail.Width, items[index].Thumbnail.Height);
                         }
-                        else
+                        else if (!EnvironmentUtils.isDocumentUndefined())
                         {
                             items[index].Thumbnail = (ImageElement)Document.CreateElement("img");
                             items[index].Thumbnail.Src = items[index].ThumbnailUrl;

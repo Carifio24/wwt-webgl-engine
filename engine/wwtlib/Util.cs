@@ -283,6 +283,10 @@ namespace wwtlib
         }
         internal static void OpenUrl(string url)
         {
+            if (Script.IsUndefined(Script.GetScriptType(Script.Literal("window"))))
+            {
+                return;
+            }
             Window.Open(url);
         }
 
@@ -636,11 +640,14 @@ namespace wwtlib
         {
             set
             {
-                Document.Body.Style.Cursor = value;
+                if (!EnvironmentUtils.isDocumentUndefined())
+                {
+                    Document.Body.Style.Cursor = value;
+                }
             }
             get
             {
-                return Document.Body.Style.Cursor;
+                return EnvironmentUtils.isDocumentUndefined() ? "" : Document.Body.Style.Cursor;
             }
         }
     }

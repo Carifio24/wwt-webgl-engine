@@ -3173,6 +3173,11 @@ namespace wwtlib
                 int row = Math.Floor(pinId / 16);
                 int col = pinId % 16;
 
+                if (EnvironmentUtils.isDocumentUndefined())
+                {
+                    return texture;
+                }
+
                 CanvasElement temp = (CanvasElement)Document.CreateElement("canvas");
                 temp.Height = 32;
                 temp.Width = 32;

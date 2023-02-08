@@ -1539,9 +1539,12 @@ namespace wwtlib
 
         public void OnMouseDown(ElementEvent e)
         {
-            Document.AddEventListener("mousemove", OnMouseMove, false);
-            Document.AddEventListener("mouseup", OnMouseUp, false);
-
+            if (!EnvironmentUtils.isDocumentUndefined())
+            {
+                Document.AddEventListener("mousemove", OnMouseMove, false);
+                Document.AddEventListener("mouseup", OnMouseUp, false);
+            }
+            
             if (uiController != null)
             {
                 if (uiController.MouseDown(this, e))
@@ -1595,8 +1598,11 @@ namespace wwtlib
 
         public void OnMouseUp(ElementEvent e)
         {
-            Document.RemoveEventListener("mousemove", OnMouseMove, false);
-            Document.RemoveEventListener("mouseup", OnMouseUp, false);
+            if (!EnvironmentUtils.isDocumentUndefined())
+            {
+                Document.RemoveEventListener("mousemove", OnMouseMove, false);
+                Document.RemoveEventListener("mouseup", OnMouseUp, false);
+            }
 
             if (uiController != null)
             {
@@ -1905,6 +1911,10 @@ namespace wwtlib
 
         private static CanvasElement CreateCanvasElement(string DivId)
         {
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return null;
+            }
             DivElement div = (DivElement) Document.GetElementById(DivId);
 
             CanvasElement canvas = (CanvasElement) Document.CreateElement("canvas");
@@ -1922,6 +1932,10 @@ namespace wwtlib
             double startLng,
             double startZoom
         ) {
+            if (!EnvironmentUtils.isWindowUndefined())
+            {
+                return;
+            }
             Window.AddEventListener("contextmenu", OnContextMenu, false);
             Document.Body.AddEventListener("keydown", OnKeyDown, false);
             canvas.AddEventListener("dblclick", OnDoubleClick, false);
@@ -2799,6 +2813,10 @@ namespace wwtlib
         public void CaptureThumbnail(BlobReady blobReady)
         {
             RenderOneFrame(); // NB: this used to be Render() but that was almost surely not what we want
+            if (EnvironmentUtils.isDocumentUndefined())
+            {
+                return;
+            }
 
             ImageElement image = (ImageElement)Document.CreateElement("img");
             image.AddEventListener("load", delegate (ElementEvent e)
