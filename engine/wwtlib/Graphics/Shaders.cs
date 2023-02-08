@@ -98,7 +98,7 @@ namespace wwtlib
 
                 gl.uniformMatrix4fv(mvMatLoc, false, mvMat.FloatArray());
                 gl.uniformMatrix4fv(projMatLoc, false, renderContext.Projection.FloatArray());
-                gl.uniform4f(lineColorLoc, lineColor.R / 255, lineColor.G / 255, lineColor.B / 255, 1);
+                gl.uniform4f(lineColorLoc, lineColor.R / 255, lineColor.G / 255, lineColor.B / 255, lineColor.A / 255);
                 if (renderContext.Space || !useDepth)
                 {
                     gl.disable(GL.DEPTH_TEST);
@@ -207,7 +207,7 @@ namespace wwtlib
 
                 Matrix3d mvMat = Matrix3d.MultiplyMatrix(renderContext.World, renderContext.View);
 
-                gl.uniform4f(lineColorLoc, lineColor.R / 255, lineColor.G / 255, lineColor.B / 255, 1);
+                gl.uniform4f(lineColorLoc, lineColor.R / 255, lineColor.G / 255, lineColor.B / 255, lineColor.A / 255);
                 if (renderContext.Space || !useDepth)
                 {
                     gl.disable(GL.DEPTH_TEST);
@@ -332,7 +332,7 @@ namespace wwtlib
 
                 gl.uniformMatrix4fv(mvMatLoc, false, mvMat.FloatArray());
                 gl.uniformMatrix4fv(projMatLoc, false, renderContext.Projection.FloatArray());
-                gl.uniform4f(lineColorLoc, lineColor.R / 255, lineColor.G / 255, lineColor.B / 255, 1);
+                gl.uniform4f(lineColorLoc, lineColor.R / 255, lineColor.G / 255, lineColor.B / 255, lineColor.A / 255);
                 if (renderContext.Space)
                 {
                     gl.disable(GL.DEPTH_TEST);
@@ -486,7 +486,7 @@ namespace wwtlib
 
                 gl.uniformMatrix4fv(mvMatLoc, false, mvMat.FloatArray());
                 gl.uniformMatrix4fv(projMatLoc, false, renderContext.Projection.FloatArray());
-                gl.uniform4f(lineColorLoc, lineColor.R / 255, lineColor.G / 255, lineColor.B / 255, 1);
+                gl.uniform4f(lineColorLoc, lineColor.R / 255, lineColor.G / 255, lineColor.B / 255, lineColor.A / 255);
                 gl.uniform1f(jNowLoc, jNow);
                 gl.uniform1f(decayLoc, decay);
 
