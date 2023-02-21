@@ -61,7 +61,7 @@ namespace wwtlib
         public void Load(string url)
         {
             URL = url;
-            if (!Downloading)
+            if (!(Downloading || EnvironmentUtils.isDocumentUndefined()))
             {
                 Downloading = true;
                 ImageElement = (ImageElement)Document.CreateElement("img");

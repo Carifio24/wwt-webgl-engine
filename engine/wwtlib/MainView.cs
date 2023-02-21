@@ -15,7 +15,7 @@ namespace wwtlib
     {
         static MainView()
         {
-            CanvasElement canvas = (CanvasElement) Document.GetElementById("canvas");
+            CanvasElement canvas = EnvironmentUtils.isDocumentUndefined() ? null : (CanvasElement)Document.GetElementById("canvas");
         }
 
         static void DrawTest()
