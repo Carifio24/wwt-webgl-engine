@@ -2,6 +2,7 @@
   <div id="app">
     <WorldWideTelescope
       :wwt-namespace="wwtComponentNamespace"
+      wwt-freestanding-asset-baseurl="https://web.wwtassets.org/engine/assets"
       :class="['wwt', { pointer: lastClosePt !== null }]"
       @pointermove="wwtOnPointerMove"
       @pointerup="wwtOnPointerUp"
@@ -1186,6 +1187,7 @@ const App = defineComponent({
 
   data() {
     return {
+      url: "",
       defaultColor: Color.fromArgb(1, 255, 255, 255),
       wwtComponentNamespace: wwtEngineNamespace,
       currentTool: null as ToolType,
@@ -2840,6 +2842,7 @@ const App = defineComponent({
   created() {
     this.$options.statusMessageDestination = null;
     this.initializeHandlers();
+    this.url = window.location.href;
   },
 
   mounted() {
@@ -2852,19 +2855,6 @@ const App = defineComponent({
       if (script !== null) {
         this.$options.statusMessageDestination = window;
       }
-
-      // This returns a promise but I don't think that we need to wait for that
-      // to resolve before going ahead and starting to listen for messages.
-      this.loadImageCollection({
-        url: this.hipsUrl,
-        loadChildFolders: true,
-      }).then(() => {
-        // Handle the query script
-        // We (potentially) need the catalogs to have finished loading for this
-        if (script !== null) {
-          this.handleQueryScript(script);
-        }
-      });
 
       // Don't start listening for messages until the engine is ready to go.
       // There's no point in returning a "not ready yet" error or anything since
