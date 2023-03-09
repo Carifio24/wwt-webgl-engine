@@ -2686,6 +2686,15 @@ export class WWTControl {
   /** Create a new tour */
   createTour(name: string): TourDocument;
 
+  /** Capture the current frame as an image
+   *
+   * @param blobReady A callback function to execute on the `Blob` representing
+   * the captured image.
+   * @param width The desired image width.
+   * @param height The desired image height.
+  */
+  captureFrame(blobReady: BlobCallback, width: number, height: number): void;
+
   /** Set the maximum allowed user zoom level in 3D ("solar system") mode.
    *
    * @param limit The new zoom limit.

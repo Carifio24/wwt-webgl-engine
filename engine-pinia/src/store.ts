@@ -1178,8 +1178,15 @@ export const engineStore = defineStore('wwt-engine', {
       if (this.$wwt.inst === null)
         throw new Error('cannot clearAnnotations without linking to WWTInstance');
       this.$wwt.inst.si.clearAnnotations();
-    }
+    },
 
+    // Capturing the current display
+
+    captureFrame(blobReady: BlobCallback, width: number, height: number): void {
+      if (this.$wwt.inst === null)
+        throw new Error('cannot captureThumbnail without linking to WWTInstance');
+      this.$wwt.inst.ctl.captureFrame(blobReady, width, height);
+    }
   },
 
 });
