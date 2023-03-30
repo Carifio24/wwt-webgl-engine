@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Html;
+using System.Html.Data.Files;
 using System.Html.Media.Graphics;
 
 
@@ -318,10 +319,16 @@ namespace wwtlib
 
         public VideoOutputType dumpFrameParams = null;
 
+        private Blob[] videoBlobQueue = null;
+
+        private int videoQueueIndex = 0;
+
         public void CaptureVideo(BlobReady VideoBlobReady, int Width, int Height, double FramesPerSecond, int TotalFrames, string Format)
         {
             CapturingVideo = true;
             videoBlobReady = VideoBlobReady;
+            videoBlobQueue = new Blob[TotalFrames];
+            videoQueueIndex = 0;
             dumpFrameParams = new VideoOutputType(Width, Height, FramesPerSecond, Format, true);
             SpaceTimeController.FrameDumping = true;
             SpaceTimeController.FramesPerSecond = FramesPerSecond;
@@ -2906,6 +2913,46 @@ namespace wwtlib
 
                 double clientAspect = width / height;
 
+                int frameNum = SpaceTimeController.CurrentFrameNumber;
+                BlobReady captureBlobReady;
+                if (CapturingVideo)
+                {
+                    captureBlobReady = delegate (Blob blob)
+                    {
+                        while (true)
+                        {
+                            for (int i = 0; i < SpaceTimeController.TotalFrames; i++)
+                            {
+                                if (videoBlobQueue[i] != null)
+                                {
+                                    videoQueueIndex = i;
+                                    break;
+                                }
+                            }
+                            if (frameNum == videoQueueIndex)
+                            {
+                                videoBlobReady(blob);
+                                return;
+                            }
+                            else
+                            {
+                                videoBlobQueue[frameNum] = blob;
+                                Blob maybe = videoBlobQueue[frameNum];
+                                if (maybe != null)
+                                {
+                                    videoBlobQueue[frameNum] = null;
+                                    videoBlobReady(maybe);
+                                    return;
+                                }
+                            }
+                        }
+                    };
+                }
+                else
+                {
+                    captureBlobReady = blobReady;
+                }
+
                 int cw = width;
                 int ch = height;
 
@@ -3009,7 +3056,9 @@ namespace wwtlib
 
     public delegate void BlobReady(System.Html.Data.Files.Blob blob);
 
-    public class WWTElementEvent
+    //public delegate void BlobFrameReady(System.Html.Data.Files.Blob blob, int FrameNumber);
+
+    public class WWTElementEvent 
     {
         public double OffsetX;
         public double OffsetY;
