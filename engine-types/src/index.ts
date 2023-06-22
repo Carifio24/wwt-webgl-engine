@@ -261,6 +261,7 @@ export interface Thumbnail {
  * the engine itself. */
 export type BaseEngineSetting =
   ["actualPlanetScale", boolean] |
+  ["altAzGridColor", string] |
   ["constellations", boolean] |
   ["constellationBoundryColor", string] |
   ["constellationFigureColor", string] |
@@ -268,15 +269,20 @@ export type BaseEngineSetting =
   ["constellationSelectionColor", string] |
   ["crosshairsColor", string] |
   ["earthCutawayView", boolean] |
+  ["eclipticColor", string] |
+  ["eclipticGridColor", string] |
+  ["equatorialGridColor", string] |
   //["fovCamera", number] |  // skipping because not settable
   //["fovEyepiece", number] |  // skipping because not settable
   //["fovTelescope", number] |  // skipping because not settable
   ["localHorizonMode", boolean] |
   ["galacticMode", boolean] |
+  ["galacticGridColor", string] |
   ["locationAltitude", number] |
   ["locationLat", number] |
   ["locationLng", number] |
   ["milkyWayModel", boolean] |
+  ["precessionGridColor", string] |
   ["showAltAzGrid", boolean] |
   ["showAltAzGridText", boolean] |
   //["showClouds", boolean] |  // skipping because not settable
@@ -327,6 +333,7 @@ export type BaseEngineSetting =
 // I'm not aware of any smart TypeScripty way to automate the construction of this table :-(
 const baseEngineSettingTypeInfo = {
   "actualPlanetScale/boolean": true,
+  "altAzGridColor/string": true,
   "constellations/boolean": true,
   "constellationBoundryColor/string": true,
   "constellationFigureColor/string": true,
@@ -334,15 +341,20 @@ const baseEngineSettingTypeInfo = {
   "constellationSelectionColor/string": true,
   "crosshairsColor/string": true,
   "earthCutawayView/boolean": true,
+  "eclipticColor/string": true,
+  "eclipticGridColor/string": true,
+  "equatorialGridColor/string": true,
   //"fovCamera/number": true,  // skipping because not settable
   //"fovEyepiece/number": true,  // skipping because not settable
   //"fovTelescope/number": true,  // skipping because not settable
+  "galacticGridColor/string": true,
   "localHorizonMode/boolean": true,
   "galacticMode/boolean": true,
   "locationAltitude/number": true,
   "locationLat/number": true,
   "locationLng/number": true,
   "milkyWayModel/boolean": true,
+  "precessionGridColor/string": true,
   "showAltAzGrid/boolean": true,
   "showAltAzGridText/boolean": true,
   //"showClouds/boolean": true,  // skipping because not settable
