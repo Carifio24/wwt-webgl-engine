@@ -5,7 +5,7 @@ namespace wwtlib
     public interface ISettings
     {
         bool ActualPlanetScale { get; }
-        Color AltAzGridColor { get; }
+        string AltAzGridColor { get; }
         ConstellationFilter ConstellationArtFilter { get; }
         ConstellationFilter ConstellationBoundariesFilter { get; }
         ConstellationFilter ConstellationFiguresFilter { get; }
@@ -13,13 +13,13 @@ namespace wwtlib
         int ConstellationLabelsHeight { get; }
         string ConstellationsEnabled { get; }
         bool EarthCutawayView { get; }
-        Color EclipticColor { get; }
-        Color EclipticGridColor { get; }
-        Color EquatorialGridColor { get; }
+        string EclipticColor { get; }
+        string EclipticGridColor { get; }
+        string EquatorialGridColor { get; }
         int FovCamera { get; }
         int FovEyepiece { get; }
         int FovTelescope { get; }
-        Color GalacticGridColor { get; }
+        string GalacticGridColor { get; }
         bool GalacticMode { get; }
         bool LocalHorizonMode { get; }
         double LocationAltitude { get; }
@@ -28,7 +28,7 @@ namespace wwtlib
         bool MilkyWayModel { get; }
         int MinorPlanetsFilter { get; }
         int PlanetOrbitsFilter { get; }
-        Color PrecessionChartColor { get; }
+        string PrecessionChartColor { get; }
         bool ShowAltAzGrid { get; }
         bool ShowAltAzGridText { get; }
         bool ShowClouds { get; }

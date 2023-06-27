@@ -355,43 +355,43 @@ namespace wwtlib
             set { showAltAzGrid = value; }
         }
 
-        private Color eclipticGridColor = Colors.Green;
-        public Color EclipticGridColor
+        private string eclipticGridColor = Colors.Green.Name;
+        public string EclipticGridColor
         {
             get { return eclipticGridColor; }
             set { eclipticGridColor = value; }
         }
 
-        private Color galacticGridColor = Colors.Cyan;
-        public Color GalacticGridColor
+        private string galacticGridColor = Colors.Cyan.Name;
+        public string GalacticGridColor
         {
             get { return galacticGridColor; }
             set { galacticGridColor = value; }
         }
 
-        private Color altAzGridColor = Colors.Magenta;
-        public Color AltAzGridColor
+        private string altAzGridColor = Colors.Magenta.Name;
+        public string AltAzGridColor
         {
             get { return altAzGridColor; }
             set { altAzGridColor = value; }
         }
 
-        private Color precessionChartColor = Colors.Orange;
-        public Color PrecessionChartColor
+        private string precessionChartColor = Colors.Orange.Name;
+        public string PrecessionChartColor
         {
             get { return precessionChartColor; }
             set { precessionChartColor = value; }
         }
 
-        private Color eclipticColor = Colors.Blue;
-        public Color EclipticColor
+        private string eclipticColor = Colors.Blue.Name;
+        public string EclipticColor
         {
             get { return eclipticColor; }
             set { eclipticColor = value; }
         }
 
-        private Color equatorialGridColor = Colors.White;
-        public Color EquatorialGridColor
+        private string equatorialGridColor = Colors.White.Name;
+        public string EquatorialGridColor
         {
             get { return equatorialGridColor; }
             set { equatorialGridColor = value; }
