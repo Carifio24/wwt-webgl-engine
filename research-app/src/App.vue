@@ -1,5 +1,9 @@
 <template>
-  <div id="app">
+  <div
+    id="app"
+    ref="root"
+    tabindex="0"
+  >
     <WorldWideTelescope
       :wwt-namespace="wwtComponentNamespace"
       :class="['wwt', { pointer: lastClosePt !== null }]"
@@ -2934,89 +2938,99 @@ const App = defineComponent({
         },
         false
       );
-    });
 
-    // Handling key presses
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("zoomIn", () => this.doZoom(true))
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("zoomOut", () => this.doZoom(false))
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("moveUp", () =>
-        this.doMove(0, this.kcs.moveAmount)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("moveDown", () =>
-        this.doMove(0, -this.kcs.moveAmount)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("moveLeft", () =>
-        this.doMove(this.kcs.moveAmount, 0)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("moveRight", () =>
-        this.doMove(-this.kcs.moveAmount, 0)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("tiltLeft", () =>
-        this.doTilt(this.kcs.tiltAmount, 0)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("tiltRight", () =>
-        this.doTilt(-this.kcs.tiltAmount, 0)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("tiltUp", () =>
-        this.doTilt(0, this.kcs.tiltAmount)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("tiltDown", () =>
-        this.doTilt(0, -this.kcs.tiltAmount)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("bigMoveUp", () =>
-        this.doMove(0, this.kcs.bigMoveFactor * this.kcs.moveAmount)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("bigMoveDown", () =>
-        this.doMove(0, this.kcs.bigMoveFactor * -this.kcs.moveAmount)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("bigMoveLeft", () =>
-        this.doMove(this.kcs.bigMoveFactor * this.kcs.moveAmount, 0)
-      )
-    );
-    window.addEventListener(
-      "keydown",
-      this.kcs.makeListener("bigMoveRight", () =>
-        this.doMove(this.kcs.bigMoveFactor * -this.kcs.moveAmount, 0)
-      )
-    );
+      /**
+       * Attach key listeners to the root element of the component
+       * Note that in Vue 3, components are allowed to have multiple
+       * top-level HTML elements, and thus the component no longer has an `$el`
+       * member value.
+       * While there are multiple methods that we could use to grab the root
+       * element here, a ref seems like the most straightforward
+       */
+      const root = this.$refs.root as HTMLElement;
+
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("zoomIn", () => this.doZoom(true))
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("zoomOut", () => this.doZoom(false))
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("moveUp", () =>
+          this.doMove(0, this.kcs.moveAmount)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("moveDown", () =>
+          this.doMove(0, -this.kcs.moveAmount)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("moveLeft", () =>
+          this.doMove(this.kcs.moveAmount, 0)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("moveRight", () =>
+          this.doMove(-this.kcs.moveAmount, 0)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("tiltLeft", () =>
+          this.doTilt(this.kcs.tiltAmount, 0)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("tiltRight", () =>
+          this.doTilt(-this.kcs.tiltAmount, 0)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("tiltUp", () =>
+          this.doTilt(0, this.kcs.tiltAmount)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("tiltDown", () =>
+          this.doTilt(0, -this.kcs.tiltAmount)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("bigMoveUp", () =>
+          this.doMove(0, this.kcs.bigMoveFactor * this.kcs.moveAmount)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("bigMoveDown", () =>
+          this.doMove(0, this.kcs.bigMoveFactor * -this.kcs.moveAmount)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("bigMoveLeft", () =>
+          this.doMove(this.kcs.bigMoveFactor * this.kcs.moveAmount, 0)
+        )
+      );
+      root.addEventListener(
+        "keydown",
+        this.kcs.makeListener("bigMoveRight", () =>
+          this.doMove(this.kcs.bigMoveFactor * -this.kcs.moveAmount, 0)
+        )
+      );
+
+    });
   },
 
   unmounted() {
