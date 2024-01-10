@@ -102,7 +102,7 @@ if (messages !== null) {
   console.log("WWT embed: no \"?origin=\" given, so no incoming messages will be allowed");
 }
 
-createApp(App, {
+export default createApp(App, {
     wwtNamespace: wwtEngineNamespace,
     allowedOrigin: allowedOrigin
   })
