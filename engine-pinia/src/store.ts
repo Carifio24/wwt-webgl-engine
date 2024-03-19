@@ -881,12 +881,15 @@ export const engineStore = defineStore('wwt-engine', {
       }
     },
 
-    /** Given an RA and Dec position, return the x, y coordinates of the screen point */
+    /**
+      * Given an RA and Dec position, return the x, y coordinates of the screen point
+      * If `fractional` is specified as true, then the values will be returned as "fractional pixel" floats rather than integers.
+      */
     findScreenPointForRADec(_state) {
-      return (pt: { ra: number; dec: number }): { x: number; y: number } => {
+      return (pt: { ra: number; dec: number }, fractional?: boolean): { x: number; y: number } => {
         if (this.$wwt.inst === null)
           throw new Error('cannot findScreenPointForRADec without linking to WWTInstance');
-        return this.$wwt.inst.ctl.getScreenPointForCoordinates(pt.ra / 15, pt.dec);
+        return this.$wwt.inst.ctl.getScreenPointForCoordinates(pt.ra / 15, pt.dec, fractional);
       }
     },
 
