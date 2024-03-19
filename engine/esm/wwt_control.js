@@ -1547,21 +1547,25 @@ var WWTControl$ = {
         return vPickRayDir;
     },
 
-    transformWorldPointToPickSpace: function (worldPoint, backBufferWidth, backBufferHeight) {
+    transformWorldPointToPickSpace: function (worldPoint, backBufferWidth, backBufferHeight, fractional) {
         var m = Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view());
         var p = new Vector2d();
         var vz = worldPoint.x * m.get_m13() + worldPoint.y * m.get_m23() + worldPoint.z * m.get_m33();
         var vx = (worldPoint.x * m.get_m11() + worldPoint.y * m.get_m21() + worldPoint.z * m.get_m31()) / vz;
         var vy = -(worldPoint.x * m.get_m12() + worldPoint.y * m.get_m22() + worldPoint.z * m.get_m32()) / vz;
-        p.x = Math.round((1 + this.renderContext.get_projection().get_m11() * vx) * (backBufferWidth / 2));
-        p.y = Math.round((1 + this.renderContext.get_projection().get_m22() * vy) * (backBufferHeight / 2));
+        p.x = (1 + this.renderContext.get_projection().get_m11() * vx) * (backBufferWidth / 2);
+        p.y = (1 + this.renderContext.get_projection().get_m22() * vy) * (backBufferHeight / 2);
+        if (!fractional) {
+          p.x = Math.round(p.x);
+          p.y = Math.round(p.y);
+        }
         return p;
     },
 
-    getScreenPointForCoordinates: function (ra, dec) {
+    getScreenPointForCoordinates: function (ra, dec, fractional) {
         var pt = Vector2d.create(ra, dec);
         var cartesian = Coordinates.sphericalSkyToCartesian(pt);
-        var result = this.transformWorldPointToPickSpace(cartesian, this.renderContext.width, this.renderContext.height);
+        var result = this.transformWorldPointToPickSpace(cartesian, this.renderContext.width, this.renderContext.height, fractional);
         return result;
     },
 
