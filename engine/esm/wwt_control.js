@@ -1510,6 +1510,10 @@ var WWTControl$ = {
     getCoordinatesForScreenPoint: function (x, y) {
         var pt = Vector2d.create(x, y);
         var PickRayDir = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height);
+        if (this.renderType < 2) {  // Earth or Planet
+          PickRayDir.y = -PickRayDir.y;
+          PickRayDir.z = -PickRayDir.z;
+        }
         return Coordinates.cartesianToSphericalSky(PickRayDir);
     },
 
@@ -1537,10 +1541,9 @@ var WWTControl$ = {
             m.invert();
 
             // Transform the screen space pick ray into 3D space
-            // The last column (offsets) should be zero, which is why we've been able to ignore w
-            vPickRayDir.x = v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31();
-            vPickRayDir.y = v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32();
-            vPickRayDir.z = v.x * m.get_m13() + v.y * m.get_m23() + v.z * m.get_m33();
+            vPickRayDir.x = v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31() - m.get_offsetX();
+            vPickRayDir.y = v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32() - m.get_offsetY();
+            vPickRayDir.z = v.x * m.get_m13() + v.y * m.get_m23() + v.z * m.get_m33() - m.get_offsetZ();
             vPickRayDir.normalize();
         }
         return vPickRayDir;
