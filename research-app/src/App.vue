@@ -2084,6 +2084,7 @@ const App = defineComponent({
     },
 
     wwtOnPointerDown(event: PointerEvent) {
+      console.log(this.findRADecForScreenPoint({ x: event.pageX, y: event.pageY }));
       this.isPointerMoving = false;
       this.pointerStartPosition = { x: event.pageX, y: event.pageY };
     },
@@ -2862,6 +2863,9 @@ const App = defineComponent({
     }
 
     this.waitForReady().then(() => {
+      this.setBackgroundImageByName("Earth");
+      this.setForegroundImageByName("Earth");
+      console.log(this);
       const script = this.getQueryScript(window.location);
       if (script !== null) {
         this.$options.statusMessageDestination = window;

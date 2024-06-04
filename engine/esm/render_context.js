@@ -509,6 +509,7 @@ var RenderContext$ = {
 
     getScaledAltitudeForLatLong: function (viewLat, viewLong) {
         var tile = this._getTileAtLatLong(viewLat, viewLong);
+        // console.log(viewLat, viewLong, tile);
         if (tile != null) {
             return tile.getSurfacePointAltitude(viewLat, viewLong, false);
         }
@@ -542,10 +543,12 @@ var RenderContext$ = {
         }
         this._fovAngle = (this.viewCamera.zoom / 343.774) / Math.PI * 180;
         this._fovScale = (this._fovAngle / this.height) * 3600;
+        // console.log(distance, this.height, this._fovAngle);
         if (this.gl != null) {
             this.targetAltitude = this.getScaledAltitudeForLatLong(this.viewCamera.lat, this.viewCamera.lng);
             var heightNow = 1 + this.targetAltitude;
             this.targetAltitude *= this.get_nominalRadius();
+            // console.log(this.targetAltitude);
             if (this._targetHeight < heightNow) {
                 this._targetHeight = (((this._targetHeight * 2) + heightNow) / 3);
             }
@@ -558,6 +561,7 @@ var RenderContext$ = {
         }
         var rotLocal = this.viewCamera.rotation;
         this.cameraPosition = Vector3d.create((Math.sin(rotLocal) * Math.sin(this.viewCamera.angle) * distance), (Math.cos(rotLocal) * Math.sin(this.viewCamera.angle) * distance), (-this._targetHeight - (Math.cos(this.viewCamera.angle) * distance)));
+        // console.log(this.cameraPosition);
         var cameraTarget = Vector3d.create(0, 0, -this._targetHeight);
         var camHeight = this.cameraPosition.length();
         var lookUp = Vector3d.create(Math.sin(rotLocal) * Math.cos(this.viewCamera.angle), Math.cos(rotLocal) * Math.cos(this.viewCamera.angle), Math.sin(this.viewCamera.angle));
