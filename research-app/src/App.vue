@@ -386,6 +386,7 @@ import {
   Poly,
   PolyLine,
   SpreadSheetLayer,
+WWTControl,
 } from "@wwtelescope/engine";
 
 import {
@@ -2866,6 +2867,10 @@ const App = defineComponent({
       this.setBackgroundImageByName("Earth");
       this.setForegroundImageByName("Earth");
       console.log(this);
+      console.log(WWTControl.singleton.renderContext);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.app = this; window.rc = WWTControl.singleton.renderContext;
       const script = this.getQueryScript(window.location);
       if (script !== null) {
         this.$options.statusMessageDestination = window;

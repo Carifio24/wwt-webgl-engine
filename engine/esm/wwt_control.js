@@ -1510,10 +1510,33 @@ var WWTControl$ = {
     getCoordinatesForScreenPoint: function (x, y) {
         var pt = Vector2d.create(x, y);
         const planetMode = this.renderType < 2;  // Earth or Planet
-        var PickRayDir = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, !planetMode);
+        var PickRayDir = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, true);
         if (planetMode) {  // Earth or Planet
           const planetRadius = 1;
+          const ptCursor = pt;
+          const backBufferWidth = this.renderContext.width;
+          const backBufferHeight = this.renderContext.height;
+          var v = new Vector3d();
+          v.x = (((2 * ptCursor.x) / backBufferWidth) - 1) / this.renderContext.get_projection().get_m11();
+          v.y = -(((2 * ptCursor.y) / backBufferHeight) - 1) / this.renderContext.get_projection().get_m22();
+          v.z = 1;
+          // const m = Matrix3d.multiplyMatrix(this.renderContext.get_projection(), Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view()));
+          var m = Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view());
+          m.invert();
+          const r = new Vector3d();
+          r.x = v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31();
+          r.y = v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32();
+          r.z = v.x * m.get_m13() + v.y * m.get_m23() + v.z * m.get_m33();
+          console.log("Offsets:")
+          console.log(m.get_offsetX(), m.get_offsetY(), m.get_offsetZ());
+          console.log("m", m);
+          console.log("r", r);
+          r.x -= m.get_offsetX();
+          r.y -= m.get_offsetY();
+          r.z -= m.get_offsetZ();
+          console.log("r shifted", r);
           const intersectsPlanet = PickRayDir.x * PickRayDir.x + PickRayDir.y * PickRayDir.y < planetRadius;
+          console.log(r.x, r.y, r.z);
           console.log(PickRayDir.x, PickRayDir.y, PickRayDir.z);
           console.log(`Intersects planet: ${intersectsPlanet}`);
         }
@@ -1523,7 +1546,7 @@ var WWTControl$ = {
         return Coordinates.cartesianToSphericalSky(PickRayDir);
     },
 
-    transformPickPointToWorldSpace: function (ptCursor, backBufferWidth, backBufferHeight, normalize) {
+    transformPickPointToWorldSpace: function (ptCursor, backBufferWidth, backBufferHeight, normalize=true) {
         var vPickRayDir = new Vector3d();
 
         // It is possible for this function to be called before the RenderContext is
@@ -1545,12 +1568,15 @@ var WWTControl$ = {
 
             var m = Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view());
             m.invert();
-            console.log(m.get_offsetX(), m.get_offsetY(), m.get_offsetZ());
+
 
             // Transform the screen space pick ray into 3D space
-            vPickRayDir.x = v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31() - m.get_offsetX();
-            vPickRayDir.y = v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32() - m.get_offsetY();
-            vPickRayDir.z = v.x * m.get_m13() + v.y * m.get_m23() + v.z * m.get_m33() - m.get_offsetZ();
+            v.x -= m.get_offsetX();
+            v.y -= m.get_offsetY();
+            v.z -= m.get_offsetZ();
+            vPickRayDir.x = v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31();
+            vPickRayDir.y = v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32();
+            vPickRayDir.z = v.x * m.get_m13() + v.y * m.get_m23() + v.z * m.get_m33();
             if (normalize) {
               vPickRayDir.normalize();
             }
