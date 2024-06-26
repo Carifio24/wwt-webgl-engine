@@ -1519,10 +1519,11 @@ var WWTControl$ = {
           var v = new Vector3d();
           v.x = (((2 * ptCursor.x) / backBufferWidth) - 1) / this.renderContext.get_projection().get_m11();
           v.y = -(((2 * ptCursor.y) / backBufferHeight) - 1) / this.renderContext.get_projection().get_m22();
-          v.z = 1;
+          v.z = -1;
           // const m = Matrix3d.multiplyMatrix(this.renderContext.get_projection(), Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view()));
           var m = Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view());
           m.invert();
+
           const r = new Vector3d();
           r.x = v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31();
           r.y = v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32();
@@ -1531,14 +1532,17 @@ var WWTControl$ = {
           console.log(m.get_offsetX(), m.get_offsetY(), m.get_offsetZ());
           console.log("m", m);
           console.log("r", r);
+          console.log(`mag r: ${r.x * r.x + r.y * r.y + r.z * r.z}`);
           r.x -= m.get_offsetX();
           r.y -= m.get_offsetY();
           r.z -= m.get_offsetZ();
           console.log("r shifted", r);
-          const intersectsPlanet = PickRayDir.x * PickRayDir.x + PickRayDir.y * PickRayDir.y < planetRadius;
+          // const intersectsPlanet = PickRayDir.x * PickRayDir.x + PickRayDir.y * PickRayDir.y < planetRadius;
+          const intersectsPlanet = r.x * r.x + r.y * r.y < planetRadius;
           console.log(r.x, r.y, r.z);
           console.log(PickRayDir.x, PickRayDir.y, PickRayDir.z);
           console.log(`Intersects planet: ${intersectsPlanet}`);
+
         }
         // else {
         //   var PickRayDir = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height);
@@ -1568,7 +1572,6 @@ var WWTControl$ = {
 
             var m = Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view());
             m.invert();
-
 
             // Transform the screen space pick ray into 3D space
             v.x -= m.get_offsetX();
