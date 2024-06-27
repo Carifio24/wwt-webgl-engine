@@ -1513,10 +1513,25 @@ var WWTControl$ = {
         var PickRayDir = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, true);
         if (planetMode) {  // Earth or Planet
           const planetRadius = 1;
-          const pointFar = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, true, 1);
-          const pointNear = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, true, -1);
+          const pointFar = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, 1);
+          const pointNear = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, -1);
           console.log(pointFar);
           console.log(pointNear);
+          const diff = Vector3d.create(pointFar.x - pointNear.x, pointFar.y - pointNear.y, pointFar.z - pointNear.z);
+          diff.normalize();
+          console.log(diff);
+          const dot = Vector3d.dot(pointNear, diff);
+          const pointNearLenSq = Vector3d.getLengthSq(pointNear);
+          const minDistance = pointNearLenSq - dot * dot;
+          console.log(dot);
+          console.log(pointNearLenSq, dot * dot);
+
+          console.log(minDistance);
+          console.log("==========");
+
+          // if (minDistance > planetRadius) {
+          //   return null;
+          // }
         }
         // else {
         //   var PickRayDir = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height);
@@ -1542,18 +1557,26 @@ var WWTControl$ = {
             var v = new Vector3d();
             v.x = (((2 * ptCursor.x) / backBufferWidth) - 1) / this.renderContext.get_projection().get_m11();
             v.y = -(((2 * ptCursor.y) / backBufferHeight) - 1) / this.renderContext.get_projection().get_m22();
-            v.z = z;
+            v.z = z / this.renderContext.get_projection().get_m33();
 
             var m = Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view());
             m.invert();
 
             // Transform the screen space pick ray into 3D space
-            v.x -= m.get_offsetX();
-            v.y -= m.get_offsetY();
-            v.z -= m.get_offsetZ();
-            vPickRayDir.x = v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31();
-            vPickRayDir.y = v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32();
-            vPickRayDir.z = v.x * m.get_m13() + v.y * m.get_m23() + v.z * m.get_m33();
+            // v.x += m.get_offsetX();
+            // v.y += m.get_offsetY();
+            // v.z += m.get_offsetZ();
+          
+            // const d = v.x * m.get_m14() + v.y * m.get_m24() + v.z * m.get_m34() + m.get_m44();
+            const d = 1;
+            vPickRayDir.x = (v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31() + m.get_offsetX()) / d;
+            vPickRayDir.y = (v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32() + m.get_offsetY()) / d;
+            vPickRayDir.z = (v.x * m.get_m13() + v.y * m.get_m23() + v.z * m.get_m33() + m.get_offsetZ()) / d;
+            // vPickRayDir.x += m.get_offsetX();
+            // vPickRayDir.y += m.get_offsetY();
+            // vPickRayDir.z += m.get_offsetZ();
+            console.log(m.get_offsetX(), m.get_offsetY(), m.get_offsetZ());
+            console.log(this.renderContext.viewCamera);
             if (normalize) {
               vPickRayDir.normalize();
             }
