@@ -1514,17 +1514,15 @@ var WWTControl$ = {
         if (planetMode) {  // Earth or Planet
           const planetRadius = 1;
           const pointFar = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, 1);
-          const pointNear = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, -1);
+          const pointNear = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, this.renderContext.nearPlane);
           console.log(pointFar);
           console.log(pointNear);
           const diff = Vector3d.create(pointFar.x - pointNear.x, pointFar.y - pointNear.y, pointFar.z - pointNear.z);
-          diff.normalize();
-          console.log(diff);
-          const dot = Vector3d.dot(pointNear, diff);
-          const pointNearLenSq = Vector3d.getLengthSq(pointNear);
-          const minDistance = pointNearLenSq - dot * dot;
-          console.log(dot);
-          console.log(pointNearLenSq, dot * dot);
+          const diffLenSq = Vector3d.getLengthSq(diff);
+          const nearLenSq = Vector3d.getLengthSq(pointNear);
+          const nearDiffDot = Vector3d.dot(pointNear, diff);
+          const t0 = -1 * nearDiffDot / diffLenSq;
+          const minDistance = nearLenSq + 2 * t0 * nearDiffDot + t0 * t0 * diffLenSq;
 
           // Currently, minDistance will stay the same for the same point on the screen, even when zooming
           // Although pointNearLenSq and dot * dot will NOT
