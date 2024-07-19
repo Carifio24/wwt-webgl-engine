@@ -1526,6 +1526,8 @@ var WWTControl$ = {
           console.log(dot);
           console.log(pointNearLenSq, dot * dot);
 
+          // Currently, minDistance will stay the same for the same point on the screen, even when zooming
+          // Although pointNearLenSq and dot * dot will NOT
           console.log(minDistance);
           console.log("==========");
 
