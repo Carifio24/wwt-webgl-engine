@@ -361,6 +361,7 @@ import * as moment from "moment";
 import * as screenfull from "screenfull";
 import "vue-select/dist/vue-select.css";
 import { Buffer } from "buffer";
+import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 import { mapActions, mapState } from "pinia";
 
 import { distance, fmtDegLat, fmtDegLon, fmtHours } from "@wwtelescope/astro";
@@ -1761,7 +1762,7 @@ const App = defineComponent({
       ].flatMap((s) => (s ? [this.encodeObjectBase64(s)] : []));
 
       const messageString = messageStrings.join(",");
-      const outString = messageString;
+      const outString = compressToUTF16(messageString);
 
       const params = {
         script: outString,
