@@ -7,11 +7,13 @@ import { ss } from "./ss.js";
 import { registerType } from "./typesystem.js";
 import { tileCacheRemoveFromQueue, tilePrepDevice, useGlVersion2 } from "./render_globals.js";
 import { Vector3d, PositionTexture } from "./double3d.js";
-import { WEBGL } from "./graphics/webgl_constants.js";
+import { WEBGL } from "./graphics/webgl_varants.js";
 import { RenderTriangle } from "./render_triangle.js";
 import { FitsImage } from "./layers/fits_image.js";
 import { Tile } from "./tile.js";
+import { Coordinates } from "./coordinates.js";
 
+var RC = (3.1415927 / 180); // not thrilled about the low precision!
 
 // wwtlib.LatLngEdges
 
@@ -91,6 +93,42 @@ var TangentTile$ = {
         var fac1 = this.dataset.get_baseTileDegrees() / 2;
         var factor = Math.tan(fac1 * Tile.RC);
         return this.dataset.get_matrix().transform(Vector3d.create(1, (lat / fac1 * factor), (lng / fac1 * factor)));
+    },
+
+    geoTo3d: function(lat, lng) {
+        lng = -lng;
+        var fac1 = this.dataset.get_baseTileDegrees() / 2;
+        var factor = Math.tan(fac1 * RC);
+        return Vector3d._transformCoordinate(Vector3d.create(1, lat / (fac1 * factor), lng / (fac1 * factor)), this.dataset.get_matrix());
+    },
+
+    threeDeeToGeo: function(vector) {
+        var matrix = this.dataset.get_matrix().clone();
+        matrix.invert();
+        var result = Coordinates.cartesianToSpherical(Vector3d._transformCoordinate(vector, matrix));
+        result.set_lng(-result.get_lng());
+        return result;
+    },
+
+    transformPoint: function(x, y) {
+        var tileDegrees = this.dataset.get_baseTileDegrees() / Math.pow(2, this.level);
+        var pixelDegrees = tileDegrees / 256;
+        var lat = this.dataset.get_baseTileDegrees() / 2 - ((y * pixelDegrees) + this.dataset.get_offsetY());
+        var lng = (x * pixelDegrees - this.dataset.get_baseTileDegrees() / this.dataset.get_widthFactor()) + this.dataset.get_offsetX();
+        return this.geoTo3d(lat, lng);
+    },
+
+    untransformPoint: function(point) {
+        var result = this.threeDeeToGeo(point);
+        var baseTileDegrees = this.dataset.get_baseTileDegrees();
+        var tileDegrees = baseTileDegrees / Math.pow(2, this.level);
+        var pixelDegrees = tileDegrees / 256;
+
+        var lat = result.get_lat();
+        let lng = result.get_lng();
+        var x = (lat - this.dataset.get_offsetY() + (baseTileDegrees / 2)) / pixelDegrees;
+        var y = (lng - this.dataset.get_offsetX() + (baseTileDegrees / dataset.get_widthFactor())) / pixelDegrees;
+        return Vector3d.create(x, y);
     },
 
     requestImage: function () {

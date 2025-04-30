@@ -9,6 +9,8 @@ import { registerType } from "./typesystem.js";
 import { useGl, useGlVersion2 } from "./render_globals.js";
 import { WcsImage } from "./layers/wcs_image.js";
 import { TangentTile, LatLngEdges } from "./tangent_tile.js";
+import { Vector2d, Vector3d } from "./double3d.js";
+import { Coordinates } from "./coordinates.js";
 
 
 // wwtlib.SkyImageTile
@@ -60,6 +62,19 @@ var SkyImageTile$ = {
         edges.lngMin = 0 + (this.scaleX * this.pixelCenterX);
         edges.lngMax = 0 - (this.scaleX * (this.width - this.pixelCenterX));
         return edges;
+    },
+
+    getImagePixel: function(sky) {
+        var tangent = Coordinates.raDecTo3d(sky.get_RA() + 12, sky.get_dec(), 1);
+        var matrix = dataset.get_matrix().clone();
+        matrix.invert();
+
+        tangent = Vector3d._transformCoordinate(tangent, matrix);
+        var imagePoint = Coordinates.cartesianToSpherical(tangent);
+        
+        var x = (imagePoint.get_lng() / this.scaleX) + this.pixelCenterX;
+        var y = (imagePoint.get_lat() / -this.scaleY) + this.pixelCenterY;
+        return Vector2d.create(x, y);
     }
 };
 
