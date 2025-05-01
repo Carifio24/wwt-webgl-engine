@@ -59,6 +59,37 @@ Coordinates.raDecTo3dPointRad = function (point, radius) {
     return Vector3d.create((Math.cos(point.get_RA() * Coordinates.RCRA) * Math.cos(point.get_dec() * Coordinates.RC) * radius), (Math.sin(point.get_dec() * Coordinates.RC) * radius), (Math.sin(point.get_RA() * Coordinates.RCRA) * Math.cos(point.get_dec() * Coordinates.RC) * radius));
 };
 
+Coordinates.raDecToTan = function (center, point) {
+  var lambda = point.x / 12 * Math.PI;
+  var phi = point.y / 180 * Math.PI;
+  var lCenter = center.x / 12 * Math.PI;
+  var pCenter = center.y / 180 * Math.PI;
+
+  var cosc = Math.sin(pCenter) * Math.sin(phi) + Math.cos(pCenter) * Math.cos(phi) * Math.cos(lambda - lCenter);
+
+  var x = Math.cos(phi)* Math.sin(lambda - lCenter) / cosc;
+  var y = (Math.cos(pCenter) * Math.sin(phi) - Math.sin(pCenter) * Math.cos(phi) * Math.cos(lambda - pCenter)) / cosc;
+
+  return Vector2d.create(x, y);
+};
+
+Coordinates.tanToRaDec = function (center, point) {
+  var x = point.x;
+  var y = point.y;
+  var lCenter = center.x / 12 * Math.PI;
+  var pCenter = center.y / 180 * Math.PI;
+
+  var p = Math.sqrt(x * x + y * y);
+  var c = Math.atan(p);
+
+  var phi = Math.asin(Math.cos(c) * Math.sin(pCenter) - y * Math.sin(c) * Math.cos(pCenter) / p);
+
+  var lambda = lCenter + Math.atan2(x * Math.sin(c), p * Math.cos(pCenter) * Math.cos(c) - y * Math.sin(pCenter) * Math.sin(c));
+
+  return Vector2d.create(lambda / Math.PI * 12, phi / Math.PI * 180);
+
+};
+
 Coordinates.sterographicTo3d = function (x, y, radius, standardLat, meridean, falseEasting, falseNorthing, scale, north) {
     var lat = 90;
     var lng = 0;
