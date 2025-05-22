@@ -12,8 +12,7 @@ import { RenderTriangle } from "./render_triangle.js";
 import { FitsImage } from "./layers/fits_image.js";
 import { Tile } from "./tile.js";
 import { Coordinates } from "./coordinates.js";
-
-var RC = (3.1415927 / 180); // not thrilled about the low precision!
+import { RC } from "./constants.js";
 
 // wwtlib.LatLngEdges
 
