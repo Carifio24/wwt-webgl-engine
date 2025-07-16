@@ -27,6 +27,7 @@
   },
   "homepage": "https://worldwidetelescope.org/home/",
   "internalDepVersions": {
+      "@wwtelescope/astro": "thiscommit:2025-07-16:Ryt5egc",
       "@wwtelescope/engine": "thiscommit:2025-07-16:jGH6s11",
       "@wwtelescope/engine-pinia": "thiscommit:2025-07-11:lNe9Fk1"
   },
