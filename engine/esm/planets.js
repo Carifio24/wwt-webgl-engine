@@ -450,6 +450,9 @@ Planets.updatePlanetLocations = function (threeDee) {
     Planets._planet3dLocations[SolarSystemObjects.earth] = Vector3d.create(-center.x, -center.y, -center.z);
     Planets._planet3dLocations[SolarSystemObjects.earth].rotateX(Planets._obliquity);
     for (var i = 0; i < 18; i++) {
+        if (!Settings.get_active().get_solarSystemPlanetVisibility(i)) {
+          continue;
+        }
         Planets._planetLocations[i] = AstroCalc.getPlanet(Planets._jNow, i, (threeDee) ? 0 : SpaceTimeController.get_location().get_lat(), (threeDee) ? 0 : SpaceTimeController.get_location().get_lng(), (threeDee) ? -6378149 : SpaceTimeController.get_altitude());
         Planets._planet3dLocations[i] = Coordinates.raDecTo3dAu(Planets._planetLocations[i].RA, Planets._planetLocations[i].dec, Planets._planetLocations[i].distance);
         Planets._planet3dLocations[i].subtract(center);
@@ -601,7 +604,8 @@ Planets.drawPlanets = function (renderContext, opacity) {
     var coronaOpacity = 0;
     var moonEffect = (Planets._planetScales[9] / 2 - sunMoonDist);
     var darkLimb = Math.min(32, ss.truncate((sunMoonDist * 32)));
-    if (moonEffect > (Planets._planetScales[0] / 4)) {
+    var couldShowCorona = Settings.get_active().get_solarSystemPlanetVisibility(18);
+    if (couldShowCorona && moonEffect > (Planets._planetScales[0] / 4)) {
         eclipse = true;
         coronaOpacity = Math.min(1, (moonEffect - (Planets._planetScales[0] / 2)) / 0.001);
         Planets._drawPlanet(renderContext, 18, coronaOpacity);
@@ -610,7 +614,9 @@ Planets.drawPlanets = function (renderContext, opacity) {
     while ($enum1.moveNext()) {
         var key = $enum1.current;
         var planetId = Planets._planetDrawOrder[key];
-        Planets._drawPlanet(renderContext, planetId, 1);
+        if (Settings.get_active().get_solarSystemPlanetVisibility(planetId)) {
+          Planets._drawPlanet(renderContext, planetId, 1);
+        }
     }
     return true;
 };

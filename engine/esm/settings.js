@@ -150,6 +150,7 @@ export function Settings() {
     this._solarSystemCMB = true;
     this._solarSystemMinorPlanets = false;
     this._solarSystemPlanets = true;
+    this._solarSystemPlanetVisibilities = {};
     this._showEarthSky = true;
     this._solarSystemMinorOrbits = false;
     this._constellationsEnabled = '';
@@ -386,6 +387,17 @@ var Settings$ = {
     set_showSolarSystem: function (value) {
         this._showSolarSystem = value;
         return value;
+    },
+
+    get_solarSystemPlanetVisibility: function (planetId) {
+      if (this._solarSystemPlanetVisibilities[planetId] != null) {
+        return this._solarSystemPlanetVisibilities[planetId];
+      }
+      return true;
+    },
+
+    set_solarSystemPlanetVisibility: function (planetId, visible) {
+      this._solarSystemPlanetVisibilities[planetId] = visible;
     },
 
     get_localHorizonMode: function () {

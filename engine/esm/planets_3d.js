@@ -158,6 +158,9 @@ Planets3d.drawPlanets3D = function (renderContext, opacity, centerPoint) {
 
     var camera = renderContext.cameraPosition.copy();
     for (var planetId = 0; planetId < 14; planetId++) {
+        if (!Settings.get_active().get_solarSystemPlanetVisibility(planetId)) {
+          continue;
+        }
         // If we're using realistic lighting and this is an eclipsed
         // moon, don't draw it at all. This is slightly suboptimal
         // since, if you're looking at the moon, you'll suddenly be able
@@ -172,15 +175,20 @@ Planets3d.drawPlanets3D = function (renderContext, opacity, centerPoint) {
         }
     }
 
-    var distVectorEarth = Vector3d.subtractVectors(camera, Vector3d.subtractVectors(Planets._planet3dLocations[19], centerPoint));
-    if (!ss.keyExists(Planets._drawOrder, distVectorEarth.length())) {
-        Planets._drawOrder[distVectorEarth.length()] = 19;
+    if (Settings.get_active().get_solarSystemPlanetVisibility(SolarSystemObjects.earth)) {
+      var distVectorEarth = Vector3d.subtractVectors(camera, Vector3d.subtractVectors(Planets._planet3dLocations[19], centerPoint));
+      if (!ss.keyExists(Planets._drawOrder, distVectorEarth.length())) {
+          Planets._drawOrder[distVectorEarth.length()] = 19;
+      }
     }
 
     var $enum1 = ss.enumerate(ss.keys(Planets._drawOrder));
     while ($enum1.moveNext()) {
         var key = $enum1.current;
         var planetId = Planets._drawOrder[key];
+        if (!Settings.get_active().get_solarSystemPlanetVisibility(planetId)) {
+          continue;
+        }
         Planets3d._drawPlanet3d(renderContext, planetId, centerPoint);
     }
 
