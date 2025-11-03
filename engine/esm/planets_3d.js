@@ -92,13 +92,16 @@ Planets3d.drawPlanets3D = function (renderContext, opacity, centerPoint) {
             if (ii === 9) {
                 id = 19;
             }
-            var angle = Math.atan2(Planets._planet3dLocations[id].z, Planets._planet3dLocations[id].x);
-            Planets3d._drawSingleOrbit(renderContext, Planets.planetColors[id], id, centerPoint, angle, Planets._planet3dLocations[id], fade);
+            if (Settings.get_active().get_solarSystemPlanetVisibility(id)) {
+                var angle = Math.atan2(Planets._planet3dLocations[id].z, Planets._planet3dLocations[id].x);
+                Planets3d._drawSingleOrbit(renderContext, Planets.planetColors[id], id, centerPoint, angle, Planets._planet3dLocations[id], fade);
+            }
         }
 
         // Moon is handled specially
-        var mid = 9;
-        Planets3d._drawSingleOrbit(renderContext, Planets.planetColors[mid], mid, centerPoint, 0, Planets._planet3dLocations[mid], fade);
+        if (Settings.get_active().get_solarSystemPlanetVisibility(planetId)) {
+          Planets3d._drawSingleOrbit(renderContext, Planets.planetColors[SolarSystemObjects.moon], mid, centerPoint, 0, Planets._planet3dLocations[SolarSystemObjects.moon], fade);
+        }
 
         // Galilean satellites. "Compute the positions of the Galilean
         // satellites at two times; we need the second in order to estimate the
