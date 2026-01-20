@@ -117,6 +117,7 @@ export function WcsFitter() {
   this.points = [];
   this.solveList = [];
   this.regressionParameters = [];
+  this.parameterIndex = Parameter.createWithValue(0);
 }
 
 registerType("WcsFitter", WcsFitter);
@@ -216,6 +217,9 @@ var WcsFitter$ = {
         data[0][i] = i;
         data[1][i] = 0;
     }
+
+    var observed = [this.parameterIndex];
+
 
   }
 };
