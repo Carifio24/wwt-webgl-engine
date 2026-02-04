@@ -27,7 +27,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "doc": "typedoc src/index.ts",
+    "doc": "typedoc src/index.ts --gitRevision release",
     "lint": "eslint -c ../.eslintrc.js src --ext .js,.ts"
   },
   "type": "module",
