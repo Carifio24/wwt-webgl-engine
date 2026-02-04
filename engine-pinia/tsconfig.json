@@ -42,6 +42,7 @@
     ],
     "validation": {
       "invalidLink": true
-    }
+    },
+    "gitRevision": "release"
   }
 }

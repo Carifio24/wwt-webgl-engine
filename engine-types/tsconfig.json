@@ -24,6 +24,7 @@
     "excludePrivate": true,
     "validation": {
       "invalidLink": true
-    }
+    },
+    "gitRevision": "release"
   }
 }
