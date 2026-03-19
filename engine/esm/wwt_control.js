@@ -1511,10 +1511,18 @@ var WWTControl$ = {
         var pt = Vector2d.create(x, y);
         const planetMode = this.renderType < 2;  // Earth or Planet
         var PickRayDir = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, true);
+        console.log("======== CAMERA POSITION =========");
+        console.log(this.renderContext.cameraPosition);
+        console.log(Vector3d.getLength(this.renderContext.cameraPosition));
+
+
         if (planetMode) {  // Earth or Planet
           const planetRadius = 1;
-          const pointFar = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, 1);
-          const pointNear = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, -1);
+          const projMatrix = this.renderContext.get_projection();
+          const near = -projMatrix.get_offsetZ() / projMatrix.get_m33();
+          const far = near / (projMatrix.get_m33() - 1);
+          const pointFar = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, far);
+          const pointNear = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, near);
           console.log(pointFar);
           console.log(pointNear);
           const diff = Vector3d.create(pointFar.x - pointNear.x, pointFar.y - pointNear.y, pointFar.z - pointNear.z);
@@ -1563,10 +1571,6 @@ var WWTControl$ = {
             m.invert();
 
             // Transform the screen space pick ray into 3D space
-            // v.x += m.get_offsetX();
-            // v.y += m.get_offsetY();
-            // v.z += m.get_offsetZ();
-          
             // const d = v.x * m.get_m14() + v.y * m.get_m24() + v.z * m.get_m34() + m.get_m44();
             const d = 1;
             vPickRayDir.x = (v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31() + m.get_offsetX()) / d;
@@ -1575,8 +1579,9 @@ var WWTControl$ = {
             // vPickRayDir.x += m.get_offsetX();
             // vPickRayDir.y += m.get_offsetY();
             // vPickRayDir.z += m.get_offsetZ();
+            console.log("======== OFFSETS =========");
             console.log(m.get_offsetX(), m.get_offsetY(), m.get_offsetZ());
-            console.log(this.renderContext.viewCamera);
+            console.log(Vector3d.getLength(Vector3d.create(m.get_offsetX(), m.get_offsetY(), m.get_offsetZ())));
             if (normalize) {
               vPickRayDir.normalize();
             }
