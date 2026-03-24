@@ -1518,21 +1518,25 @@ var WWTControl$ = {
 
         if (planetMode) {  // Earth or Planet
           const planetRadius = 1;
+
           const projMatrix = this.renderContext.get_projection();
-          const near = -projMatrix.get_offsetZ() / projMatrix.get_m33();
-          const far = near / (projMatrix.get_m33() - 1);
+          // const near = projMatrix.get_offsetZ() / projMatrix.get_m33();
+          // const far = near / (projMatrix.get_m33() - 1);
+          const near = -1;
+          const far = 1;
           const pointFar = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, far);
           const pointNear = this.transformPickPointToWorldSpace(pt, this.renderContext.width, this.renderContext.height, false, near);
-          console.log(pointFar);
-          console.log(pointNear);
+          console.log("Far point: ", pointFar);
+          console.log("Near point: ", pointNear);
           const diff = Vector3d.create(pointFar.x - pointNear.x, pointFar.y - pointNear.y, pointFar.z - pointNear.z);
           diff.normalize();
           console.log(diff);
-          const dot = Vector3d.dot(pointNear, diff);
+
+          const b = 2 * Vector3d.dot(pointNear, diff);
           const pointNearLenSq = Vector3d.getLengthSq(pointNear);
-          const minDistance = pointNearLenSq - dot * dot;
-          console.log(dot);
-          console.log(pointNearLenSq, dot * dot);
+          const c = pointNearLenSq - planetRadius * planetRadius;
+          const minDistance = b * b - 4 * c;
+          console.log(b, c);
 
           console.log(minDistance);
           console.log("==========");
@@ -1563,16 +1567,19 @@ var WWTControl$ = {
             // but clip space goes upwards (like we're used to for y).
             // We also take projection scaling into account here.
             var v = new Vector3d();
-            v.x = (((2 * ptCursor.x) / backBufferWidth) - 1) / this.renderContext.get_projection().get_m11();
-            v.y = -(((2 * ptCursor.y) / backBufferHeight) - 1) / this.renderContext.get_projection().get_m22();
-            v.z = z / this.renderContext.get_projection().get_m33();
+            v.x = (((2 * ptCursor.x) / backBufferWidth) - 1);
+            v.y = -(((2 * ptCursor.y) / backBufferHeight) - 1);
+            v.z = z;
 
             var m = Matrix3d.multiplyMatrix(this.renderContext.get_world(), this.renderContext.get_view());
+            m = Matrix3d.multiplyMatrix(m, this.renderContext.get_projection());
             m.invert();
 
             // Transform the screen space pick ray into 3D space
-            // const d = v.x * m.get_m14() + v.y * m.get_m24() + v.z * m.get_m34() + m.get_m44();
-            const d = 1;
+            // w here is 1
+            const d = v.x * m.get_m14() + v.y * m.get_m24() + v.z * m.get_m34() + m.get_m44();
+            console.log(m);
+            console.log(d);
             vPickRayDir.x = (v.x * m.get_m11() + v.y * m.get_m21() + v.z * m.get_m31() + m.get_offsetX()) / d;
             vPickRayDir.y = (v.x * m.get_m12() + v.y * m.get_m22() + v.z * m.get_m32() + m.get_offsetY()) / d;
             vPickRayDir.z = (v.x * m.get_m13() + v.y * m.get_m23() + v.z * m.get_m33() + m.get_offsetZ()) / d;

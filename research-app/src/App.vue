@@ -2866,8 +2866,10 @@ const App = defineComponent({
     this.waitForReady().then(() => {
       this.setBackgroundImageByName("Earth");
       this.setForegroundImageByName("Earth");
+      this.applySetting(["showCrosshairs", true]);
       console.log(this);
       console.log(WWTControl.singleton.renderContext);
+
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       window.app = this; window.rc = WWTControl.singleton.renderContext;
