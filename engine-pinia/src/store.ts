@@ -659,8 +659,8 @@ function availableImagesets(): ImagesetInfo[] {
  *
  * Getters:
  *
- * - {@link findRADecForScreenPoint}
- * - {@link findScreenPointForRADec}
+ * - {@link findLatLngForScreenPoint}
+ * - {@link findScreenPointForLatLng}
  *
  * Actions:
  *
@@ -870,21 +870,26 @@ export const engineStore = defineStore('wwt-engine', {
     },
 
     /** Get the right ascension and declination, in degrees, for x, y coordinates on the screen */
-    findRADecForScreenPoint(_state) {
-      return (pt: { x: number; y: number }): { ra: number; dec: number } => {
+    findLatLngForScreenPoint(_state) {
+      return (pt: { x: number; y: number }): { lon: number; lat: number } => {
         if (this.$wwt.inst === null)
           throw new Error('cannot findRADecForScreenPoint without linking to WWTInstance');
         const coords = this.$wwt.inst.ctl.getCoordinatesForScreenPoint(pt.x, pt.y);
-        return { ra: (15 * coords.x + 720) % 360, dec: coords.y };
+        const planetMode = this.$wwt.inst.ctl.renderType < 2;
+        if (planetMode) {
+          return { lon: coords.x, lat: coords.y };
+        } else {
+          return { lon: (15 * coords.x + 720) % 360, lat: coords.y };
+        }
       }
     },
 
     /** Given an RA and Dec position, return the x, y coordinates of the screen point */
-    findScreenPointForRADec(_state) {
-      return (pt: { ra: number; dec: number }): { x: number; y: number } => {
+    findScreenPointForLatLng(_state) {
+      return (pt: { lon: number; lat: number }): { x: number; y: number } => {
         if (this.$wwt.inst === null)
           throw new Error('cannot findScreenPointForRADec without linking to WWTInstance');
-        return this.$wwt.inst.ctl.getScreenPointForCoordinates(pt.ra / 15, pt.dec);
+        return this.$wwt.inst.ctl.getScreenPointForCoordinates(pt.lon / 15, pt.lat);
       }
     },
 

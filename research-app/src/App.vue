@@ -2799,7 +2799,10 @@ const App = defineComponent({
       const rowSeparator = "\r\n";
       const colSeparator = "\t";
 
-      const raDecDeg = this.findRADecForScreenPoint(point);
+      const raDecDeg = this.findLatLngForScreenPoint(point);
+      if (!raDecDeg) {
+        return null;
+      }
       const target = { ra: D2R * raDecDeg.ra, dec: D2R * raDecDeg.dec };
 
       for (const layerInfo of this.selectableTableLayers()) {
