@@ -2086,6 +2086,9 @@ const App = defineComponent({
     wwtOnPointerDown(event: PointerEvent) {
       this.isPointerMoving = false;
       this.pointerStartPosition = { x: event.pageX, y: event.pageY };
+      // const r = this.findRADecForScreenPoint({ x: event.offsetX, y: event.offsetY });
+      // console.log(r);
+      // console.log(this.findScreenPointForRADec({ ra: r.ra, dec: r.dec }));
     },
 
     wwtOnPointerUp(event: PointerEvent) {
@@ -2862,6 +2865,10 @@ const App = defineComponent({
     }
 
     this.waitForReady().then(() => {
+
+      const iset = "Earth";
+      this.setBackgroundImageByName(iset);
+      this.setForegroundImageByName(iset);
 
       this.applySetting(["showCrosshairs", true]);
       const script = this.getQueryScript(window.location);
