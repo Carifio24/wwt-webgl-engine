@@ -6,8 +6,8 @@ import { defineStore } from 'pinia';
 import { ImagesetInfo, SpreadSheetLayerInfo } from '@wwtelescope/engine-pinia';
 
 export interface Source {
-  ra: number;
-  dec: number;
+  lng: number;
+  lat: number;
   name: string;
   catalogLayer: CatalogLayerInfo;
   zoomDeg?: number;
@@ -63,7 +63,7 @@ function infoKey(info: CatalogLayerInfo) {
 }
 
 function sourcesEqual(s1: Source, s2: Source) {
-  return (s1.ra === s2.ra) && (s1.dec === s2.dec) && (infoKey(s1.catalogLayer) === infoKey(s2.catalogLayer));
+  return (s1.lng === s2.lng) && (s1.lat === s2.lat) && (infoKey(s1.catalogLayer) === infoKey(s2.catalogLayer));
 }
 
 function getFilteredLayers(statusMap: { [id: string]: TableLayerStatus | undefined },
