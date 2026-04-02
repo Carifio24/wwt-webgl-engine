@@ -1513,7 +1513,7 @@ var WWTControl$ = {
 
     getCoordinatesForScreenPoint: function (x, y) {
         var pt = Vector2d.create(x, y);
-        const planetMode = this.renderType < 2;  // Earth or Planet
+        const planetMode = this.get_planetLike();  // Earth or Planet
 
         if (planetMode) {  // Earth or Planet
           const planetRadius = 1;
