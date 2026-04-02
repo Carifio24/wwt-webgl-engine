@@ -899,10 +899,13 @@ export const engineStore = defineStore('wwt-engine', {
 
     /** Get the coordinates, in degrees, for x, y coordinates on the screen */
     findCoordinatesForScreenPoint(_state) {
-      return (pt: { x: number; y: number; }): { lng: number; lat: number } => {
+      return (pt: { x: number; y: number; }): { lng: number; lat: number } | null => {
         if (this.$wwt.inst === null)
           throw new Error('cannot findCoordinatesForScreenPoint without linking to WWTInstance');
         const coords = this.$wwt.inst.ctl.getCoordinatesForScreenPoint(pt.x, pt.y);
+        if (coords === null) {
+          return null;
+        }
         if (this.backgroundImageset?.get_dataSetType() === ImageSetType.sky) {
           return { lng: (15 * coords.x + 720) % 360, lat: coords.y };
         } else {
@@ -912,16 +915,16 @@ export const engineStore = defineStore('wwt-engine', {
     },
 
     /** Given a lon/lat or RA/Dec position in degrees, return the x, y coordinates of the screen point */
-    findScreenPointsForCoordinates(_state) {
+    findScreenPointForCoordinates(_state) {
       return (pt: { lng: number; lat: number }): { x: number; y: number; } => {
         if (this.$wwt.inst === null)
-          throw new Error('cannot findScreenPointsForCoordinates without linking to WWTInstance');
+          throw new Error('cannot findScreenPointForCoordinates without linking to WWTInstance');
         let lng = pt.lng;
         if (this.backgroundImageset?.get_dataSetType() === ImageSetType.sky)
           lng /= 15;
         return this.$wwt.inst.ctl.getScreenPointForCoordinates(lng, pt.lat);
       }
-    }
+    },
 
     /** Look up the reactive state for an active imageset layer.
      *

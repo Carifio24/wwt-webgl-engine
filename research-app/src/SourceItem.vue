@@ -106,11 +106,11 @@ export default defineComponent({
     }),
 
     lngStr() {
-      return fmtHours(this.source.lng);
+      return fmtHours(this.sourceLng);
     },
 
     latStr() {
-      return fmtDegLat(this.source.lat);
+      return fmtDegLat(this.sourceLat);
     },
 
     searchRadius() {
@@ -129,11 +129,19 @@ export default defineComponent({
       }
     },
 
+    sourceLng() {
+      return "lng" in this.source ? this.source.lng : this.source.ra;
+    },
+
+    sourceLat() {
+      return "lat" in this.source ? this.source.lat : this.source.dec;
+    },
+
     simbadCoordinatesURL() {
       const baseURL = "http://simbad.u-strasbg.fr/simbad/sim-coo?";
       const params = {
         "output.format": "HTML",
-        Coord: `${this.source.lng * R2D} ${this.source.lat * R2D}`,
+        Coord: `${this.sourceLng * R2D} ${this.sourceLat * R2D}`,
         Radius: String(this.searchRadius),
         "Radius.unit": "arcmin",
       };
@@ -141,8 +149,8 @@ export default defineComponent({
     },
 
     nedCoordinatesURL() {
-      const lngString = fmtHours(this.source.lng, "h", "m") + "s";
-      const latString = fmtDegLat(this.source.lat, "d", "m") + "s";
+      const lngString = fmtHours(this.sourceLng, "h", "m") + "s";
+      const latString = fmtDegLat(this.sourceLat, "d", "m") + "s";
       const baseURL = "https://ned.ipac.caltech.edu/conesearch?";
       const params = {
         in_csys: "Equatorial",
@@ -177,8 +185,8 @@ export default defineComponent({
     handleMarkerClick() {
       this.gotoRADecZoom({
         zoomDeg: this.source.zoomDeg ?? this.wwtDegZoom,
-        raRad: this.source.lng,
-        decRad: this.source.lat,
+        raRad: this.sourceLat,
+        decRad: this.sourceLng,
         instant: false,
       }).catch((err) => console.log(err));
     },

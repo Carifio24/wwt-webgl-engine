@@ -2092,8 +2092,8 @@ const App = defineComponent({
       const needsUpdate =
         closestPt == null ||
         this.lastClosePt == null ||
-        this.lastClosePt.ra != closestPt.ra ||
-        this.lastClosePt.dec != closestPt.dec;
+        this.lastClosePt.lng != closestPt.lng ||
+        this.lastClosePt.lat != closestPt.lat;
       if (needsUpdate) {
         this.lastClosePt = closestPt;
       }
@@ -2122,14 +2122,14 @@ const App = defineComponent({
         this.$options.statusMessageDestination.postMessage(message, this.allowedOrigin);
       }
 
-      // if (!this.isPointerMoving) {
-      //   this.updateLastClosePoint(event);
-      //   if (this.lastClosePt !== null) {
-      //     const source = this.sourceCreator(this.lastClosePt);
-      //     this.addSource(source);
-      //     this.lastSelectedSource = source;
-      //   }
-      // }
+      if (!this.isPointerMoving) {
+        this.updateLastClosePoint(event);
+        if (this.lastClosePt !== null) {
+          const source = this.sourceCreator(this.lastClosePt);
+          this.addSource(source);
+          this.lastSelectedSource = source;
+        }
+      }
 
       this.pointerStartPosition = null;
       this.isPointerMoving = false;
@@ -2820,7 +2820,12 @@ const App = defineComponent({
       const colSeparator = "\t";
 
       const coordsDeg = this.findCoordinatesForScreenPoint(point);
+      if (!coordsDeg) {
+        return null;
+      }
+      console.log("Point", point);
       const target = { lng: D2R * coordsDeg.lng, lat: D2R * coordsDeg.lat };
+      console.log("Target", coordsDeg);
 
       for (const layerInfo of this.selectableTableLayers()) {
         const layer = this.spreadSheetLayer(layerInfo);
@@ -2853,14 +2858,18 @@ const App = defineComponent({
               catalogLayer: layerInfo,
             };
             minDist = dist;
+            console.log(lng * R2D, lat * R2D, dist);
           }
         }
       }
 
       if (closestPt !== null) {
         const closestLngLatDeg = { lng: closestPt.lng * R2D, lat: closestPt.lat * R2D };
-        const closestScreenPoint = this.findScreenPointsForCoordinates(closestLngLatDeg);
+        console.log(closestLngLatDeg);
+        console.log(this.findScreenPointForCoordinates(closestLngLatDeg));
+        const closestScreenPoint = this.findScreenPointForCoordinates(closestLngLatDeg);
         const pixelDist = Math.sqrt((point.x - closestScreenPoint.x) ** 2 + (point.y - closestScreenPoint.y) ** 2);
+        console.log(pixelDist);
         if (!threshold || pixelDist < threshold) {
           return closestPt;
         }
@@ -2894,6 +2903,30 @@ const App = defineComponent({
     }
 
     this.waitForReady().then(() => {
+      
+      const earth = "Earth";
+      this.setBackgroundImageByName(earth);
+      this.setForegroundImageByName(earth);
+
+      const data = "VGVhbQlOYW1lCUxhdGl0dWRlCUxvbmdpdHVkZQ0KQXJpem9uYSBEaWFtb25kYmFja3MJQ2hhc2UgRmllbGQJMzMuNDQ1MwktMTEyLjA2NjcNCkF0bGFudGEgQnJhdmVzCVRydWlzdCBQYXJrCTMzLjg5MDcJLTg0LjQ2NzcNCkJhbHRpbW9yZSBPcmlvbGVzCU9yaW9sZSBQYXJrIGF0IENhbWRlbiBZYXJkcwkzOS4yODM5CS03Ni42MjE3DQpCb3N0b24gUmVkIFNveAlGZW53YXkgUGFyawk0Mi4zNDY3CS03MS4wOTcyDQpDaGljYWdvIEN1YnMJV3JpZ2xleSBGaWVsZAk0MS45NDg0CS04Ny42NTUzDQpDaGljYWdvIFdoaXRlIFNveAlHdWFyYW50ZWVkIFJhdGUgRmllbGQJNDEuODMwMAktODcuNjMzOQ0KQ2luY2lubmF0aSBSZWRzCUdyZWF0IEFtZXJpY2FuIEJhbGwgUGFyawkzOS4wOTc1CS04NC41MDcwDQpDbGV2ZWxhbmQgR3VhcmRpYW5zCVByb2dyZXNzaXZlIEZpZWxkCTQxLjQ5NjIJLTgxLjY4NTINCkNvbG9yYWRvIFJvY2tpZXMJQ29vcnMgRmllbGQJMzkuNzU1OQktMTA0Ljk5NDINCkRldHJvaXQgVGlnZXJzCUNvbWVyaWNhIFBhcmsJNDIuMzM5MAktODMuMDQ4NQ0KSG91c3RvbiBBc3Ryb3MJTWludXRlIE1haWQgUGFyawkyOS43NTcxCS05NS4zNTU1DQpLYW5zYXMgQ2l0eSBSb3lhbHMJS2F1ZmZtYW4gU3RhZGl1bQkzOS4wNTE3CS05NC40ODAzDQpMb3MgQW5nZWxlcyBBbmdlbHMJQW5nZWwgU3RhZGl1bQkzMy44MDAzCS0xMTcuODgyNw0KTG9zIEFuZ2VsZXMgRG9kZ2VycwlEb2RnZXIgU3RhZGl1bQkzNC4wNzM5CS0xMTguMjQwMA0KTWlhbWkgTWFybGlucwlsb2FuRGVwb3QgcGFyawkyNS43NzgxCS04MC4yMTk3DQpNaWx3YXVrZWUgQnJld2VycwlBbWVyaWNhbiBGYW1pbHkgRmllbGQJNDMuMDI4MAktODcuOTcxMw0KTWlubmVzb3RhIFR3aW5zCVRhcmdldCBGaWVsZAk0NC45ODE3CS05My4yNzc2DQpOZXcgWW9yayBNZXRzCUNpdGkgRmllbGQJNDAuNzU3MQktNzMuODQ1OA0KTmV3IFlvcmsgWWFua2VlcwlZYW5rZWUgU3RhZGl1bQk0MC44Mjk2CS03My45MjYyDQpPYWtsYW5kIEF0aGxldGljcwlPYWtsYW5kIENvbGlzZXVtIChSaW5nQ2VudHJhbCBDb2xpc2V1bSkJMzcuNzUxNgktMTIyLjIwMDUNClBoaWxhZGVscGhpYSBQaGlsbGllcwlDaXRpemVucyBCYW5rIFBhcmsJMzkuOTA1OAktNzUuMTY2NQ0KUGl0dHNidXJnaCBQaXJhdGVzCVBOQyBQYXJrCTQwLjQ0NjkJLTgwLjAwNTcNClNhbiBEaWVnbyBQYWRyZXMJUGV0Y28gUGFyawkzMi43MDczCS0xMTcuMTU3Mw0KU2FuIEZyYW5jaXNjbyBHaWFudHMJT3JhY2xlIFBhcmsJMzcuNzc4NgktMTIyLjM4OTMNClNlYXR0bGUgTWFyaW5lcnMJVC1Nb2JpbGUgUGFyawk0Ny41OTE0CS0xMjIuMzMyNQ0KU3QuIExvdWlzIENhcmRpbmFscwlCdXNjaCBTdGFkaXVtCTM4LjYyMjYJLTkwLjE5MjgNClRhbXBhIEJheSBSYXlzCVRyb3BpY2FuYSBGaWVsZAkyNy43NjgyCS04Mi42NTM0DQpUZXhhcyBSYW5nZXJzCUdsb2JlIExpZmUgRmllbGQJMzIuNzQ3MwktOTcuMDgzMA0KVG9yb250byBCbHVlIEpheXMJUm9nZXJzIENlbnRyZQk0My42NDE0CS03OS4zODk0DQpXYXNoaW5ndG9uIE5hdGlvbmFscwlOYXRpb25hbHMgUGFyawkzOC44NzMwCS03Ny4wMDc0";
+
+      this.createTableLayer({
+        name: "MLB stadia",
+        referenceFrame: "Earth",
+        dataCsv: atob(data),
+      }).then(layer => {
+        layer.set_latColumn(2);
+        layer.set_lngColumn(3);
+        layer.set_scaleFactor(100);
+        this.applyTableLayerSettings({id: layer.id.toString(), settings: [["color", Color.fromArgb(255, 255, 0, 0)]]});
+        const info = new SpreadSheetLayerInfo(layer.id.toString(), "Earth", layer.get_name());
+        this.addResearchAppTableLayer(info);
+        this.setResearchAppTableLayerSelectability({
+          layer: info,
+          selectable: true,
+        });
+        console.log(layer);
+      });
 
       this.applySetting(["showCrosshairs", true]);
       const script = this.getQueryScript(window.location);
