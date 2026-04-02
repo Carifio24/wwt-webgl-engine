@@ -879,6 +879,8 @@ export const engineStore = defineStore('wwt-engine', {
       return (pt: { x: number; y: number }): { ra: number; dec: number } => {
         if (this.$wwt.inst === null)
           throw new Error('cannot findRADecForScreenPoint without linking to WWTInstance');
+        if (this.backgroundImageset?.get_dataSetType() !== ImageSetType.sky)
+          throw new Error('can only ask for RA/Dec when in sky mode');
         const coords = this.$wwt.inst.ctl.getCoordinatesForScreenPoint(pt.x, pt.y);
         return { ra: (15 * coords.x + 720) % 360, dec: coords.y };
       }
@@ -889,9 +891,37 @@ export const engineStore = defineStore('wwt-engine', {
       return (pt: { ra: number; dec: number }): { x: number; y: number } => {
         if (this.$wwt.inst === null)
           throw new Error('cannot findScreenPointForRADec without linking to WWTInstance');
+        if (this.backgroundImageset?.get_dataSetType() !== ImageSetType.sky)
+          throw new Error('can only find screen point for RA/Dec in sky mode');
         return this.$wwt.inst.ctl.getScreenPointForCoordinates(pt.ra / 15, pt.dec);
       }
     },
+
+    /** Get the coordinates, in degrees, for x, y coordinates on the screen */
+    findCoordinatesForScreenPoint(_state) {
+      return (pt: { x: number; y: number; }): { lon: number; lat: number } => {
+        if (this.$wwt.inst === null)
+          throw new Error('cannot findCoordinatesForScreenPoint without linking to WWTInstance');
+        const coords = this.$wwt.inst.ctl.getCoordinatesForScreenPoint(pt.x, pt.y);
+        if (this.backgroundImageset?.get_dataSetType() === ImageSetType.sky) {
+          return { lon: (15 * coords.x + 720) % 360, lat: coords.y };
+        } else {
+          return { lon: coords.x, lat: coords.y };
+        }
+      }
+    },
+
+    /** Given a lon/lat or RA/Dec position in degrees, return the x, y coordinates of the screen point */
+    findScreenPointsForCoordinates(_state) {
+      return (pt: { lon: number; lat: number }): { x: number; y: number; } => {
+        if (this.$wwt.inst === null)
+          throw new Error('cannot findScreenPointsForCoordinates without linking to WWTInstance');
+        let lon = pt.lon;
+        if (this.backgroundImageset?.get_dataSetType() === ImageSetType.sky)
+          lon /= 15;
+        return this.$wwt.inst.ctl.getScreenPointForCoordinates(lon, pt.lat);
+      }
+    }
 
     /** Look up the reactive state for an active imageset layer.
      *

@@ -109,6 +109,8 @@ export const WWTAwareComponent = defineComponent({
       "activeImagesetLayerStates",
       "findRADecForScreenPoint",
       "findScreenPointForRADec",
+      "findCoordinatesForScreenPoint",
+      "findScreenPointsForCoordinates",
       "layerById",
       "imagesetForLayer",
       "imagesetLayerById",
