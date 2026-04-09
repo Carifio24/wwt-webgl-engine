@@ -28,6 +28,8 @@ import { Cursor, Cursors } from "../util.js";
 import { Layer } from "./layer.js";
 import { LayerUI, LayerUITreeNode } from "./layer_ui.js";
 
+import { load } from "@
+
 
 // wwtlib.Material
 //
@@ -2276,6 +2278,13 @@ var Object3d$ = {
         this._mesh.commitToDevice();
         this._dirty = false;
         this._readyToRender = true;
+    },
+
+    _loadMeshFromGLTF: function (doc, filename) {
+      this._tourDocument = doc;
+      this.filename = filename;
+      var blob = doc.getFileBlob(filename);
+       
     },
 
     _offsetObjects: function (vertList, objects, offsetMat, offsetPoint) {
