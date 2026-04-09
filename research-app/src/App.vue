@@ -377,7 +377,8 @@ import { Source, researchAppStore } from "./store";
 import { wwtEngineNamespace } from "./namespaces";
 
 import { ImageSetType, SolarSystemObjects } from "@wwtelescope/engine-types";
-import { Place } from "@wwtelescope/engine";
+import { LayerManager, Place, WWTControl } from "@wwtelescope/engine";
+import * as THREE from "three";
 
 interface Message {
   event?: string;
@@ -2914,6 +2915,24 @@ const App = defineComponent({
     }
 
     this.waitForReady().then(() => {
+
+      // 1. Create the Geometry (Shape)
+      const geometry = new THREE.BoxGeometry(100000, 100000, 100000);
+      
+      // 2. Create the Material (Color/Surface)
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      
+      // 3. Create the Mesh (Geometry + Material)
+      const cube = new THREE.Mesh(geometry, material);
+       
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.wwt = WWTControl.singleton; window.lm = LayerManager; window.THREE = THREE; window.layer = LayerManager.createTHREEMeshLayer("Sky", "Test", cube); window.cube = cube;
+
+      const iset = "Solar System";
+      this.setBackgroundImageByName(iset);
+      this.setForegroundImageByName(iset);
+
       const script = this.getQueryScript(window.location);
       if (script !== null) {
         this.$options.statusMessageDestination = window;

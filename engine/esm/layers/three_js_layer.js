@@ -1,5 +1,7 @@
 import { Layer } from "./layer.js";
+import { registerType } from "../typesystem.js";
 import { globalRenderContext } from "../render_globals.js";
+import { WWTControl } from "../wwt_control.js";
 
 import * as THREE from 'three';
 
@@ -15,8 +17,8 @@ function setupTHREEGlobals() {
     return;
   }
 
-  THREEGlobals.renderer = THREE.WebGLRenderer({
-    canvas: globalRenderContext.canvas,
+  THREEGlobals.renderer = new THREE.WebGLRenderer({
+    canvas: WWTControl.singleton.canvas,
     context: globalRenderContext.gl,
     antialias: true,
   });
@@ -72,6 +74,10 @@ export function ThreeJSMeshLayer(mesh, frame) {
 }
 
 ThreeJSMeshLayer.draw = function (renderContext, _opacity, _flat) {
-  this.mesh.matrix.copy(matrixToTHREE(renderContext.get_projection()));
+  this.mesh.matrix.copy(matrixToTHREE(renderContext.get_world()));
   this.mesh.matrixWorldNeedsUpdate = true;
 }
+
+var ThreeJSMeshLayer$ = {};
+
+registerType("ThreeJSMeshLayer", [ThreeJSMeshLayer, ThreeJSMeshLayer$, Layer]);

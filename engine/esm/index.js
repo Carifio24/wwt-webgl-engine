@@ -257,7 +257,7 @@ export { ReferenceFrame, ReferenceFrameTypes } from "./layers/reference_frame.js
 export { OrbitLayer, OrbitLayerUI } from "./layers/orbit_layer.js";
 export { Table } from "./layers/table.js";
 export { Primitives, VoTable, VoRow, VoColumn } from "./layers/vo_table.js";
-export { updateTHREEGlobals, THREEJSMeshLayer } from "./layers/three_js_layer.js";
+export { updateTHREEGlobals, ThreeJSMeshLayer } from "./layers/three_js_layer.js";
 
 export { FileEntry, FileCabinet } from "./tours/file_cabinet.js";
 export {

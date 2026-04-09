@@ -40,7 +40,7 @@ import { SpreadSheetLayer, PushPin } from "./spreadsheet_layer.js";
 import { VoTableLayer } from "./vo_table_layer.js";
 import { LayerInfo } from "../tours/tour_stop.js";
 import { TourPlayer } from "../tours/tour_player.js";
-import { ThreeJSMeshLayer, updateTHREEGlobals } from "./three_js_layer.js";
+import { renderTHREE, ThreeJSMeshLayer, updateTHREEGlobals } from "./three_js_layer.js";
 
 
 // wwtlib.ReferenceFrames
@@ -727,7 +727,7 @@ LayerManager._draw = function (renderContext, opacity, astronomical, referenceFr
         return;
     }
 
-    updateTHREEGlobals();
+    updateTHREEGlobals(renderContext);
 
     if (TourPlayer.get_playing()) {
         var player = globalWWTControl.uiController;
@@ -829,6 +829,8 @@ LayerManager._draw = function (renderContext, opacity, astronomical, referenceFr
     renderContext.set_nominalRadius(oldNominalRadius);
     renderContext.set_world(matOld);
     renderContext.set_worldBaseNonRotating(matOldNonRotating);
+
+    renderTHREE();
 };
 
 LayerManager._getVisibleLayerList = function (previous) {
@@ -1447,7 +1449,7 @@ LayerManager.addSpreadsheetLayer = function (layer, frame) {
 };
 
 LayerManager.createTHREEMeshLayer = function (frame, name, mesh) {
-    var layer = new ThreeJSMeshLayer(frame, mesh);
+    var layer = new ThreeJSMeshLayer(mesh, frame);
     layer.set_name(name);
     LayerManager.addTHREEMeshLayer(layer, frame);
     return layer;
