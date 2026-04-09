@@ -40,6 +40,7 @@ import { SpreadSheetLayer, PushPin } from "./spreadsheet_layer.js";
 import { VoTableLayer } from "./vo_table_layer.js";
 import { LayerInfo } from "../tours/tour_stop.js";
 import { TourPlayer } from "../tours/tour_player.js";
+import { ThreeJSMeshLayer, updateTHREEGlobals } from "./three_js_layer.js";
 
 
 // wwtlib.ReferenceFrames
@@ -725,6 +726,9 @@ LayerManager._draw = function (renderContext, opacity, astronomical, referenceFr
     if (!thisMap.enabled || (!ss.keyCount(thisMap.childMaps) && !thisMap.layers.length && !(thisMap.frame.showAsPoint || thisMap.frame.showOrbitPath))) {
         return;
     }
+
+    updateTHREEGlobals();
+
     if (TourPlayer.get_playing()) {
         var player = globalWWTControl.uiController;
         if (player != null) {
@@ -1441,6 +1445,19 @@ LayerManager.addSpreadsheetLayer = function (layer, frame) {
     layer.set_referenceFrame(frame);
     LayerManager.add(layer, true);
 };
+
+LayerManager.createTHREEMeshLayer = function (frame, name, mesh) {
+    var layer = new ThreeJSMeshLayer(frame, mesh);
+    layer.set_name(name);
+    LayerManager.addTHREEMeshLayer(layer, frame);
+    return layer;
+}
+
+LayerManager.addTHREEMeshLayer = function (layer, frame) {
+    layer.enabled = true;
+    layer.set_referenceFrame(frame);
+    LayerManager.add(layer, true);
+}
 
 LayerManager._showOrbitPlanet_Click = function (sender, e) {
     try {
