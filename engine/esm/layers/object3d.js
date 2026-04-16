@@ -953,7 +953,7 @@ export function Object3d(tourDoc, filename, flipV, flipHandedness, smooth, color
     this.flipHandedness = flipHandedness;
     this.filename = filename;
     if (ss.endsWith(this.filename.toLowerCase(), '.obj')) {
-        this._loadMeshFromObj(tourDoc, this.filename);
+        this._loadMeshFromObj(this.filename);
     }
     else {
         this._loadMeshFrom3ds(tourDoc, this.filename, 1);
@@ -1032,7 +1032,7 @@ var Object3d$ = {
         if (!this.issLayer) {
             this.dispose();
             if (ss.endsWith(this.filename.toLowerCase(), '.obj')) {
-                this._loadMeshFromObj(this._tourDocument, this.filename);
+                this._loadMeshFromObj(this.filename);
             }
             else {
                 this._loadMeshFrom3ds(this._tourDocument, this.filename, 1);
@@ -1398,23 +1398,32 @@ var Object3d$ = {
         return percentage;
     },
 
-    _loadMeshFromObj: function (doc, filename) {
+    _loadMeshFromObj: function (filename) {
         var $this = this;
 
         this.filename = filename;
-        this._tourDocument = doc;
-        var blob = doc.getFileBlob(filename);
-        var chunck = new FileReader();
-        chunck.onloadend = function (e) {
-            $this._matFiles = $this._readObjMaterialsFromBin(ss.safeCast(chunck.result, String));
-            $this._matFileIndex = 0;
+        var blob;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', this.filename, true);
+        xhr.responseType = 'blob';
+        xhr.onload = function() {
+          if (this.status === 200) {
+            blob = this.response;
+            this.blob = blob;
+            var chunck = new FileReader();
+            chunck.onloadend = function (e) {
+                $this._matFiles = $this._readObjMaterialsFromBin(ss.safeCast(chunck.result, String));
+                $this._matFileIndex = 0;
 
-            // pass data to LoadMatLib. It will chain load all the material
-            // files, then load the obj from this data - hack for having no
-            // synchronous blob reading in javascript
-            $this._loadMatLib(ss.safeCast(chunck.result, String));
+                // pass data to LoadMatLib. It will chain load all the material
+                // files, then load the obj from this data - hack for having no
+                // synchronous blob reading in javascript
+                $this._loadMatLib(ss.safeCast(chunck.result, String));
+            };
+            chunck.readAsText(blob);
+          }
         };
-        chunck.readAsText(blob);
+        xhr.send();
     },
 
     _readObjMaterialsFromBin: function (data) {
@@ -1663,13 +1672,18 @@ var Object3d$ = {
 
         if (this._matFileIndex < this._matFiles.length) {
             var filename = this._matFiles[this._matFileIndex++];
-            var blob = this._tourDocument.getFileBlob(filename);
-            var chunck = new FileReader();
-            chunck.onloadend = function (e) {
-                $this._readMatLibFromBin(ss.safeCast(chunck.result, String));
-                $this._loadMatLib(data);
-            };
-            chunck.readAsText(blob);
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', filename, true);
+            xhr.responseType = 'blob';
+            xhr.onload = function () {
+                var blob = this.response;
+                var chunck = new FileReader();
+               chunck.onloadend = function (e) {
+                    $this._readMatLibFromBin(ss.safeCast(chunck.result, String));
+                    $this._loadMatLib(data);
+                };
+                chunck.readAsText(blob);
+            }
         } else {
             this._readObjFromBin(data);
         }
