@@ -926,6 +926,7 @@ registerType("VertexPosition", [VertexPosition, VertexPosition$, null]);
 // wwtlib.Object3d
 
 export function Object3d(tourDoc, filename, flipV, flipHandedness, smooth, color) {
+    console.log("HERE");
     this.flipHandedness = false;
     this.flipV = true;
     this.smooth = true;
@@ -1684,6 +1685,7 @@ var Object3d$ = {
                 };
                 chunck.readAsText(blob);
             }
+          xhr.send();
         } else {
             this._readObjFromBin(data);
         }

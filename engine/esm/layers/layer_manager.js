@@ -217,6 +217,7 @@ LayerManager.oneTimeInitialization = function () {
 };
 
 LayerManager.initLayers = function () {
+    console.log("init layers");
     LayerManager._clearLayers();
     var iss = null;
     var doISS = !LayerManager.get_tourLayers() && !freestandingMode;
@@ -296,10 +297,11 @@ LayerManager._addIss = function () {
 };
 
 LayerManager.addObject3dLayer = function (layer) {
-    layer.set_referenceFrame("Sun");
+    var frame = "ISS"; // "Sun"
+    layer.set_referenceFrame(frame);
     layer.enabled = true;
     LayerManager.get_layerList()[layer.id] = layer;
-    LayerManager.get_allMaps()["Sun"].layers.push(layer);
+    LayerManager.get_allMaps()[frame].layers.push(layer);
 }
 
 LayerManager._addAllMaps = function (maps, parent) {
@@ -726,6 +728,7 @@ LayerManager._prepTourLayers = function () {
 };
 
 LayerManager._draw = function (renderContext, opacity, astronomical, referenceFrame, nested, cosmos) {
+    // console.log("DRAW");
     if (!ss.keyExists(LayerManager.get_allMaps(), referenceFrame)) {
         return;
     }

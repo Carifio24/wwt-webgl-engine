@@ -377,7 +377,7 @@ import { Source, researchAppStore } from "./store";
 import { wwtEngineNamespace } from "./namespaces";
 
 import { ImageSetType, SolarSystemObjects } from "@wwtelescope/engine-types";
-import { LayerManager, Object3dLayer, Place } from "@wwtelescope/engine";
+import { LayerManager, Object3dLayer, Place, WWTControl } from "@wwtelescope/engine";
 
 interface Message {
   event?: string;
@@ -2915,6 +2915,9 @@ const App = defineComponent({
 
     this.waitForReady().then(() => {
 
+      WWTControl.singleton.renderOneFrame();
+      // WWTControl.singleton.setSolarSystemMinZoom(1e-20);
+
       const iset = "Solar System";
       this.setBackgroundImageByName(iset);
       this.setForegroundImageByName(iset);
@@ -2922,6 +2925,27 @@ const App = defineComponent({
       const objUrl = "./tardis_2005.obj";
       const layer = Object3dLayer.create(objUrl);
       LayerManager.addObject3dLayer(layer);
+      const rc = WWTControl.singleton.renderContext;
+      rc.set_trackingFrame("ISS");
+      rc.set_solarSystemTrack(20);
+      const issMap = LayerManager.get_allMaps()["ISS"];
+      issMap.enabled = true;
+      const issLayer = issMap.layers[0];
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      issLayer.active = true; layer.active = true;
+      issLayer.enabled = true;
+      layer.enabled = true;
+      console.log(issLayer);
+      console.log(LayerManager);
+      console.log(layer);
+      // this.gotoRADecZoom({
+      //   raRad: this.wwtRARad,
+      //   decRad: this.wwtDecRad,
+      //   zoomDeg: 1e-20,
+      //   instant: true,
+      // });
+      console.log(this);
 
       const script = this.getQueryScript(window.location);
       if (script !== null) {
