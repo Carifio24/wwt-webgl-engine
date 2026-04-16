@@ -1158,6 +1158,8 @@ export namespace LayerManager {
    * */
   export function addVoTableLayer(table: VoTable, title: string): VoTableLayer;
 
+  export function addObject3dLayer(layer: Object3dLayer): void;
+
   /** Add a new {@link VoTableLayer} to the manager.
    *
    * @param table The {@link VoTable} that will underlie the new layer.
@@ -3049,4 +3051,5 @@ export class Object3d {
 
 export class Object3dLayer extends Layer {
   loadData(doc: TourDocument, filename: string): void;
+  static create(filename: string): Object3dLayer;
 }

@@ -15,6 +15,7 @@ import {
     SphereHull,
     ConvexHull,
 } from "../double3d.js";
+import { FileCabinet } from "../tours/file_cabinet.js";
 import { globalRenderContext } from "../render_globals.js";
 import { WEBGL } from "../graphics/webgl_constants.js";
 import { Dates, LineList, TriangleList } from "../graphics/primitives3d.js";
@@ -27,6 +28,7 @@ import { Settings } from "../settings.js";
 import { Cursor, Cursors } from "../util.js";
 import { Layer } from "./layer.js";
 import { LayerUI, LayerUITreeNode } from "./layer_ui.js";
+import { TourDocument } from "../../src/index.js";
 
 
 // wwtlib.Material
@@ -81,6 +83,14 @@ Object3dLayer._translateUI$1 = null;
 Object3dLayer._translateUILines$1 = null;
 Object3dLayer._scaleUI$1 = null;
 Object3dLayer._rotateUi$1 = null;
+
+Object3dLayer.create = function (filename) {
+    var doc = new TourDocument();
+    doc._cabinet = new FileCabinet();
+    var layer = new Object3dLayer();
+    layer.loadData(doc, filename);
+    return layer;
+}
 
 Object3dLayer._initTranslateUI$1 = function () {
     Object3dLayer._translateUILines$1 = new LineList();

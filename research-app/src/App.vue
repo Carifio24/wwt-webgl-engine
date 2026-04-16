@@ -377,7 +377,7 @@ import { Source, researchAppStore } from "./store";
 import { wwtEngineNamespace } from "./namespaces";
 
 import { ImageSetType, SolarSystemObjects } from "@wwtelescope/engine-types";
-import { Place } from "@wwtelescope/engine";
+import { LayerManager, Object3dLayer, Place } from "@wwtelescope/engine";
 
 interface Message {
   event?: string;
@@ -2914,6 +2914,15 @@ const App = defineComponent({
     }
 
     this.waitForReady().then(() => {
+
+      const iset = "Solar System";
+      this.setBackgroundImageByName(iset);
+      this.setForegroundImageByName(iset);
+
+      const objUrl = "./tardis_2005.obj";
+      const layer = Object3dLayer.create(objUrl);
+      LayerManager.addObject3dLayer(layer);
+
       const script = this.getQueryScript(window.location);
       if (script !== null) {
         this.$options.statusMessageDestination = window;

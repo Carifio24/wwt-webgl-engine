@@ -272,6 +272,7 @@ LayerManager.initLayers = function () {
     LayerManager.get_layerMaps()['Sun'].addChild(new LayerMap('Uranus', 10));
     LayerManager.get_layerMaps()['Sun'].addChild(new LayerMap('Neptune', 11));
     LayerManager.get_layerMaps()['Sun'].addChild(new LayerMap('Pluto', 12));
+    LayerManager.get_layerMaps()['Sun'].addChild(new LayerMap('Objects', 19));
     LayerManager._addMoons(LayerManager._moonfile);
     LayerManager.get_layerMaps()['Sky'] = new LayerMap('Sky', 0);
     LayerManager.get_layerMaps()['Sun'].open = true;
@@ -293,6 +294,13 @@ LayerManager._addIss = function () {
     LayerManager.get_allMaps()['ISS'].layers.push(layer);
     LayerManager.get_allMaps()['ISS'].open = true;
 };
+
+LayerManager.addObject3dLayer = function (layer) {
+    layer.set_referenceFrame("Sun");
+    layer.enabled = true;
+    LayerManager.get_layerList()[layer.id] = layer;
+    LayerManager.get_allMaps()["Sun"].layers.push(layer);
+}
 
 LayerManager._addAllMaps = function (maps, parent) {
     var $enum1 = ss.enumerate(ss.keys(maps));
