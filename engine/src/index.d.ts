@@ -3042,3 +3042,11 @@ export class WWTControlBuilder {
    */
   create(): ScriptInterface;
 }
+
+export class Object3d {
+  _loadMeshFromObj(doc: TourDocument, filename: string): void; 
+}
+
+export class Object3dLayer extends Layer {
+  loadData(doc: TourDocument, filename: string): void;
+}
