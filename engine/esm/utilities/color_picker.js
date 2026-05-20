@@ -10,16 +10,17 @@ import { globalScriptInterface } from "../data_globals.js";
 
 // wwtlib.ColorPicker
 
-export function ColorPicker() {
+export function ColorPicker(options) {
     this.callBack = null;
     this.color = Colors.get_white();
+    this.opacity = "opacity" in options ? options.opacity : true;
 }
 
 var ColorPicker$ = {
     nonMenuClick: function (e) { },
 
     show: function (e) {
-        globalScriptInterface.showColorPicker(this, e);
+        globalScriptInterface.showColorPicker(this, e, this.opacity);
     },
 
     getColorFromClick: function (e) {
