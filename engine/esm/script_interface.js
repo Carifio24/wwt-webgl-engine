@@ -369,9 +369,9 @@ var ScriptInterface$ = {
         this.__timeScrubberHook(name, value);
     },
 
-    showColorPicker: function (pickerInstance, e) {
+    showColorPicker: function (pickerInstance, e, opacity=true) {
         if (this.__colorPickerDisplay != null) {
-            this.__colorPickerDisplay(pickerInstance, e);
+            this.__colorPickerDisplay(pickerInstance, e, opacity);
         }
     },
 
