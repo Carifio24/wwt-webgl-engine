@@ -50,6 +50,16 @@ Grids._eclipticYear = 0;
 Grids._monthDays = [31, 28.2421, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 Grids._monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 Grids._eclipticTextYear = 0;
+Grids._southernHemisphere = false;
+
+Grids.set_southernHemisphere = function (value) {
+    if (value != Grids._southernHemisphere) {
+        Grids._southernHemisphere = value;
+        Grids.resetEquatorialGridText();
+        Grids.resetAltAzGridText();
+        Grids.resetEclipticText();
+    }
+}
 
 Grids._createGalaxyImage = function (renderContext) {
     if (Grids._milkyWayImage == null) {
@@ -398,7 +408,11 @@ Grids._makeEquitorialGridText = function () {
             if (ra < 10) {
                 text = '  ' + ra.toString() + ' hr';
             }
-            Grids._equTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(ra + 0.005, 0.4, 1), Coordinates.raDecTo3dAu(ra + 0.005, 0.5, 1), text, 45, 0.00018));
+            var up = Coordinates.raDecTo3dAu(ra + 0.005, 0.5, 1);
+            if (Grids._southernHemisphere) {
+                up.multiply(-1);
+            }
+            Grids._equTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(ra + 0.005, 0.4, 1), up, text, 45, 0.00018));
         }
         index = 0;
         for (var ra = 0; ra < 24; ra += 3) {
@@ -409,17 +423,29 @@ Grids._makeEquitorialGridText = function () {
                 var text = dec.toString();
                 if (dec > 0) {
                     text = '  +' + dec.toString();
-                    Grids._equTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(ra, dec - 0.4, 1), Coordinates.raDecTo3dAu(ra, dec - 0.3, 1), text, 45, 0.00018));
+                    var up = Coordinates.raDecTo3dAu(ra, dec - 0.3, 1);
+                    if (Grids._southernHemisphere) {
+                        up.multiply(-1);
+                    }
+                    Grids._equTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(ra, dec - 0.4, 1), up, text, 45, 0.00018));
                 }
                 else {
                     text = '  - ' + text.substr(1);
-                    Grids._equTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(ra, dec + 0.4, 1), Coordinates.raDecTo3dAu(ra, dec + 0.5, 1), text, 45, 0.00018));
+                    var up = Coordinates.raDecTo3dAu(ra, dec + 0.5, 1);
+                    if (Grids._southernHemisphere) {
+                        up.multiply(-1);
+                    }
+                    Grids._equTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(ra, dec + 0.4, 1), up, text, 45, 0.00018));
                 }
                 index++;
             }
         }
     }
 };
+
+Grids.resetEquatorialGridText = function () {
+  Grids._equTextBatch = null;
+}
 
 Grids.drawEcliptic = function (renderContext, opacity, drawColor, drawCircle) {
     var year = SpaceTimeController.get_now().getUTCFullYear();
@@ -486,8 +512,9 @@ Grids.drawEclipticText = function (renderContext, opacity, drawColor) {
 };
 
 Grids._makeEclipticText = function () {
-    var year = SpaceTimeController.get_now().getUTCFullYear();
     if (Grids._eclipOvTextBatch == null) {
+        var year = SpaceTimeController.get_now().getUTCFullYear();
+        var inSouthernHemisphere = wwtlib.Settings.get_active().get_locationLat() < 0;
         Grids._eclipOvTextBatch = new Text3dBatch(80);
         Grids._eclipticTextYear = year;
         var obliquity = Coordinates.meanObliquityOfEcliptic(SpaceTimeController.get_jNow());
@@ -517,6 +544,9 @@ Grids._makeEclipticText = function () {
                     var up = Vector3d._transformCoordinate(Vector3d.create(Math.cos((dd * Math.PI * 2) / 360), 0.045, Math.sin((dd * Math.PI * 2) / 360)), mat);
                     up.subtract(center);
                     up.normalize();
+                    if (inSouthernHemisphere) {
+                        up.multiply(-1);
+                    }
                     Grids._eclipOvTextBatch.add(new Text3d(center, up, Grids._monthNames[m], 80, 0.000159375));
                 }
                 index++;
@@ -527,6 +557,10 @@ Grids._makeEclipticText = function () {
         }
     }
 };
+
+Grids.resetEclipticText = function () {
+    Grids._eclipOvTextBatch = null;
+}
 
 Grids.drawPrecessionChart = function (renderContext, opacity, drawColor) {
     Grids._makePrecessionChart();
@@ -553,6 +587,7 @@ Grids._makePrecessionChart = function () {
         }
     }
     if (Grids._precTextBatch == null) {
+        var inSouthernHemisphere = wwtlib.Settings.get_active().get_locationLat() < 0;
         Grids._precTextBatch = new Text3dBatch(50);
         for (var l = -12000; l < 13000; l += 2000) {
             var b = 90 - obliquity + 3;
@@ -571,18 +606,25 @@ Grids._makePrecessionChart = function () {
             if (text.length === 9) {
                 text = '   ' + text;
             }
-            Grids._precTextBatch.add(new Text3d(Vector3d._transformCoordinate(Coordinates.raDecTo3dAu(p, b, 1), mat), Vector3d._transformCoordinate(Coordinates.raDecTo3dAu(p + 0.01, b, 1), mat), text, 75, 0.00015));
+            var up = Vector3d._transformCoordinate(Coordinates.raDecTo3dAu(p + 0.01, b, 1), mat);
+            if (inSouthernHemisphere) {
+              up.multiply(-1);
+            }
+            Grids._precTextBatch.add(new Text3d(Vector3d._transformCoordinate(Coordinates.raDecTo3dAu(p, b, 1), mat), text, 75, 0.00015));
         }
     }
     return;
 };
+
+Grids.resetPrecessionChartText = function () {
+    Grids._precTextBatch = null;
+}
 
 Grids.drawAltAzGrid = function (renderContext, opacity, drawColor) {
     var zenithAltAz = new Coordinates(0, 0);
     var zenith = Coordinates.horizonToEquitorial(zenithAltAz, SpaceTimeController.get_location(), SpaceTimeController.get_now());
     var raPart = -((zenith.get_RA() + 6) / 24 * (Math.PI * 2));
     var decPart = -(zenith.get_dec() / 360 * (Math.PI * 2));
-    var raText = Coordinates.formatDMS(zenith.get_RA());
     var mat = Matrix3d._rotationY(-raPart);
     mat._multiply(Matrix3d._rotationX(decPart));
     mat.invert();
@@ -649,7 +691,6 @@ Grids.drawAltAzGridText = function (renderContext, opacity, drawColor) {
     var zenith = Coordinates.horizonToEquitorial(zenithAltAz, SpaceTimeController.get_location(), SpaceTimeController.get_now());
     var raPart = -((zenith.get_RA() - 6) / 24 * (Math.PI * 2));
     var decPart = -(zenith.get_dec() / 360 * (Math.PI * 2));
-    var raText = Coordinates.formatDMS(zenith.get_RA());
     var mat = Matrix3d._rotationY(-raPart - Math.PI);
     mat._multiply(Matrix3d._rotationX(decPart));
     mat.invert();
@@ -668,9 +709,9 @@ Grids.drawAltAzGridText = function (renderContext, opacity, drawColor) {
 };
 
 Grids._makeAltAzGridText = function () {
-    var drawColor = Colors.get_white();
     var index = 0;
     if (Grids._altAzTextBatch == null) {
+        var hemisphereSign = wwtlib.Settings.get_active().get_locationLat() >= 0 ? 1 : -1;
         Grids._altAzTextBatch = new Text3dBatch(30);
         for (var l = 0; l < 360; l += 10) {
             var text = '       ' + l.toString();
@@ -681,7 +722,7 @@ Grids._makeAltAzGridText = function () {
                 text = '     ' + l.toString();
             }
             var lc = 360 - l;
-            Grids._altAzTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(lc / 15 - 6, 0.4, 1), Coordinates.raDecTo3dAu(lc / 15 - 6, 0.5, 1), text, 75, 0.00018));
+            Grids._altAzTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(lc / 15 - 6, hemisphereSign * 0.4, 1), Coordinates.raDecTo3dAu(lc / 15 - 6, hemisphereSign * 0.5, 1), text, 75, 0.00018));
         }
         index = 0;
         for (var l = 0; l < 360; l += 90) {
@@ -692,11 +733,11 @@ Grids._makeAltAzGridText = function () {
                 var text = b.toString();
                 if (b > 0) {
                     text = '  +' + b.toString();
-                    Grids._altAzTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(l / 15, b - 0.4, 1), Coordinates.raDecTo3dAu(l / 15, b - 0.3, 1), text, 75, 0.00018));
+                    Grids._altAzTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(l / 15, b - hemisphereSign * 0.4, 1), Coordinates.raDecTo3dAu(l / 15, b - hemisphereSign * 0.3, 1), text, 75, 0.00018));
                 }
                 else {
                     text = '  - ' + text.substr(1);
-                    Grids._altAzTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(l / 15, b + 0.4, 1), Coordinates.raDecTo3dAu(l / 15, b + 0.5, 1), text, 75, 0.00018));
+                    Grids._altAzTextBatch.add(new Text3d(Coordinates.raDecTo3dAu(l / 15, b + hemisphereSign * 0.4, 1), Coordinates.raDecTo3dAu(l / 15, b + hemisphereSign * 0.5, 1), text, 75, 0.00018));
                 }
                 index++;
             }
@@ -704,6 +745,10 @@ Grids._makeAltAzGridText = function () {
     }
     return;
 };
+
+Grids.resetAltAzGridText = function () {
+    Grids._altAzTextBatch = null;
+}
 
 Grids.drawEclipticGrid = function (renderContext, opacity, drawColor) {
     if (Grids._eclipticLineList == null) {

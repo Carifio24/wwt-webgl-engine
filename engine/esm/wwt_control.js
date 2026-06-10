@@ -804,6 +804,7 @@ var WWTControl$ = {
                 }
             }
             if (this.renderType === 2 && Settings.get_active().get_showSolarSystem()) {
+                Grids.set_southernHemisphere(wwtlib.Settings.get_active().get_locationLat() < 0);
                 Planets.drawPlanets(this.renderContext, 1);
                 this.constellation = Constellations.containment.findConstellationForPoint(this.renderContext.viewCamera.get_RA(), this.renderContext.viewCamera.get_dec());
                 this._drawSkyOverlays();
