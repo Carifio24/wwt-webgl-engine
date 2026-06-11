@@ -34,6 +34,10 @@ var ColorPicker$ = {
         return this.color;
     },
 
+    setAlpha: function (opacity) {
+        this.color = Color.fromArgb(opacity, this.color.r, this.color.g, this.color.b);
+    },
+
     pickColor: function (e) {
         this.callBack(this.color);
     }
