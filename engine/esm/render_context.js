@@ -575,10 +575,16 @@ var RenderContext$ = {
     setupMatricesSpace3d: function (canvasWidth, canvasHeight) {
         this.lighting = false;
         if (!this._firstTimeInit) {
-            this._galacticMatrix = Matrix3d.get_identity();
-            this._galacticMatrix._multiply(Matrix3d._rotationY(-(270 - (17.7603329867975 * 15)) / 180 * Math.PI));
-            this._galacticMatrix._multiply(Matrix3d._rotationX(-(-28.9361739586894) / 180 * Math.PI));
-            this._galacticMatrix._multiply(Matrix3d._rotationZ(((31.422052860102) - 90) / 180 * Math.PI));
+            // this._galacticMatrix = Matrix3d.get_identity();
+            // this._galacticMatrix._multiply(Matrix3d._rotationY(-(270 - (17.7603329867975 * 15)) / 180 * Math.PI));
+            // this._galacticMatrix._multiply(Matrix3d._rotationX(-(-28.9361739586894) / 180 * Math.PI));
+            // this._galacticMatrix._multiply(Matrix3d._rotationZ(((31.422052860102) - 90) / 180 * Math.PI));
+            this._galacticMatrix = Matrix3d.create(
+              0.4941094279, -0.867666149, 0.0548755604, 0,
+              0.7469822445, 0.4559837762, 0.4838350155, 0,
+              -0.44482963, -0.1980763734, 0.8734370902, 0,
+              0, 0, 0, 1,
+            );
             this._firstTimeInit = true;
         }
         this.space = true;
@@ -630,6 +636,7 @@ var RenderContext$ = {
         this.set_world(WorldMatrix);
         this.set_worldBase(WorldMatrix.clone());
         var localZoomFactor = this.viewCamera.zoom;
+        // 343.774 is 6 radians in degrees
         var FovAngle = (localZoomFactor / 343.774) / Math.PI * 180;
         this.cameraPosition = Vector3d.create(0, 0, 0);
 
