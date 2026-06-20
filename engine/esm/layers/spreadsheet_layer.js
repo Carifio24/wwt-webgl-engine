@@ -10,7 +10,7 @@ import { Vector3d, Vector4d } from "../double3d.js";
 import { layerManagerGetAllMaps } from "../data_globals.js";
 import { globalRenderContext, tilePrepDevice } from "../render_globals.js";
 import { WEBGL } from "../graphics/webgl_constants.js";
-import { Dates, LineList, TriangleList, PointList } from "../graphics/primitives3d.js";
+import { Dates, LineList, TriangleList, PointList, NumericalRange } from "../graphics/primitives3d.js";
 import { Texture } from "../graphics/texture.js";
 import { Tessellator } from "../graphics/tessellator.js";
 import { Color, Colors } from "../color.js";
@@ -212,6 +212,8 @@ export function SpreadSheetLayer() {
     this.startDateColumn = -1;
     this.endDateColumn = -1;
     this.sizeColumn = -1;
+
+    this._filters = {}
 
     // The following attributes control whether the point sizes should be normalized before
     // being used. When NormalizeSize is true, the point sizes are scaled using
@@ -876,7 +878,11 @@ var SpreadSheetLayer$ = {
                             pointEndTime = pointStartTime;
                         }
                     }
-                    this.pointList.addPoint(position, pointColor, new Dates(pointStartTime, pointEndTime), pointSize);
+                    var extras = [];
+                    for (var key in this._filters) {
+                        extras.push(parseFloat(row[key]));
+                    }
+                    this.pointList.addPoint(position, pointColor, new Dates(pointStartTime, pointEndTime), pointSize, extras);
                     if (this.geometryColumn > -1) {
                         this._parseGeometry$1(row[this.geometryColumn], pointColor, pointColor, altitude, new Dates(pointStartTime, pointEndTime));
                     }
@@ -1906,6 +1912,28 @@ var SpreadSheetLayer$ = {
             this._hyperlinkColumn$1 = value;
         }
         return value;
+    },
+
+    add_filterColumn: function (column, min, max) {
+        this._filters[column] = NumericalRange(min, max);
+        this.dirty = true;
+    },
+
+    remove_filterColumn: function (column) {
+        delete this._filters[column];
+        this.dirty = true;
+    },
+
+    set_filterColumnMin: function (column, value) {
+        if (column in this._filters) {
+            this._filters[column].min = value;
+        }
+    },
+
+    set_filterColumnMax: function (column, value) {
+        if (column in this._filters) {
+            this._filters[column].max = value;
+        }
     },
 
     get_scaleFactor: function () {

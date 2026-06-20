@@ -92,6 +92,26 @@ var Dates$ = {
 registerType("Dates", [Dates, Dates$, null]);
 
 
+// wwtlib.NumericalRange
+
+export function NumericalRange(min, max) {
+    this.min = min;
+    this.max = max;
+}
+
+NumericalRange.empty = function () {
+    return new NumericalRange(0, 0);
+}
+
+var NumericalRange$ = {
+    copy: function () {
+        return new NumericalRange(this.min, this.max);
+    }
+};
+
+registerType("NumericalRange", [NumericalRange, NumericalRange$, null]);
+
+
 // wwtlib.SimpleLineList
 
 export function SimpleLineList() {
@@ -713,6 +733,7 @@ export function PointList(device) {
     this._colors = [];
     this._dates = [];
     this._sizes = [];
+    this._extras = [];
     this.timeSeries = false;
     this.showFarSide = false;
     this.sky = false;
@@ -734,11 +755,12 @@ export function PointList(device) {
 PointList.starTexture = null;
 
 var PointList$ = {
-    addPoint: function (v1, color, date, size) {
+    addPoint: function (v1, color, date, size, extras) {
         this._points.push(v1);
         this._colors.push(color._clone());
         this._dates.push(date);
         this._sizes.push(size);
+        this._extras.push(extras);
         this._emptyPointBuffer();
     },
 
@@ -747,6 +769,7 @@ var PointList$ = {
         this._points.length = 0;
         this._dates.length = 0;
         this._sizes.length = 0;
+        this._extras.length = 0;
         this._emptyPointBuffer();
     },
 
