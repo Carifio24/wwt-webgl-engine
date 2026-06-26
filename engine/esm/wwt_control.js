@@ -82,6 +82,7 @@ export function WWTControl() {
 
     this.uiController = null;
     this._annotations = [];
+    this._textBatches = [];
     this._hoverText = '';
     this._hoverTextPoint = new Vector2d();
     this._lastMouseMove = new Date(1900, 1, 0, 0, 0, 0, 0);
@@ -467,6 +468,21 @@ var WWTControl$ = {
             }
         }
         return false;
+    },
+
+    _addTextBatch: function (batch) {
+        this._textBatches.push(batch);  
+    },
+
+    _removeTextBatch: function (batch) {
+        var index = this._textBatches.indexOf(batch);
+        if (index > -1) {
+            this._textBatches.splice(index, 1);
+        }
+    },
+
+    _clearTextBatches: function () {
+        this._textBatches.length = 0;
     },
 
     get_zoomMax: function () {

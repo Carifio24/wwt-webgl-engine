@@ -21,6 +21,7 @@ import { Imageset } from "./imageset.js";
 import { ImageSetLayer } from "./layers/imageset_layer.js";
 import { LayerManager } from "./layers/layer_manager.js";
 import { Folder } from "./folder.js";
+import { Text3dBatch } from "./sky_text.js";
 
 
 // wwtlib.SlideChangedEventArgs
@@ -690,6 +691,26 @@ var ScriptInterface$ = {
     clearAnnotations: function () {
         if (globalWWTControl != null) {
             globalWWTControl._clearAnnotations();
+        }
+    },
+
+    addTextBatch: function (batch) {
+        if (batch != null && ss.canCast(batch, Text3dBatch)) {
+            if (globalWWTControl != null) {
+                globalWWTControl._addTextBatch(batch);
+            }
+        }
+    },
+
+    removeTextBatch: function (batch) {
+        if (batch != null && globalWWTControl != null) {
+            globalWWTControl._removeAnnotation(batch);
+        }
+    },
+
+    clearTextBatches: function () {
+        if (globalWWTControl != null) {
+            globalWWTControl._clearTextBatches();
         }
     },
 
