@@ -199,8 +199,8 @@ export function GlyphCache(height) {
     this._textureDirty = true;
     this._version = 0;
     this._cellHeight = height;
-    this._texture = Texture.fromUrl(URLHelpers.singleton.engineAssetUrl('glyphs1.png'));
-    this._webFile = new WebFile(URLHelpers.singleton.engineAssetUrl('glyphs1.xml'));
+    this._texture = Texture.fromUrl(URLHelpers.singleton.engineAssetUrl('glyphs2.png'));
+    this._webFile = new WebFile(URLHelpers.singleton.engineAssetUrl('glyphs2.xml'));
     this._webFile.onStateChange = ss.bind('_glyphXmlReady', this);
     this._webFile.send();
 }
