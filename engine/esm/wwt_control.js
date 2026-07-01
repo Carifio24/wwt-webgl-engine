@@ -233,14 +233,14 @@ WWTControl.initControl6 = function (DivId, startRenderLoop, startLat, startLng, 
         WWTControl.scriptInterface.settings = Settings.get_current();
         set_globalScriptInterface(WWTControl.scriptInterface);
         var canvas = WWTControl._createCanvasElement(DivId);
-        var gl = canvas.getContext('webgl2');
+        var gl = canvas.getContext('webgl');
 
-        if (gl != null) {
-            set_useGlVersion2(true);
-        } else {
-            console.warn('This browser does not support WebGL 2.0. Some features will work suboptimally. To get the full WWT experience, consider using the latest version of Chrome, Firefox or Edge. In case you would like to use Safari, we recommend that you enable WebGL 2.0');
-            gl = canvas.getContext('webgl');
-        }
+        // if (gl != null) {
+        //     set_useGlVersion2(true);
+        // } else {
+        //     console.warn('This browser does not support WebGL 2.0. Some features will work suboptimally. To get the full WWT experience, consider using the latest version of Chrome, Firefox or Edge. In case you would like to use Safari, we recommend that you enable WebGL 2.0');
+        //     gl = canvas.getContext('webgl');
+        // }
 
         if (gl == null) {
             gl = canvas.getContext('experimental-webgl');
