@@ -1676,6 +1676,14 @@ export class ScriptInterface {
 
   /** Remove all annotations from the renderer. */
   clearAnnotations(): void;
+
+  addTextBatch(batch: Text3dBatch, name: string): void;
+  removeTextBatch(batch: Text3dBatch): void;
+  removeTextBatchByName(name: string): void;
+  clearTextBatches(): void;
+
+  addText(text: string, position: Vector3d, up: Vector3d, batchName: string): Text3d | null;
+  removeText(text3d: Text3dBatch, batchName: string): void;
 }
 
 /** A generic {@link ScriptInterface} callback. */
@@ -2115,6 +2123,7 @@ export class Text3dBatch {
     draw(renderContext: RenderContext, opacity: number, color: Color): void;
     prepareBatch(): void;
     cleanUp(): void;
+    markDirty(): void;
 }
 
 /** A class that represents the current cache of loaded tiles. */
