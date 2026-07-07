@@ -14,6 +14,7 @@ import {
 
 import {
   Annotation,
+  Color,
   Coordinates,
   EngineSetting,
   Folder,
@@ -210,14 +211,16 @@ export class ImageSetLayerState {
 
 export interface CreateTextBatchOptions {
   name: string;
-  fontSize: number;
+  size?: number;
+  color?: string;
 }
 
 export interface AddTextOptions {
   text: string;
   position: Vector3d | { raDeg: number; decDeg: number };
-  up?: Vector3d;
   batch: string;
+  up?: Vector3d;
+  scale?: number;
 }
 
 /** This interface expresses the properties exposed by the WWT Engine’s Pinia
@@ -1998,8 +2001,14 @@ export const engineStore = defineStore('wwt-engine', {
     createTextBatch(options: CreateTextBatchOptions): Text3dBatch {
       if (this.$wwt.inst === null)
         throw new Error('cannot createTextBatch without linking to WWTInstance');
-      const batch = new Text3dBatch(options.fontSize);
+      const batch = new Text3dBatch(options.size ?? 1);
       this.$wwt.inst.si.addTextBatch(batch, options.name);
+      if (options.color) {
+        this.$wwt.inst.si.setTextBatchColor(options.name, Color.load(options.color));
+      }
+      if (options.size != null) {
+        this.$wwt.inst.si.setTextBatchSize(options.name, options.size);
+      }
       return batch;
     },
 
@@ -2010,7 +2019,7 @@ export const engineStore = defineStore('wwt-engine', {
         options.position :
         Coordinates.raDecTo3d(options.position.raDeg / 15, options.position.decDeg);
       const up = options.up != undefined ? options.up : Vector3d.create(0, 1, 0); 
-      return this.$wwt.inst.si.addText(options.text, position, up, options.batch);
+      return this.$wwt.inst.si.addText(options.text, position, up, options.scale ?? 1, options.batch);
     },
 
     // Capturing the current display
