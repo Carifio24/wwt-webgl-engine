@@ -515,6 +515,11 @@ export class Annotation implements AnnotationSettingsInterface {
   hitTest(renderContext: RenderContext, ra: number, dec: number, x: number, y: number): boolean;
 }
 
+export class AnnotationBatch {
+    items: Annotation[];
+    viewTransform: Matrix3d | ((rc: RenderContext) => Matrix3d);
+}
+
 /** Possible settings that can be applied to generic annotations.
  *
  * Specific annotation instances (e.g. Circles) can have additional settings.
@@ -582,7 +587,7 @@ export class Circle extends Annotation implements CircleAnnotationSettingsInterf
   set_skyRelative(v: boolean): boolean;
 
   /** Set the position of this circle's center. */
-  setCenter(raDeg: number, decDeg: number): void;
+  setCenter(xDeg: number, yDeg: number): void;
 }
 
 /** Possible settings that can be applied to Circle annotations. */
@@ -1290,6 +1295,9 @@ export class LayerMap {
 export type LayerSetting = BaseLayerSetting |
 ["color", Color];
 
+export class Matrix3d {
+}
+
 export class Place implements Thumbnail {
   annotation: string;
   angularSize: number;
@@ -1369,7 +1377,7 @@ export class Poly extends Annotation implements PolyAnnotationSettingsInterface 
   set_lineWidth(v: number): number;
 
   /** Add a point to this annotation's definition. */
-  addPoint(raDeg: number, decDeg: number): void;
+  addPoint(xDeg: number, yDeg: number): void;
 }
 
 /** Possible settings that can be applied to Poly annotations. */
@@ -1392,7 +1400,7 @@ export class PolyLine extends Annotation implements PolyLineAnnotationSettingsIn
   set_lineWidth(v: number): number;
 
   /** Add a point to this annotation's definition. */
-  addPoint(raDeg: number, decDeg: number): void;
+  addPoint(xDeg: number, yDeg: number): void;
 }
 
 /** Possible settings that can be applied to PolyLine annotations. */
@@ -1668,14 +1676,23 @@ export class ScriptInterface {
    */
   createPolyLine(unused: boolean): PolyLine;
 
+  /** Add an annotation batch to the renderer */
+  addAnnotationBatch(batch: AnnotationBatch, name: string): void;
+
+  /** Remove an annotation batch from the renderer */
+  removeAnnotationBatch(batch: string | AnnotationBatch): void;
+
   /** Add an annotation to the renderer. */
-  addAnnotation(ann: Annotation): void;
+  addAnnotation(ann: Annotation, batch?: string | AnnotationBatch): void;
 
   /** Remove an annotation from the renderer. */
-  removeAnnotation(ann: Annotation): void;
+  removeAnnotation(ann: Annotation, batch?: string | AnnotationBatch): void;
 
-  /** Remove all annotations from the renderer. */
-  clearAnnotations(): void;
+  /** Remove annotations from the renderer. 
+    * If a batch is specified, only the annotations from that batch are removed.
+    * Otherwise, all annotations are removed.
+    */
+  clearAnnotations(batch?: string | AnnotationBatch): void;
 }
 
 /** A generic {@link ScriptInterface} callback. */
