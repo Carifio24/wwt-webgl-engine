@@ -206,6 +206,25 @@ export interface LayerSettingsInterface extends LayerSettingsInterfaceRO {
   set_version(v: number): number;
 }
 
+export class Matrix3d {
+  static get_identity(): Matrix3d;
+  static multiplyMatrix(matrix1: Matrix3d, matrix2: Matrix3d): Matrix3d;
+  static equals(matrix1: Matrix3d, matrix2: Matrix3d): boolean;
+  static rotationYawPitchRoll(heading: number, pitch: number, roll: number): Matrix3d;
+  static invertMatrix(matrix: Matrix3d): Matrix3d;
+  static translation(vector: Vector3d): Matrix3d;
+
+  clone(): Matrix3d;
+  setIdentity(): void;
+  scale(value: number): void;
+  translate(value: number): void;
+  transform(vector: Vector3d): Vector3d;
+  get_determinant(): number;
+  invert(): void;
+  transpose(): void;
+  multiplyVector(vector: Vector3d): void;
+}
+
 export interface PolyAnnotationSettingsInterfaceRO extends AnnotationSettingsInterfaceRO {
   get_fill(): boolean;
   get_fillColor(): string;
@@ -2062,11 +2081,10 @@ export class Text3d {
 export class Text3dBatch {
     constructor(height: number);
 
+    viewTransform: Matrix3d | ((rc: RenderContext) => Matrix3d);
+
     add(item: Text3d): void;
     draw(renderContext: RenderContext, opacity: number, color: Color): void;
-    prepareBatch(): void;
-    cleanUp(): void;
-    markDirty(): void;
 }
 
 /** A class that represents the current cache of loaded tiles. */
