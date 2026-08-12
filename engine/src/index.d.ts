@@ -2129,11 +2129,10 @@ export class Text3d {
 export class Text3dBatch {
     constructor(height: number);
 
+    viewTransform: Matrix3d | ((rc: RenderContext) => Matrix3d);
+
     add(item: Text3d): void;
     draw(renderContext: RenderContext, opacity: number, color: Color): void;
-    prepareBatch(): void;
-    cleanUp(): void;
-    markDirty(): void;
 }
 
 /** A class that represents the current cache of loaded tiles. */
