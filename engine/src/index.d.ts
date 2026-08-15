@@ -527,7 +527,7 @@ export class AnnotationBatch {
     remove(annotation: Annotation): void;
 }
 
-type AnnotationCoordinateTransform = (x: number, y: number) => Vector3d;
+export type AnnotationCoordinateTransform = (x: number, y: number) => Vector3d;
 
 /** Possible settings that can be applied to generic annotations.
  *
