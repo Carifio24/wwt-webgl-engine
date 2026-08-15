@@ -15,6 +15,7 @@ import {
 import {
   Annotation,
   AnnotationBatch,
+  BatchViewTransform,
   ColorMapContainer,
   EngineSetting,
   Folder,
@@ -25,8 +26,6 @@ import {
   InViewReturnMessage,
   Layer,
   LayerMap,
-  Matrix3d,
-  RenderContext,
   SpreadSheetLayer,
   SpreadSheetLayerSettingsInterfaceRO,
   TileCache,
@@ -209,15 +208,9 @@ export class ImageSetLayerState {
   }
 }
 
-export type AnnotationTransform =
-  "equatorial" |
-  "horizontal" |
-  Matrix3d     |
-  ((rc: RenderContext) => Matrix3d);
-
 export interface CreateAnnotationBatchOptions {
   name: string;
-  transform?: AnnotationTransform;
+  transform?: BatchViewTransform;
 }
 
 /** This interface expresses the properties exposed by the WWT Engine’s Pinia
@@ -2015,7 +2008,7 @@ export const engineStore = defineStore('wwt-engine', {
         throw new Error('cannot createAnnotationBatch without linking to WWTInstance');
       const batch = new AnnotationBatch();
       if (options.transform) {
-        batch.viewTransform = options.transform;
+        batch.set_viewTransform(options.transform);
       }
       this.$wwt.inst.si.addAnnotationBatch(batch, options.name);
       return batch;
