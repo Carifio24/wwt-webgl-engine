@@ -226,14 +226,14 @@ export interface ApplyTextBatchSettingOptions {
 export interface AddTextOptions {
   text: string;
   position: Vector3d | { raDeg: number; decDeg: number };
-  batchId: string;
+  batch: Text3dBatch | string;
   up?: Vector3d;
   scale?: number;
 }
 
 export interface RemoveTextOptions {
   text: Text3d;
-  batchId: string;
+  batch: Text3dBatch | string;
 }
 
 /** This interface expresses the properties exposed by the WWT Engine’s Pinia
@@ -2047,7 +2047,7 @@ export const engineStore = defineStore('wwt-engine', {
       this.$wwt.inst.si.clearAnnotations();
     },
 
-    createTextBatch(options: CreateTextBatchOptions) {
+    createTextBatch(options: CreateTextBatchOptions): Text3dBatch {
       if (this.$wwt.inst === null)
         throw new Error('cannot createTextBatch without linking to WWTInstance');
       const batch = new Text3dBatch((options.size ?? 1) / 100);
@@ -2058,6 +2058,7 @@ export const engineStore = defineStore('wwt-engine', {
       if (options.opacity != null) {
         this.$wwt.inst.si.applyTextBatchSetting(options.name, ["opacity", options.opacity]);
       }
+      return batch;
     },
 
     applyTextBatchSetting(batch: string | Text3dBatch, setting: TextBatchSetting) {
@@ -2079,13 +2080,13 @@ export const engineStore = defineStore('wwt-engine', {
         options.position :
         Coordinates.raDecTo3d(options.position.raDeg / 15, options.position.decDeg);
       const up = options.up != undefined ? options.up : Vector3d.create(0, 1, 0); 
-      return this.$wwt.inst.si.addText(options.text, position, up, options.scale ?? 1, options.batchId);
+      return this.$wwt.inst.si.addText(options.text, position, up, options.scale ?? 1, options.batch);
     },
 
     removeText(options: RemoveTextOptions) {
       if (this.$wwt.inst === null)
         throw new Error('cannot removeText without linking to WWTInstance');
-      return this.$wwt.inst.si.removeText(options.text, options.batchId);
+      return this.$wwt.inst.si.removeText(options.text, options.batch);
     },
 
     // Capturing the current display

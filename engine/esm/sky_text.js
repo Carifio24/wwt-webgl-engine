@@ -149,6 +149,11 @@ var Text3dBatch$ = {
         this.items.length = 0;
     },
 
+    clear: function () {
+        this.items.length = 0;
+        this.markDirty(true);
+    },
+
     markDirty: function () {
         this._dirty = true;
     }

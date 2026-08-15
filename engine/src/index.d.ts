@@ -2133,6 +2133,7 @@ export class Text3dBatch {
 
     add(item: Text3d): void;
     draw(renderContext: RenderContext, opacity: number, color: Color): void;
+    clear(): void;
 }
 
 /** A class that represents the current cache of loaded tiles. */
