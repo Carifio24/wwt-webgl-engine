@@ -79,6 +79,14 @@ var AnnotationBatch$ = {
         this.markDirty(false);
     },
 
+    get_viewTransform: function () {
+        return this.viewTransform;
+    },
+
+    set_viewTransform: function (transform) {
+        this.viewTransform = transform;
+    },
+
     markDirty: function (dirty) {
         this._dirty = dirty;
     },

@@ -512,17 +512,22 @@ export class Annotation implements AnnotationSettingsInterface {
   set_showHoverLabel(v: boolean): boolean;
   get_tag(): string;
   set_tag(v: string): string;
+  get_coordinateTransform(): AnnotationCoordinateTransform;
+  set_coordinateTransform(transform: AnnotationCoordinateTransform): void;
 
   hitTest(renderContext: RenderContext, ra: number, dec: number, x: number, y: number): boolean;
 }
 
 export class AnnotationBatch {
-    items: Annotation[];
-    viewTransform: Matrix3d | ((rc: RenderContext) => Matrix3d);
+    readonly items: Annotation[];
+    get_viewTransform(): BatchViewTransform;
+    set_viewTransform(transform: BatchViewTransform): void;
 
     add(annotation: Annotation): void;
     remove(annotation: Annotation): void;
 }
+
+type AnnotationCoordinateTransform = (x: number, y: number) => Vector3d;
 
 /** Possible settings that can be applied to generic annotations.
  *
@@ -551,6 +556,8 @@ export interface ArrivedEventCallback {
   /** Called when the WWT view has arrived at a commanded position. */
   (si: ScriptInterface, args: ArrivedEventArgs): void;
 }
+
+export type BatchViewTransform = Matrix3d | ((rc: RenderContext) => Matrix3d);
 
 export class CameraParameters {
   lat: number;
@@ -1298,9 +1305,6 @@ export class LayerMap {
 // NOTE: isLayerSetting in engine-helpers needs to be kept in sync.
 export type LayerSetting = BaseLayerSetting |
 ["color", Color];
-
-export class Matrix3d {
-}
 
 export class Place implements Thumbnail {
   annotation: string;
