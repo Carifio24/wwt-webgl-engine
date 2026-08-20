@@ -51,6 +51,11 @@ var Text3dBatch$ = {
         this._dirty = true;
     },
 
+    _drawCommands: function (renderContext, color, opacity) {
+        TextShader.use(renderContext, this._vertexBuffer.vertexBuffer, this._glyphCache.get_texture().texture2dArray, color, opacity);
+        renderContext.gl.drawArrays(WEBGL.TRIANGLES, 0, this._vertexBuffer.count);
+    },
+
     draw: function (renderContext, opacity, color) {
         if (renderContext.gl == null) {
             var viewPoint = Vector3d._transformCoordinate(renderContext.get_viewPoint(), this.viewTransform);
@@ -86,8 +91,15 @@ var Text3dBatch$ = {
             if (!this._glyphCache.ready) {
                 return;
             }
-            TextShader.use(renderContext, this._vertexBuffer.vertexBuffer, this._glyphCache.get_texture().texture2dArray, color, opacity);
-            renderContext.gl.drawArrays(WEBGL.TRIANGLES, 0, this._vertexBuffer.count);
+            if (this.viewTransform != null) {
+                var matrix = this.viewTransform instanceof Matrix3d ? this.viewTransform : this.viewTransform(renderContext);
+                function drawCommands(renderContext) {
+                    this._drawCommands(renderContext, color, opacity);
+                }
+                renderContext.executeWithWorldTransform(matrix, drawCommands.bind(this));
+            } else {
+                this._drawCommands(renderContext, color, opacity);
+            }
         }
     },
 
@@ -140,6 +152,14 @@ var Text3dBatch$ = {
         this._vertexBuffer.unlock();
         this._glyphVersion = this._glyphCache.get_version();
         this._dirty = false;
+    },
+
+    get_viewTransform: function () {
+        return this.viewTransform;
+    },
+
+    get_viewTransform: function (transform) {
+        this.viewTransform = transform;
     },
 
     cleanUp: function () {

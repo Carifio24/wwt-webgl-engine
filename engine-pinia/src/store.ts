@@ -34,6 +34,9 @@ import {
   TileCache,
   Vector3d,
   WWTControl,
+  RenderContext,
+  Matrix3d,
+  BatchViewTransform,
 } from "@wwtelescope/engine";
 
 import {
@@ -216,6 +219,7 @@ export interface CreateTextBatchOptions {
   size?: number;
   color?: string;
   opacity?: number;
+  viewTransform?: BatchViewTransform;
 }
 
 export interface ApplyTextBatchSettingOptions {

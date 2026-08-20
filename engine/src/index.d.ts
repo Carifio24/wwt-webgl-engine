@@ -543,6 +543,8 @@ export interface ArrivedEventCallback {
   (si: ScriptInterface, args: ArrivedEventArgs): void;
 }
 
+export type BatchViewTransform = Matrix3d | ((rc: RenderContext) => Matrix3d);
+
 export class CameraParameters {
   lat: number;
   lng: number;
@@ -2129,7 +2131,8 @@ export class Text3d {
 export class Text3dBatch {
     constructor(height: number);
 
-    viewTransform: Matrix3d | ((rc: RenderContext) => Matrix3d);
+    get_viewTransform(): BatchViewTransform;
+    set_viewTransform(transform: BatchViewTransform): void;
 
     add(item: Text3d): void;
     draw(renderContext: RenderContext, opacity: number, color: Color): void;
