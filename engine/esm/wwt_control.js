@@ -903,9 +903,9 @@ var WWTControl$ = {
                 LayerManager._draw(this.renderContext, 1, this.get_space(), referenceFrame, true, this.get_space());
             }
         }
-        var worldSave = this.renderContext.get_world();
-        var viewSave = this.renderContext.get_view();
-        var projSave = this.renderContext.get_projection();
+        var worldSave = this.renderContext.get_world().clone();
+        var viewSave = this.renderContext.get_view().clone();
+        var projSave = this.renderContext.get_projection().clone();
         if (this._fadeStates.showCrosshairs.get_opacity() > 0) {
             this._drawCrosshairs(this.renderContext, this._fadeStates.showCrosshairs.get_opacity());
         }
@@ -913,7 +913,7 @@ var WWTControl$ = {
             this.uiController.render(this.renderContext);
         } else {
             for (var batchKey in this._annotations) {
-               var batch = this._annotations[batchKey];
+                var batch = this._annotations[batchKey];
                 batch.prepareBatch(this.renderContext);
                 batch.drawBatch(this.renderContext);
             }

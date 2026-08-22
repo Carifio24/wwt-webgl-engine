@@ -964,7 +964,7 @@ var RenderContext$ = {
         this.set_world(this.get_worldBase().clone());
         this.makeFrustum();
          
-        callable(this);
+        callable(this)
 
         this.set_worldBase(matOldWorldBase);
         this.set_world(matOldWorld);

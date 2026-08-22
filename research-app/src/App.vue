@@ -377,7 +377,7 @@ import { Source, researchAppStore } from "./store";
 import { wwtEngineNamespace } from "./namespaces";
 
 import { ImageSetType, SolarSystemObjects } from "@wwtelescope/engine-types";
-import { Place } from "@wwtelescope/engine";
+import { Matrix3d, Place, WWTControl } from "@wwtelescope/engine";
 
 interface Message {
   event?: string;
@@ -2950,6 +2950,93 @@ const App = defineComponent({
     }
 
     this.waitForReady().then(() => {
+
+      this.applySetting(["showCrosshairs", true]);
+
+      this.applySetting(["showGrid", true]);
+      this.applySetting(["showEquatorialGridText", true]);
+      // this.applySetting(["showAltAzGrid", true]);
+      // this.applySetting(["showAltAzGridText", true]);
+      // 
+      // this.applySetting(["showGalacticGrid", true]);
+      // this.applySetting(["showGalacticGridText", true]);
+      // this.applySetting(["galacticMode", true]);
+      
+      // this.applySetting(["localHorizonMode", true]);
+
+      this.gotoRADecZoom({
+        raRad: 0,
+        decRad: 0,
+        zoomDeg: 360,
+        instant: true,
+      });
+      WWTControl.singleton.renderOneFrame();
+      
+      type This = typeof this;
+      
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error Adding things to `window` for convenience
+      window.app = this; window.wwt = WWTControl.singleton; window.addAnnotations = function (this: This) {
+      
+        // The horizon
+        const n = 20;
+        const delta = 360 / n;
+        for (let i = 0; i < n; i++) {
+          const triangle = new Poly();
+          triangle.set_fill(true);
+          triangle.addPoint((i + 1) * delta, 0);
+          triangle.addPoint(-i * delta, -90);
+          triangle.addPoint(i * delta, 0);
+          triangle.set_lineColor("#2E6F40");
+          triangle.set_fillColor("#2E6F40");
+          triangle.set_opacity(0.7);
+          this.addAnnotation(triangle, "horizontal");
+        }
+      
+        // Galactic coordinates "rectangle"
+        const galacticRect = new Poly();
+        galacticRect.set_fill(true);
+        galacticRect.set_opacity(0.8);
+        galacticRect.set_fillColor("pink");
+        galacticRect.addPoint(0, 0);
+        galacticRect.addPoint(0, 10);
+        galacticRect.addPoint(10, 10);
+        galacticRect.addPoint(10, 0);
+      
+        this.addAnnotation(galacticRect, "galactic");
+
+        const startRA = 0;
+        const startDec = 0;
+        const startMatrix: Matrix3d = Matrix3d.rotationYawPitchRoll(-(startRA - 90) * D2R, -startDec * D2R, 0);
+        // startMatrix.invert();
+        const staticBatch = this.addAnnotationBatch({
+          name: "Static",
+          transform: (renderContext) => {
+            // const yaw = -(renderContext.viewCamera.lng - 90) * D2R;
+            // const pitch = -renderContext.viewCamera.lat * D2R;
+            // const roll = renderContext.viewCamera.rotation * D2R;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error This exists
+            let matrix = renderContext.get_world().clone();
+            matrix.invert(); 
+            matrix = Matrix3d.multiplyMatrix(startMatrix, matrix);
+            return matrix;
+          },
+        });
+
+        const staticRect = new Poly();
+        const size = 10;
+        staticRect.set_fill(true);
+        staticRect.set_opacity(0.8);
+        staticRect.set_fillColor("maroon");
+        staticRect.addPoint(-0.5 * size, -0.5 * size);
+        staticRect.addPoint(-0.5 * size, 0.5 * size);
+        staticRect.addPoint(0.5 * size, 0.5 * size);
+        staticRect.addPoint(0.5 * size, -0.5 * size);
+
+        this.addAnnotation(staticRect, staticBatch);
+      }.bind(this);
+
       const script = this.getQueryScript(window.location);
       if (script !== null) {
         this.$options.statusMessageDestination = window;
