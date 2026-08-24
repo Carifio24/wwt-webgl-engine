@@ -520,8 +520,12 @@ export class Annotation implements AnnotationSettingsInterface {
 
 export class AnnotationBatch {
     readonly items: Annotation[];
-    get_viewTransform(): BatchViewTransform;
-    set_viewTransform(transform: BatchViewTransform): void;
+    get_viewTransform(): BatchTransform;
+    set_viewTransform(transform: BatchTransform): void;
+    get_worldTransform(): BatchTransform;
+    set_worldTransform(transform: BatchTransform): void;
+    get_projectionTransform(): BatchTransform;
+    set_projectionTransform(transform: BatchTransform): void;
 
     add(annotation: Annotation): void;
     remove(annotation: Annotation): void;
@@ -557,7 +561,7 @@ export interface ArrivedEventCallback {
   (si: ScriptInterface, args: ArrivedEventArgs): void;
 }
 
-export type BatchViewTransform = Matrix3d | ((rc: RenderContext) => Matrix3d);
+export type BatchTransform = Matrix3d | ((rc: RenderContext) => Matrix3d);
 
 export class CameraParameters {
   lat: number;

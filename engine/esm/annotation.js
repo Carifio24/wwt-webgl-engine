@@ -25,6 +25,8 @@ export function AnnotationBatch() {
     this.triangleFanPointList = null;
     this.triangleList = null;
     this.viewTransform = null;
+    this.worldTransform = null;
+    this.projectionTransform = null;
     this._dirty = true;
 }
 
@@ -70,12 +72,12 @@ var AnnotationBatch$ = {
         for (var i = 0; i < this.items.length; i++) {
             this.items[i].draw(renderContext, this);
         }
-        if (this.viewTransform != null) {
-            var matrix = this.viewTransform instanceof Matrix3d ? this.viewTransform : this.viewTransform(renderContext);
-            renderContext.executeWithWorldTransform(matrix, this._drawCommands.bind(this));
-        } else {
-            this._drawCommands(renderContext);
-        }
+        var transforms = {
+            world: this.worldTransform instanceof Matrix3d ? this.worldTransform : this.worldTransform(renderContext),
+            view: this.viewTransform instanceof Matrix3d ? this.viewTransform : this.viewTransform(renderContext),
+            projection: this.projectionTransform instanceof Matrix3d ? this.projectionTransform : this.projectionTransform(renderContext),
+        };
+        renderContext.executeWithTransforms(transforms, this._drawCommands.bind(this));
         this.markDirty(false);
     },
 
@@ -85,6 +87,22 @@ var AnnotationBatch$ = {
 
     set_viewTransform: function (transform) {
         this.viewTransform = transform;
+    },
+
+    get_worldTransform: function () {
+        return this.worldTransform;
+    },
+
+    set_worldTransform: function (transform) {
+        this.worldTransform = transform;
+    },
+
+    get_projectionTransform: function () {
+        return this.projectionTransform;
+    },
+
+    set_projectionTransform: function (transform) {
+        this.projectionTransform = transform;
     },
 
     markDirty: function (dirty) {

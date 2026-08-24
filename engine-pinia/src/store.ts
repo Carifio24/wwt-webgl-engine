@@ -15,7 +15,7 @@ import {
 import {
   Annotation,
   AnnotationBatch,
-  BatchViewTransform,
+  BatchTransform,
   ColorMapContainer,
   EngineSetting,
   Folder,
@@ -210,7 +210,11 @@ export class ImageSetLayerState {
 
 export interface CreateAnnotationBatchOptions {
   name: string;
-  transform?: BatchViewTransform;
+  transforms?: {
+    world?: BatchTransform,
+    projection?: BatchTransform,
+    view?: BatchTransform,
+  };
 }
 
 /** This interface expresses the properties exposed by the WWT Engine’s Pinia
@@ -2007,8 +2011,17 @@ export const engineStore = defineStore('wwt-engine', {
       if (this.$wwt.inst === null)
         throw new Error('cannot createAnnotationBatch without linking to WWTInstance');
       const batch = new AnnotationBatch();
-      if (options.transform) {
-        batch.set_viewTransform(options.transform);
+      const transforms = options.transforms;
+      if (transforms) {
+        if (transforms.world) {
+          batch.set_worldTransform(transforms.world);
+        }
+        if (transforms.view) {
+          batch.set_viewTransform(transforms.view);
+        }
+        if (transforms.projection) {
+          batch.set_projectionTransform(transforms.projection);
+        }
       }
       this.$wwt.inst.si.addAnnotationBatch(batch, options.name);
       return batch;
