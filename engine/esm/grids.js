@@ -632,9 +632,12 @@ Grids.drawAltAzGrid = function (renderContext, opacity, drawColor) {
     }
 
     Grids._altAzLineList.viewTransform = Matrix3d.invertMatrix(mat);
-    renderContext.executeWithWorldTransform(mat, function (renderContext) {
+    renderContext.executeWithTransforms(
+      { world: mat },
+      function (renderContext) {
         Grids._altAzLineList.drawLines(renderContext, opacity, drawColor);
-    });
+      }
+    );
     return true;
 };
 
@@ -649,10 +652,12 @@ Grids.drawAltAzGridText = function (renderContext, opacity, drawColor) {
     Grids._makeAltAzGridText();
 
     Grids._altAzTextBatch.viewTransform = Matrix3d.invertMatrix(mat);
-    renderContext.executeWithWorldTransform(mat, function (renderContext) {
+    renderContext.executeWithTransforms(
+      { world: mat },
+      function (renderContext) {
         Grids._altAzTextBatch.draw(renderContext, opacity, drawColor);
-    });
-    Grids._altAzTextBatch.draw(renderContext, opacity, drawColor);
+      }
+    );
     return true;
 };
 
