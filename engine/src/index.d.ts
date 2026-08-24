@@ -219,6 +219,7 @@ export class Matrix3d {
   static rotationYawPitchRoll(heading: number, pitch: number, roll: number): Matrix3d;
   static invertMatrix(matrix: Matrix3d): Matrix3d;
   static translation(vector: Vector3d): Matrix3d;
+  static addMatrices(matrix1: Matrix3d, matrix2: Matrix3d): Matrix3d;
 
   clone(): Matrix3d;
   setIdentity(): void;
