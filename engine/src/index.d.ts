@@ -500,6 +500,9 @@ export interface Action {
 
 /** A visual annotation in the WWT view. */
 export class Annotation implements AnnotationSettingsInterface {
+  static readonly defaultCoordinateTransform: AnnotationCoordinateTransform;
+  static readonly galacticCoordinateTransform: AnnotationCoordinateTransform;
+
   //get_center
   get_id(): string;
   set_id(v: string): string;
@@ -519,6 +522,8 @@ export class Annotation implements AnnotationSettingsInterface {
 }
 
 export class AnnotationBatch {
+    static readonly horizontalWorldTransform: BatchTransform;
+
     readonly items: Annotation[];
     get_viewTransform(): BatchTransform;
     set_viewTransform(transform: BatchTransform): void;
