@@ -486,7 +486,6 @@ var WWTControl$ = {
                         globalScriptInterface._fireAnnotationclicked(ra, dec, note.get_id());
                         return true;
                     }
-                    index++;
                 }
             }
         }
@@ -495,7 +494,6 @@ var WWTControl$ = {
 
     _annotationHover: function (ra, dec, x, y) {
         if (this._annotations != null && this._annotations.length > 0) {
-            var index = 0;
             for (var batchKey of this._annotations) {
                 var batch = this._annotations[batchKey];
                 var $enum1 = ss.enumerate(batch.items);
@@ -506,7 +504,6 @@ var WWTControl$ = {
                         this._hoverTextPoint = Vector2d.create(x, y);
                         return true;
                     }
-                    index++;
                 }
             }
         }
