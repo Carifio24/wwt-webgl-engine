@@ -220,6 +220,7 @@ export class Matrix3d {
   static invertMatrix(matrix: Matrix3d): Matrix3d;
   static translation(vector: Vector3d): Matrix3d;
   static addMatrices(matrix1: Matrix3d, matrix2: Matrix3d): Matrix3d;
+  static lookAtLH(cameraPosition: Vector3d, cameraTarget: Vector3d, cameraUpVector: Vector3d): Matrix3d;
 
   clone(): Matrix3d;
   setIdentity(): void;
@@ -1548,6 +1549,10 @@ export class RenderContext {
     viewLong: number
   ): number;
   onTarget(place: Place): boolean;
+
+  get_view(): Matrix3d;
+  get_world(): Matrix3d;
+  get_projection(): Matrix3d;
 }
 
 export class ScriptInterface {
