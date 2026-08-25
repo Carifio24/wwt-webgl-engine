@@ -14,6 +14,7 @@ import { Dates, LineList, TriangleList, TriangleFanList, PointList } from "./gra
 import { Tessellator } from "./graphics/tessellator.js";
 import { Color, Colors } from "./color.js";
 import { Coordinates } from "./coordinates.js";
+import { SpaceTimeController } from "./space_time_controller.js";
 
 
 // wwtlib.AnnotationBatch
@@ -84,9 +85,9 @@ var AnnotationBatch$ = {
             this.items[i].draw(renderContext, this);
         }
         var transforms = {
-            world: this.worldTransform instanceof Matrix3d ? this.worldTransform : this.worldTransform(renderContext),
-            view: this.viewTransform instanceof Matrix3d ? this.viewTransform : this.viewTransform(renderContext),
-            projection: this.projectionTransform instanceof Matrix3d ? this.projectionTransform : this.projectionTransform(renderContext),
+            world: (!this.worldTransform || this.worldTransform instanceof Matrix3d) ? this.worldTransform : this.worldTransform(renderContext),
+            view: (!this.viewTransform || this.viewTransform instanceof Matrix3d) ? this.viewTransform : this.viewTransform(renderContext),
+            projection: (!this.projectionTransform || this.projectionTransform instanceof Matrix3d) ? this.projectionTransform : this.projectionTransform(renderContext),
         };
         renderContext.executeWithTransforms(transforms, this._drawCommands.bind(this));
         this.markDirty(false);
