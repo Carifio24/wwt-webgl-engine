@@ -30,6 +30,17 @@ export function AnnotationBatch() {
     this._dirty = true;
 }
 
+AnnotationBatch.horizontalWorldTransform = function (_renderContext) {
+    var zenithAltAz = new Coordinates(0, 0);
+    var zenith = Coordinates.horizonToEquitorial(zenithAltAz, SpaceTimeController.get_location(), SpaceTimeController.get_now());
+    var raPart = -((zenith.get_RA() + 6) / 24 * (Math.PI * 2));
+    var decPart = -(zenith.get_dec() / 360 * (Math.PI * 2));
+    var mat = Matrix3d._rotationY(-raPart);
+    mat._multiply(Matrix3d._rotationX(decPart));
+    mat.invert();
+    return mat;
+};
+
 var AnnotationBatch$ = {
     add: function (annotation) {
         this.items.push(annotation);

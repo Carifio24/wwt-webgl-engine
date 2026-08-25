@@ -423,30 +423,6 @@ WWTControl.showLayers = function (show) {
 
 var WWTControl$ = {
 
-    _setupHorizontalAnnotations: function () {
-        if (!("horizontal" in this._annotations)) {
-            var horizontalAnnotations = new AnnotationBatch();
-            horizontalAnnotations.viewTransform = function (_renderContext) {
-                var zenithAltAz = new Coordinates(0, 0);
-                var zenith = Coordinates.horizonToEquitorial(zenithAltAz, SpaceTimeController.get_location(), SpaceTimeController.get_now());
-                var raPart = -((zenith.get_RA() + 6) / 24 * (Math.PI * 2));
-                var decPart = -(zenith.get_dec() / 360 * (Math.PI * 2));
-                var mat = Matrix3d._rotationY(-raPart);
-                mat._multiply(Matrix3d._rotationX(decPart));
-                mat.invert();
-                return mat;
-            }
-            this._annotations["horizontal"] = horizontalAnnotations;
-        }
-    },
-
-    _setupGalacticAnnotation: function (annotation) {
-        if (!("galactic" in this._annotations)) {
-            this._annotations["galactic"] = new AnnotationBatch();
-        }
-        annotation.coordinateTransform = Annotation.galacticCoordinateTransform;
-    },
-
     _addAnnotationBatch: function (batch, name) {
         this._annotations[name] = batch;
     },
@@ -466,14 +442,6 @@ var WWTControl$ = {
     _addAnnotation: function (annotation, batchOrName) {
         if (batchOrName == null) {
             batchOrName = "equatorial";
-        }
-
-        if (batchOrName === "horizontal") {
-            this._setupHorizontalAnnotations();
-        }
-
-        if (batchOrName == "galactic") {
-            this._setupGalacticAnnotation(annotation);
         }
 
         var batch = typeof batchOrName === "string" ? this._annotations[batchOrName] : batchOrName;
@@ -509,7 +477,6 @@ var WWTControl$ = {
 
     _annotationclicked: function (ra, dec, x, y) {
         if (this._annotations != null && this._annotations.length > 0) {
-            var index = 0;
             for (var batchKey of this._annotations) {
                 var batch = this._annotations[batchKey];
                 var $enum1 = ss.enumerate(batch.items);

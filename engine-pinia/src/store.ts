@@ -2007,7 +2007,7 @@ export const engineStore = defineStore('wwt-engine', {
 
     // Annotations
 
-    addAnnotationBatch(options: CreateAnnotationBatchOptions): AnnotationBatch {
+    createAnnotationBatch(options: CreateAnnotationBatchOptions): AnnotationBatch {
       if (this.$wwt.inst === null)
         throw new Error('cannot createAnnotationBatch without linking to WWTInstance');
       const batch = new AnnotationBatch();
