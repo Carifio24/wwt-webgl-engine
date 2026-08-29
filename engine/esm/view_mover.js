@@ -117,11 +117,17 @@ ViewMoverSlew.create = function (from, to, duration) {
     temp.init(from, to);
     if (duration) {
       const originalTargetTime = temp._toTargetTime;
-      const upFraction = temp._upTargetTime / originalTargetTime;
-      const downFraction = temp._downTargetTime / originalTargetTime;
-      temp._upTargetTime = duration * upFraction;
-      temp._downTargetTime = duration * downFraction;
-      temp._toTargetTime = duration; 
+      if (originalTargetTime != 0) {
+        const upFraction = temp._upTargetTime / originalTargetTime;
+        const downFraction = temp._downTargetTime / originalTargetTime;
+        temp._upTargetTime = duration * upFraction;
+        temp._downTargetTime = duration * downFraction;
+        temp._toTargetTime = duration;
+      } else {
+        temp._upTargetTime = 0.5 * duration;
+        temp._downTargetTime = 0.5 * duration;
+      }
+      temp._toTargetTime = duration;
     }
     return temp;
 };
