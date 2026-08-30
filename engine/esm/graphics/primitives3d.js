@@ -366,6 +366,7 @@ export function LineList() {
     this._usingLocalCenter = true;
     this._lineBuffers = [];
     this._lineBufferCounts = [];
+    this._width = 1;
 }
 
 var LineList$ = {
@@ -409,10 +410,17 @@ var LineList$ = {
         } else {
             this._initLineBuffer();
             var $enum1 = ss.enumerate(this._lineBuffers);
+            var needLinewidth = this._width > 1;
             while ($enum1.moveNext()) {
                 var lineBuffer = $enum1.current;
-                LineShaderNormalDates.use(renderContext, lineBuffer.vertexBuffer, Color.fromArgb(255, 255, 255, 255), this._zBuffer, this.jNow, (this.timeSeries) ? this.decay : 0);
-                renderContext.gl.drawArrays(WEBGL.LINES, 0, lineBuffer.count);
+                if (needLinewidth) {
+                }
+                LineShaderNormalDates.use(renderContext, lineBuffer.vertexBuffer, Color.fromArgb(255, 255, 255, 255), this._zBuffer, this.jNow, (this.timeSeries) ? this.decay : 0, this._width);
+                if (this._width == 1) {
+                  renderContext.gl.drawArrays(WEBGL.LINES, 0, lineBuffer.count);
+                } else {
+                  renderContext.gl.drawArrays(WEBGL.TRIANGLES, 0, lineBuffer.count + 2);
+                }
             }
         }
     },
