@@ -40,7 +40,7 @@ import {
 import { SimpleLineList } from "./graphics/primitives3d.js";
 import { Sprite2d } from "./graphics/sprite2d.js";
 
-import { AnnotationBatch, Annotation } from "./annotation.js";
+import { AnnotationBatch } from "./annotation.js";
 import { CameraParameters, SolarSystemObjects } from "./camera_parameters.js";
 import { Constellations } from "./constellations.js";
 import { Coordinates } from "./coordinates.js";
@@ -421,6 +421,8 @@ WWTControl.showLayers = function (show) {
     WWTControl.showDataLayers = show;
 };
 
+WWTControl._defaultAnnotationBatchName = "6518e545-97a3-407a-9f4f-d33a08554f13";
+
 var WWTControl$ = {
 
     _addAnnotationBatch: function (batch, name) {
@@ -441,7 +443,7 @@ var WWTControl$ = {
 
     _addAnnotation: function (annotation, batchOrName) {
         if (batchOrName == null) {
-            batchOrName = "equatorial";
+            batchOrName = WWTControl._defaultAnnotationBatchName;
         }
 
         var batch = typeof batchOrName === "string" ? this._annotations[batchOrName] : batchOrName;
@@ -450,7 +452,7 @@ var WWTControl$ = {
 
     _removeAnnotation: function (annotation, batchOrName) {
         if (batchOrName == null) {
-            batchOrName = "equatorial";
+            batchOrName = WWTControl._defaultAnnotationBatchName;
         }
 
         var batch = typeof batchOrName === "string" ? this._annotations[batchOrName] : batchOrName;
@@ -470,7 +472,7 @@ var WWTControl$ = {
             }
         } else {
             this._annotations = {
-                equatorial: new AnnotationBatch(),
+                [WWTControl._defaultAnnotationBatchName]: new AnnotationBatch(),
             };
         }
     },
