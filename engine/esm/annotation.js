@@ -42,6 +42,28 @@ AnnotationBatch.horizontalWorldTransform = function (_renderContext) {
     return mat;
 };
 
+AnnotationBatch.overlayWorldTransform = function (position) {
+  var overlayWorldInitial = Matrix3d.rotationYawPitchRoll(-(position.get_RA() - 12) * Coordinates.RCRA, -position.get_dec() * Coordinates.RC, 0);
+  return function (renderContext) {
+    var world = renderContext.get_world().clone();
+    world.invert();
+    return Matrix3d.multiplyMatrix(overlayWorldInitial, world); 
+  }
+}
+
+AnnotationBatch.overlayViewTransform = function (rotation) {
+  var overlayViewInitial = Matrix3d.lookAtLH(
+    Vector3d.create(0, 0, 0),
+    Vector3d.create(0, 0, -1),
+    Vector3d.create(Math.sin(rotation, Math.cos(rotation), 0)),
+  );
+  return function (renderContext) {
+    var view = renderContext.get_view().clone();
+    view.invert();
+    return Matrix3d.multiplyMatrix(overlayViewInitial, view);
+  }
+}
+
 var AnnotationBatch$ = {
     add: function (annotation) {
         this.items.push(annotation);
