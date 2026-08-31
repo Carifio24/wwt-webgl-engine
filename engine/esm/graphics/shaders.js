@@ -287,6 +287,7 @@ export function LineShaderNormalDates() { }
 LineShaderNormalDates.vertLoc = 0;
 LineShaderNormalDates.nextVertLoc = 0;
 LineShaderNormalDates.prevVertLoc = 0;
+LineShaderNormalDates.lineColorLoc = 0;
 LineShaderNormalDates.colorLoc = 0;
 LineShaderNormalDates.timeLoc = 0;
 LineShaderNormalDates.aspectLoc = 0;
