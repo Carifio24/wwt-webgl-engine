@@ -179,6 +179,12 @@ Annotation.separation = function (Alpha1, Delta1, Alpha2, Delta2) {
     return vvalue;
 };
 
+Annotation.separationCartesian = function (u, v) {
+  var dot = Vector3d.dot(u, v);
+  var cross = Vector3d.cross(u, v).getLength();
+  return Math.atan2(cross, dot);
+}
+
 Annotation.colorToUint = function (col) {
     return (col.a) << 24 | (col.r << 16) | (col.g) << 8 | col.b;
 };
@@ -449,7 +455,8 @@ var Circle$ = {
         if (!this._skyRelative$1) {
             rad *= renderContext.get_fovScale() / 3600;
         }
-        return Annotation.separation(RA, dec, this._x$1, this._y$1) < rad;
+        var test = Coordinates.raDecTo3d(RA, dec);
+        return Annotation.separationCartesian(this.center, test) < rad;
     }
 };
 
