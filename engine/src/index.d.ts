@@ -503,6 +503,7 @@ export interface Action {
 export class Annotation implements AnnotationSettingsInterface {
   static readonly defaultCoordinateTransform: AnnotationCoordinateTransform;
   static readonly galacticCoordinateTransform: AnnotationCoordinateTransform;
+  static readonly horizontalCoordinateTransform: AnnotationCoordinateTransform;
 
   //get_center
   get_id(): string;
@@ -524,6 +525,8 @@ export class Annotation implements AnnotationSettingsInterface {
 
 export class AnnotationBatch {
     static readonly horizontalWorldTransform: BatchTransform;
+    static readonly overlayWorldTransform: BatchTransform;
+    static readonly overlayViewTransform: BatchTransform;
 
     readonly items: Annotation[];
     get_viewTransform(): BatchTransform;

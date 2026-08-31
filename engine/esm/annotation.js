@@ -163,6 +163,10 @@ Annotation.defaultCoordinateTransform = function (x, y) {
 
 Annotation.galacticCoordinateTransform = Coordinates.galacticTo3dDouble;
 
+Annotation.horizontalCoordinateTransform = function (alt, az) {
+    return Annotation.defaultCoordinateTransform(270 - alt, az);
+}
+
 Annotation.separation = function (Alpha1, Delta1, Alpha2, Delta2) {
     Delta1 = Delta1 / 180 * Math.PI;
     Delta2 = Delta2 / 180 * Math.PI;
@@ -181,7 +185,7 @@ Annotation.separation = function (Alpha1, Delta1, Alpha2, Delta2) {
 
 Annotation.separationCartesian = function (u, v) {
   var dot = Vector3d.dot(u, v);
-  var cross = Vector3d.cross(u, v).getLength();
+  var cross = Vector3d.cross(u, v).length();
   return Math.atan2(cross, dot);
 }
 
@@ -448,15 +452,8 @@ var Circle$ = {
     },
 
     hitTest: function (renderContext, RA, dec, x, y) {
-        if (ss.emptyString(this.get_id())) {
-            return false;
-        }
-        var rad = this._radius$1;
-        if (!this._skyRelative$1) {
-            rad *= renderContext.get_fovScale() / 3600;
-        }
         var test = Coordinates.raDecTo3d(RA, dec);
-        return Annotation.separationCartesian(this.center, test) < rad;
+        return Annotation.separationCartesian(this.center, test) < (this._radius$1 * Math.PI / 180);
     }
 };
 

@@ -477,18 +477,30 @@ var WWTControl$ = {
         }
     },
 
-    _annotationclicked: function (ra, dec, x, y) {
-        if (this._annotations != null && this._annotations.length > 0) {
-            for (var batchKey of this._annotations) {
+    _annotationInBatchClicked: function (renderContext, batch, x, y) {
+        var $enum1 = ss.enumerate(batch.items);
+        var coordinatesDown = this.getCoordinatesForScreenPoint(x, y);
+        var ra = coordinatesDown.x;
+        var dec = coordinatesDown.y;
+        while ($enum1.moveNext()) {
+            var note = $enum1.current;
+            if (note.hitTest(renderContext, ra, dec, x, y)) {
+                globalScriptInterface._fireAnnotationclicked(ra, dec, note.get_id());
+                return true;
+            }
+        }
+    },
+
+    _annotationclicked: function (x, y) {
+        var control = this;
+        if (this._annotations != null) {
+            for (var batchKey in this._annotations) {
                 var batch = this._annotations[batchKey];
-                var $enum1 = ss.enumerate(batch.items);
-                while ($enum1.moveNext()) {
-                    var note = $enum1.current;
-                    if (note.hitTest(this.renderContext, ra, dec, x, y)) {
-                        globalScriptInterface._fireAnnotationclicked(ra, dec, note.get_id());
-                        return true;
-                    }
-                }
+                this.renderContext.executeWithTransforms({
+                    world: batch.get_worldTransform(),
+                    view: batch.get_viewTransform(),
+                    projection: batch.get_projectionTransform(),
+                }, function (renderContext) { this._annotationInBatchClicked(renderContext, batch, x, y); }.bind(control));
             }
         }
         return false;
@@ -1545,11 +1557,13 @@ var WWTControl$ = {
             }
         }
         if (this._mouseDown && !this._moved) {
-            var raDecDown = this.getCoordinatesForScreenPoint(Mouse.offsetX(this.canvas, e), Mouse.offsetY(this.canvas, e));
+            var x = Mouse.offsetX(this.canvas, e);
+            var y = Mouse.offsetY(this.canvas, e);
+            var raDecDown = this.getCoordinatesForScreenPoint(x, y);
             if (raDecDown) {
-              if (!this._annotationclicked(raDecDown.x, raDecDown.y, Mouse.offsetX(this.canvas, e), Mouse.offsetY(this.canvas, e))) {
-                  globalScriptInterface._fireClick(raDecDown.x, raDecDown.y);
-              }
+                if (!this._annotationclicked(x, y)) {
+                    globalScriptInterface._fireClick(raDecDown.x, raDecDown.y);
+                }
             }
         }
         this._mouseDown = false;
