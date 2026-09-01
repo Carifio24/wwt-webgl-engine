@@ -1994,7 +1994,10 @@ var WWTControl$ = {
                 }
             }
         }
-        if (instant || this._tooCloseForSlewMove(cameraParams)) {
+        if (this._tooCloseForSlewMove(cameraParams)) {
+          cameraParams = this.renderContext.viewCamera.copy();
+        }
+        if (instant) {
             this.set__mover(null);
             this.renderContext.targetCamera = cameraParams.copy();
             this.renderContext.viewCamera = this.renderContext.targetCamera.copy();
