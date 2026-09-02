@@ -31,6 +31,13 @@ export function AnnotationBatch() {
     this._dirty = true;
 }
 
+AnnotationBatch._horizontalWorldAdjustment = Matrix3d.create(
+    0, 0, -1, 0,
+    0, 1, 0, 0,
+    -1, 0, 0, 0,
+    0, 0, 0, 1,
+);
+
 AnnotationBatch.horizontalWorldTransform = function (_renderContext) {
     var zenithAltAz = new Coordinates(0, 0);
     var zenith = Coordinates.horizonToEquitorial(zenithAltAz, SpaceTimeController.get_location(), SpaceTimeController.get_now());
@@ -39,6 +46,7 @@ AnnotationBatch.horizontalWorldTransform = function (_renderContext) {
     var mat = Matrix3d._rotationY(-raPart);
     mat._multiply(Matrix3d._rotationX(decPart));
     mat.invert();
+    mat = Matrix3d.multiplyMatrix(AnnotationBatch._horizontalWorldAdjustment, mat);
     return mat;
 };
 
@@ -162,10 +170,6 @@ Annotation.defaultCoordinateTransform = function (x, y) {
 }
 
 Annotation.galacticCoordinateTransform = Coordinates.galacticTo3dDouble;
-
-Annotation.horizontalCoordinateTransform = function (alt, az) {
-    return Annotation.defaultCoordinateTransform(270 - alt, az);
-}
 
 Annotation.separation = function (Alpha1, Delta1, Alpha2, Delta2) {
     Delta1 = Delta1 / 180 * Math.PI;
