@@ -31,6 +31,13 @@ export function AnnotationBatch() {
     this._dirty = true;
 }
 
+// Without this matrix, converting from RA/Dec gives
+// (RA, Dec) -> (270 - Az, Alt)
+// This is a previously known problem - for example, the alt/az grid text
+// explicitly offsets by 6 hours = 90 degrees to account for this
+// This matrix provides the correct transformation.
+// It's done in homogeneous coordinates, but we're just flipping x + z
+// and reversing the sign of both
 AnnotationBatch._horizontalWorldAdjustment = Matrix3d.create(
     0, 0, -1, 0,
     0, 1, 0, 0,
@@ -57,7 +64,7 @@ AnnotationBatch.overlayWorldTransform = function (position) {
     world.invert();
     return Matrix3d.multiplyMatrix(overlayWorldInitial, world); 
   }
-}
+};
 
 AnnotationBatch.overlayViewTransform = function (rotation) {
   var overlayViewInitial = Matrix3d.lookAtLH(
@@ -70,7 +77,7 @@ AnnotationBatch.overlayViewTransform = function (rotation) {
     view.invert();
     return Matrix3d.multiplyMatrix(overlayViewInitial, view);
   }
-}
+};
 
 var AnnotationBatch$ = {
     add: function (annotation) {
