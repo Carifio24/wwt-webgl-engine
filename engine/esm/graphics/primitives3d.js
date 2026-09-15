@@ -401,6 +401,16 @@ var LineList$ = {
         this._lineDates.length = 0;
     },
 
+    get_width: function () {
+        return this._width;
+    },
+
+    set_width: function (value) {
+        this._width = value;
+        this._emptyLineBuffer();
+        return value;
+    },
+
     drawLines: function (renderContext, opacity) {
         if (this._linePoints.length < 2 || opacity <= 0) {
             return;
@@ -413,10 +423,8 @@ var LineList$ = {
             var needLinewidth = this._width > 1;
             while ($enum1.moveNext()) {
                 var lineBuffer = $enum1.current;
-                if (needLinewidth) {
-                }
                 LineShaderNormalDates.use(renderContext, lineBuffer.vertexBuffer, Color.fromArgb(255, 255, 255, 255), this._zBuffer, this.jNow, (this.timeSeries) ? this.decay : 0, this._width);
-                if (this._width == 1) {
+                if (needLinewidth) {
                   renderContext.gl.drawArrays(WEBGL.LINES, 0, lineBuffer.count);
                 } else {
                   renderContext.gl.drawArrays(WEBGL.TRIANGLES, 0, lineBuffer.count + 2);
@@ -435,6 +443,10 @@ var LineList$ = {
             var counter = 0;
             var temp;
             var $enum1 = ss.enumerate(this._linePoints);
+            var needLinewidth = this._width > 1;
+            if (needLinewidth) {
+                countLeft += 2;
+            }
             while ($enum1.moveNext()) {
                 var point = $enum1.current;
                 if (counter >= 100000 || linePointList == null) {
@@ -449,8 +461,20 @@ var LineList$ = {
                     this._lineBufferCounts.push(thisCount);
                     counter = 0;
                 }
-                var div2 = ss.truncate((index / 2));
                 temp = point;  // -localCenter;
+
+                // TODO: Refactor these three blocks into a method
+                if (needLinewidth && index == 0) {
+                    linePointList[counter] = new TimeSeriesLineVertex();
+                    linePointList[counter].position = temp;
+                    linePointList[counter].normal = point;
+                    linePointList[counter].tu = this._lineDates[div2].startDate;
+                    linePointList[counter].tv = this._lineDates[div2].endDate;
+                    linePointList[counter].set_color(this._lineColors[div2]);
+                    index++;
+                    counter++;
+                }
+                var div2 = ss.truncate((index / 2));
                 linePointList[counter] = new TimeSeriesLineVertex();
                 linePointList[counter].position = temp;
                 linePointList[counter].normal = point;
@@ -459,6 +483,17 @@ var LineList$ = {
                 linePointList[counter].set_color(this._lineColors[div2]);
                 index++;
                 counter++;
+
+                if (needLinewidth && index == count - 1) {
+                    linePointList[counter] = new TimeSeriesLineVertex();
+                    linePointList[counter].position = temp;
+                    linePointList[counter].normal = point;
+                    linePointList[counter].tu = this._lineDates[div2].startDate;
+                    linePointList[counter].tv = this._lineDates[div2].endDate;
+                    linePointList[counter].set_color(this._lineColors[div2]);
+                    index++;
+                    counter++;
+                }
             }
             if (lineBuffer != null) {
                 lineBuffer.unlock();
@@ -466,7 +501,10 @@ var LineList$ = {
         }
     },
 
-    _emptyLineBuffer: function () { }
+    _emptyLineBuffer: function () {
+        this._lineBuffers = [];
+        this._lineBufferCounts = [];
+    }
 };
 
 registerType("LineList", [LineList, LineList$, null]);
