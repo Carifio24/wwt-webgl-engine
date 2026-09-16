@@ -395,7 +395,7 @@ var TimeSeriesLineVertexBuffer$ = {
     unlock: function () {
         this.vertexBuffer = tilePrepDevice.createBuffer();
         tilePrepDevice.bindBuffer(WEBGL.ARRAY_BUFFER, this.vertexBuffer);
-        var f32array = new Float32Array(this.count * 9);
+        var f32array = new Float32Array(2 * this.count * 10);
         var buffer = f32array;
         var index = 0;
         var $enum1 = ss.enumerate(this._verts$1);
@@ -410,6 +410,18 @@ var TimeSeriesLineVertexBuffer$ = {
             buffer[index++] = pt.get_color().a / 255;
             buffer[index++] = pt.tu;
             buffer[index++] = pt.tv;
+            buffer[index++] = 1;
+
+            buffer[index++] = pt.position.x;
+            buffer[index++] = pt.position.y;
+            buffer[index++] = pt.position.z;
+            buffer[index++] = pt.get_color().r / 255;
+            buffer[index++] = pt.get_color().g / 255;
+            buffer[index++] = pt.get_color().b / 255;
+            buffer[index++] = pt.get_color().a / 255;
+            buffer[index++] = pt.tu;
+            buffer[index++] = pt.tv;
+            buffer[index++] = -1;
         }
         tilePrepDevice.bufferData(WEBGL.ARRAY_BUFFER, f32array, WEBGL.STATIC_DRAW);
     }

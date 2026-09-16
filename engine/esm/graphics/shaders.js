@@ -292,7 +292,7 @@ LineShaderNormalDates.colorLoc = 0;
 LineShaderNormalDates.timeLoc = 0;
 LineShaderNormalDates.aspectLoc = 0;
 LineShaderNormalDates.thicknessLoc = 0;
-LineShaderNormalDates.miterLoc = 0;
+LineShaderNormalDates.aspectLoc = 0;
 
 LineShaderNormalDates.initialized = false;
 LineShaderNormalDates._prog = null;
@@ -317,19 +317,18 @@ LineShaderNormalDates.init = function (renderContext) {
         attribute vec3 aNextPosition;
         attribute vec4 aVertexColor;
         attribute vec2 aTime;
+        attribute float aThickness;
+        attribute float aOrientation;
         uniform mat4 uMVMatrix;
         uniform mat4 uPMatrix;
         uniform float jNow;
         uniform float decay;
         uniform float aspect;
-        uniform float thickness;
-        uniform int miter;
 
         varying lowp vec4 vColor;
 
         void main(void)
         {
-            gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
             float dAlpha = 1.0;
 
             if (decay > 0.0)
@@ -349,35 +348,86 @@ LineShaderNormalDates.init = function (renderContext) {
             {
                 vColor = vec4(aVertexColor.r, aVertexColor.g, aVertexColor.b, dAlpha * aVertexColor.a);
             }
+
+            mat4 pmvMatrix = uPMatrix * uMVMatrix;
+            vec4 projected = pmvMatrix * vec4(aVertexPosition, 1.0);
+
+            vec2 aspectVec = vec2(aspect, 1.0);
+            vec4 previousProjected = vec4(aPreviousPosition, 1.0);
+            vec4 nextProjected = vec4(aNextPosition, 1.0);
+            vec2 screen = projected.xy / projected.w * aspectVec;
+            vec2 previousScreen = previousProjected.xy / previousProjected.w * aspectVec;
+            vec2 nextScreen = nextProjected.xy / nextProjected.w * aspectVec;
+
+            float len = aThickness;
+            vec2 dir = vec2(0.0);
+            if (screen == previousScreen)
+            {
+                dir = normalize(nextScreen - screen);
+            } 
+            else if (screen == nextScreen) 
+            {
+                dir = normalize(screen - previousScreen);
+            }
+            else
+            {
+                vec2 dirPrev = normalize(screen - previousScreen);
+                vec2 dirNext = normalize(nextScreen - screen );
+                vec2 tangent = normalize(dirPrev + dirNext);
+                vec2 perp = vec2(-dirPrev.y, dirPrev.x);
+                vec2 miter = vec2(-tangent.y, tangent.x);
+                dir = tangent;
+                len = aThickness / dot(miter, perp);
+            }
+
+            vec2 normal = vec2(-dir.y, dir.x);
+            normal *= len / 2.0;
+            normal.x /= aspect;
+
+            vec4 offset = vec4(normal * aOrientation, 0.0, 1.0);
+            gl_Position = projected + offset;
         }
     `;
 
     LineShaderNormalDates._frag = gl.createShader(WEBGL.FRAGMENT_SHADER);
     gl.shaderSource(LineShaderNormalDates._frag, fragShaderText);
     gl.compileShader(LineShaderNormalDates._frag);
-    var stat = gl.getShaderParameter(LineShaderNormalDates._frag, WEBGL.COMPILE_STATUS);
+    var fragStat = gl.getShaderParameter(LineShaderNormalDates._frag, WEBGL.COMPILE_STATUS);
+    if (!fragStat) {
+        var errorF = gl.getShaderInfoLog(LineShaderNormalDates._frag);
+        console.log(errorF);
+    }
     LineShaderNormalDates._vert = gl.createShader(WEBGL.VERTEX_SHADER);
     gl.shaderSource(LineShaderNormalDates._vert, vertexShaderText);
     gl.compileShader(LineShaderNormalDates._vert);
-    var stat1 = gl.getShaderParameter(LineShaderNormalDates._vert, WEBGL.COMPILE_STATUS);
+    var vertStat = gl.getShaderParameter(LineShaderNormalDates._vert, WEBGL.COMPILE_STATUS);
+    if (!vertStat) {
+        var errorV = gl.getShaderInfoLog(LineShaderNormalDates._vert);
+        console.log(errorV);
+    }
     LineShaderNormalDates._prog = gl.createProgram();
     gl.attachShader(LineShaderNormalDates._prog, LineShaderNormalDates._vert);
     gl.attachShader(LineShaderNormalDates._prog, LineShaderNormalDates._frag);
     gl.linkProgram(LineShaderNormalDates._prog);
-    var errcode = gl.getProgramParameter(LineShaderNormalDates._prog, WEBGL.LINK_STATUS);
+    var linkSuccess = gl.getProgramParameter(LineShaderNormalDates._prog, WEBGL.LINK_STATUS);
+    if (!linkSuccess) {
+        var errorP = gl.getProgramInfoLog(LineShaderNormalDates._prog);
+        console.log(errorP);
+    }
     gl.useProgram(LineShaderNormalDates._prog);
     LineShaderNormalDates.vertLoc = gl.getAttribLocation(LineShaderNormalDates._prog, 'aVertexPosition');
     LineShaderNormalDates.prevVertLoc = gl.getAttribLocation(LineShaderNormalDates._prog, 'aPreviousPosition');
     LineShaderNormalDates.nextVertLoc = gl.getAttribLocation(LineShaderNormalDates._prog, 'aNextPosition');
     LineShaderNormalDates.colorLoc = gl.getAttribLocation(LineShaderNormalDates._prog, 'aVertexColor');
+    LineShaderNormalDates.orientationLoc = gl.getAttribLocation(LineShaderNormalDates._prog, 'aOrientation');
     LineShaderNormalDates.timeLoc = gl.getAttribLocation(LineShaderNormalDates._prog, 'aTime');
+    LineShaderNormalDates.thicknessLoc = gl.getAttribLocation(LineShaderNormalDates._prog, 'aThickness');
     LineShaderNormalDates.lineColorLoc = gl.getUniformLocation(LineShaderNormalDates._prog, 'lineColor');
     LineShaderNormalDates.projMatLoc = gl.getUniformLocation(LineShaderNormalDates._prog, 'uPMatrix');
     LineShaderNormalDates.mvMatLoc = gl.getUniformLocation(LineShaderNormalDates._prog, 'uMVMatrix');
     LineShaderNormalDates.jNowLoc = gl.getUniformLocation(LineShaderNormalDates._prog, 'jNow');
     LineShaderNormalDates.decayLoc = gl.getUniformLocation(LineShaderNormalDates._prog, 'decay');
-    LineShaderNormalDates.thicknessLoc = gl.getUniformLocation(LineShaderNormalDates._prog, 'thickness');
-    LineShaderNormalDates.miterLoc = gl.getUniformLocation(LineShaderNormalDates._prog, 'miter');
+    LineShaderNormalDates.aspectLoc = gl.getUniformLocation(LineShaderNormalDates._prog, 'aspect');
     gl.enable(WEBGL.BLEND);
     gl.blendFunc(WEBGL.SRC_ALPHA, WEBGL.ONE_MINUS_SRC_ALPHA);
     LineShaderNormalDates.initialized = true;
@@ -396,6 +446,7 @@ LineShaderNormalDates.use = function (renderContext, vertex, lineColor, zBuffer,
         gl.uniform4f(LineShaderNormalDates.lineColorLoc, lineColor.r / 255, lineColor.g / 255, lineColor.b / 255, 1);
         gl.uniform1f(LineShaderNormalDates.jNowLoc, jNow);
         gl.uniform1f(LineShaderNormalDates.decayLoc, decay);
+        gl.uniform1f(LineShaderNormalDates.aspectLoc, renderContext.width / renderContext.height);
         if (zBuffer) {
             gl.enable(WEBGL.DEPTH_TEST);
         } else {
@@ -405,21 +456,17 @@ LineShaderNormalDates.use = function (renderContext, vertex, lineColor, zBuffer,
         gl.disableVertexAttribArray(1);
         gl.disableVertexAttribArray(2);
         gl.disableVertexAttribArray(3);
-        var useLinewidth = linewidth > 1;
-        var linewidthAdjustment = +useLinewidth;
-        var itemSize = 36;
-        var itemAdjustment = itemSize * linewidthAdjustment;
+        var itemSize = 40;
         gl.bindBuffer(WEBGL.ARRAY_BUFFER, vertex);
         gl.bindBuffer(WEBGL.ELEMENT_ARRAY_BUFFER, null);
         gl.enableVertexAttribArray(LineShaderNormalDates.vertLoc);
         gl.enableVertexAttribArray(LineShaderNormalDates.colorLoc);
-        gl.vertexAttribPointer(LineShaderNormalDates.vertLoc, 3, WEBGL.FLOAT, false, itemSize, itemAdjustment);
-        gl.vertexAttribPointer(LineShaderNormalDates.colorLoc, 4, WEBGL.FLOAT, false, itemSize, itemAdjustment + 12);
-        gl.vertexAttribPointer(LineShaderNormalDates.timeLoc, 2, WEBGL.FLOAT, false, itemSize, itemAdjustment + 28);
-        gl.lineWidth(1);
-
-        // gl.lineWidth is generally not supported
-
+        gl.vertexAttribPointer(LineShaderNormalDates.previousLoc, 1, WEBGL.FLOAT, false, itemSize, 0);
+        gl.vertexAttribPointer(LineShaderNormalDates.vertLoc, 3, WEBGL.FLOAT, false, itemSize, itemSize);
+        gl.vertexAttribPointer(LineShaderNormalDates.colorLoc, 4, WEBGL.FLOAT, false, itemSize, itemSize + 12);
+        gl.vertexAttribPointer(LineShaderNormalDates.timeLoc, 2, WEBGL.FLOAT, false, itemSize, itemSize + 28);
+        gl.vertexAttribPointer(LineShaderNormalDates.thicknessLoc, 1, WEBGL.FLOAT, false, itemSize, itemSize + 32);
+        gl.vertexAttribPointer(LineShaderNormalDates.nextLoc, 1, WEBGL.FLOAT, false, itemSize, 2 * itemSize);
         gl.enable(WEBGL.BLEND);
         gl.blendFunc(WEBGL.SRC_ALPHA, WEBGL.ONE_MINUS_SRC_ALPHA);
     }
