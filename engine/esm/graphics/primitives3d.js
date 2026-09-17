@@ -379,7 +379,7 @@ var LineList$ = {
         return value;
     },
 
-    addLine: function (v1, v2, color, date, width=1) {
+    addLine: function (v1, v2, color, date, width=3) {
         this._linePoints.push(v1);
         this._linePoints.push(v2);
         this._lineColors.push(color);
@@ -973,7 +973,6 @@ export function TimeSeriesLineVertex() {
     this.tu = 0;
     this.tv = 0;
     this.width = 1;
-    this.orientation = 0;
 }
 
 TimeSeriesLineVertex.create = function (position, normal, time, color, width=1) {
