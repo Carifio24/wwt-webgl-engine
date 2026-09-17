@@ -456,7 +456,7 @@ LineShaderNormalDates.use = function (renderContext, vertex, lineColor, zBuffer,
         gl.disableVertexAttribArray(1);
         gl.disableVertexAttribArray(2);
         gl.disableVertexAttribArray(3);
-        var itemSize = 40;
+        var itemSize = 4 * 11;
         gl.bindBuffer(WEBGL.ARRAY_BUFFER, vertex);
         gl.bindBuffer(WEBGL.ELEMENT_ARRAY_BUFFER, null);
         gl.enableVertexAttribArray(LineShaderNormalDates.vertLoc);
@@ -465,12 +465,13 @@ LineShaderNormalDates.use = function (renderContext, vertex, lineColor, zBuffer,
         gl.enableVertexAttribArray(LineShaderNormalDates.thicknessLoc);
         gl.enableVertexAttribArray(LineShaderNormalDates.prevVertLoc);
         gl.enableVertexAttribArray(LineShaderNormalDates.nextVertLoc);
-        gl.vertexAttribPointer(LineShaderNormalDates.prevVertLoc, 1, WEBGL.FLOAT, false, itemSize, 0);
+        gl.vertexAttribPointer(LineShaderNormalDates.prevVertLoc, 3, WEBGL.FLOAT, false, itemSize, 0);
         gl.vertexAttribPointer(LineShaderNormalDates.vertLoc, 3, WEBGL.FLOAT, false, itemSize, itemSize);
         gl.vertexAttribPointer(LineShaderNormalDates.colorLoc, 4, WEBGL.FLOAT, false, itemSize, itemSize + 12);
         gl.vertexAttribPointer(LineShaderNormalDates.timeLoc, 2, WEBGL.FLOAT, false, itemSize, itemSize + 28);
-        gl.vertexAttribPointer(LineShaderNormalDates.thicknessLoc, 1, WEBGL.FLOAT, false, itemSize, itemSize + 32);
-        gl.vertexAttribPointer(LineShaderNormalDates.nextVertLoc, 1, WEBGL.FLOAT, false, itemSize, 2 * itemSize);
+        gl.vertexAttribPointer(LineShaderNormalDates.thicknessLoc, 1, WEBGL.FLOAT, false, itemSize, itemSize + 36);
+        gl.vertexAttribPointer(LineShaderNormalDates.orientationLoc, 1, WEBGL.FLOAT, false, itemSize, itemSize + 40);
+        gl.vertexAttribPointer(LineShaderNormalDates.nextVertLoc, 3, WEBGL.FLOAT, false, itemSize, 2 * itemSize);
         gl.enable(WEBGL.BLEND);
         gl.blendFunc(WEBGL.SRC_ALPHA, WEBGL.ONE_MINUS_SRC_ALPHA);
     }
@@ -574,6 +575,8 @@ LineShaderNormalDates2D.use = function (renderContext, vertex, lineColor, zBuffe
             LineShaderNormalDates2D.init(renderContext);
         }
         gl.useProgram(LineShaderNormalDates2D._prog);
+        gl.uniformMatrix4fv(LineShaderNormalDates.mvMatLoc, false, mvMat.floatArray());
+        gl.uniformMatrix4fv(LineShaderNormalDates.projMatLoc, false, renderContext.get_projection().floatArray());
         gl.uniform4f(LineShaderNormalDates2D.lineColorLoc, lineColor.r / 255, lineColor.g / 255, lineColor.b / 255, 1);
         gl.uniform1f(LineShaderNormalDates2D.jNowLoc, jNow);
         gl.uniform1f(LineShaderNormalDates2D.decayLoc, decay);
