@@ -413,11 +413,12 @@ registerType("LineShaderNormalDates", [LineShaderNormalDates, LineShaderNormalDa
 // that a line's width can be specified in pixels instead of relying on
 // gl.lineWidth(), which is capped at 1 on essentially every implementation.
 //
-// Adapted from https://github.com/mattdesl/webgl-lines (projected/vert.glsl).
+// This approach is based on https://github.com/mattdesl/webgl-lines (projected/vert.glsl).
+// See the relevant article: https://mattdesl.svbtle.com/drawing-lines-is-hard
 //
 // Each vertex carries the positions of the previous and next points on the
 // path as well as its own, plus an orientation of +1 or -1 saying which side
-// of the path to push it towards. See LineVertexBuffer for the memory layout.
+// of the path to push it towards
 
 export function ThickLineShader() { }
 
@@ -426,13 +427,12 @@ ThickLineShader.prevVertLoc = 0;
 ThickLineShader.nextVertLoc = 0;
 ThickLineShader.colorLoc = 0;
 ThickLineShader.timeLoc = 0;
+ThickLineShader.lineColorLoc = 0;
 ThickLineShader.thicknessLoc = 0;
 ThickLineShader.orientationLoc = 0;
 ThickLineShader.initialized = false;
 ThickLineShader._prog = null;
 
-// Floats per vertex, and the byte offsets of each attribute within one vertex.
-// Must agree with LineVertexBuffer.unlock().
 ThickLineShader.itemSize = 17;
 ThickLineShader.stride = 4 * ThickLineShader.itemSize;
 ThickLineShader.prevOffset = 0;
@@ -502,9 +502,6 @@ ThickLineShader.init = function (renderContext) {
             vec4 currentProjected = pmvMatrix * vec4(aVertexPosition, 1.0);
             vec4 nextProjected = pmvMatrix * vec4(aNextPosition, 1.0);
 
-            // Normalized device coordinates, stretched by the aspect ratio so
-            // that the perpendicular computed below is square on screen and
-            // not merely square in NDC.
             float aspect = viewportWidth / viewportHeight;
             vec2 aspectVec = vec2(aspect, 1.0);
             vec2 currentScreen = currentProjected.xy / currentProjected.w * aspectVec;
@@ -519,27 +516,18 @@ ThickLineShader.init = function (renderContext) {
 
             if (currentScreen == previousScreen && currentScreen == nextScreen)
             {
-                // Degenerate (zero length) segment. Leave dir at zero rather
-                // than normalizing it and producing NaNs.
                 dir = vec2(0.0);
             }
             else if (currentScreen == previousScreen)
             {
-                // Start cap: the direction is towards the far end.
                 dir = normalize(nextScreen - currentScreen);
             }
             else if (currentScreen == nextScreen)
             {
-                // End cap: the direction is away from the near end.
                 dir = normalize(currentScreen - previousScreen);
             }
             else
             {
-                // Interior vertex of a path, so the two adjoining segments get
-                // a miter join. Nothing currently feeds this branch: LineList
-                // is a list of independent segments and sets previous/next to
-                // the segment's own endpoints, which takes the cap branches
-                // above. It is kept for future polyline support.
                 vec2 dirPrev = normalize(currentScreen - previousScreen);
                 vec2 dirNext = normalize(nextScreen - currentScreen);
                 vec2 tangent = normalize(dirPrev + dirNext);
@@ -553,9 +541,6 @@ ThickLineShader.init = function (renderContext) {
             normal *= len / 2.0;
             normal.x /= aspect;
 
-            // The normal is a displacement in NDC, but we are emitting a
-            // clip-space position, so scale it by w to survive the perspective
-            // divide that the GPU is about to perform.
             vec2 offset = normal * aOrientation * currentProjected.w;
             gl_Position = currentProjected + vec4(offset, 0.0, 0.0);
         }

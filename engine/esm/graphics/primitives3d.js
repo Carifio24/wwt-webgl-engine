@@ -362,10 +362,7 @@ export function LineList() {
     this.decay = 0;
     this.useNonRotatingFrame = false;
     this.jNow = 0;
-    this._linePoints = [];
-    this._lineColors = [];
-    this._lineDates = [];
-    this._lineWidths = [];
+    this._paths = [];
     this._usingLocalCenter = true;
     this._lineBuffers = [];
     this._lineBufferCounts = [];
@@ -421,10 +418,7 @@ var LineList$ = {
     },
 
     clear: function () {
-        this._linePoints.length = 0;
-        this._lineColors.length = 0;
-        this._lineDates.length = 0;
-        this._lineWidths.length = 0;
+        this._paths = [];
         this._emptyLineBuffer();
     },
 
