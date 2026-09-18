@@ -395,7 +395,7 @@ var TimeSeriesLineVertexBuffer$ = {
     unlock: function () {
         this.vertexBuffer = tilePrepDevice.createBuffer();
         tilePrepDevice.bindBuffer(WEBGL.ARRAY_BUFFER, this.vertexBuffer);
-        var f32array = new Float32Array(2 * this.count * 11);
+        var f32array = new Float32Array(this.count * 9);
         var buffer = f32array;
         var index = 0;
         var $enum1 = ss.enumerate(this._verts$1);
@@ -410,12 +410,61 @@ var TimeSeriesLineVertexBuffer$ = {
             buffer[index++] = pt.get_color().a / 255;
             buffer[index++] = pt.tu;
             buffer[index++] = pt.tv;
-            buffer[index++] = pt.width;
-            buffer[index++] = 1;
+        }
+        tilePrepDevice.bufferData(WEBGL.ARRAY_BUFFER, f32array, WEBGL.STATIC_DRAW);
+    }
+};
 
+registerType("TimeSeriesLineVertexBuffer", [TimeSeriesLineVertexBuffer, TimeSeriesLineVertexBuffer$, VertexBufferBase]);
+
+
+// wwtlib.LineVertexBuffer
+//
+// Vertex data for lines that are drawn as shader-generated quads; see
+// ThickLineShader. Every vertex stores the previous and next point on the path
+// alongside its own position, so that the vertex shader can work out the
+// on-screen direction of the line and displace the vertex perpendicular to it.
+//
+// This deliberately does not reuse TimeSeriesLineVertexBuffer: that buffer is
+// also used for the (genuinely triangular) TriangleList and TriangleFanList
+// geometry, which must keep its one-vertex-per-point layout.
+
+export function LineVertexBuffer(count) {
+    this.count = 0;
+    this._verts$1 = null;
+    VertexBufferBase.call(this);
+    this.count = count;
+}
+
+// Floats per vertex: previous (3), position (3), next (3), color (4),
+// time (2), width (1), orientation (1). Must agree with the offsets in
+// ThickLineShader.
+LineVertexBuffer.itemSize = 17;
+
+var LineVertexBuffer$ = {
+    lock: function () {
+        this._verts$1 = new Array(this.count);
+        return this._verts$1;
+    },
+
+    unlock: function () {
+        this.vertexBuffer = tilePrepDevice.createBuffer();
+        tilePrepDevice.bindBuffer(WEBGL.ARRAY_BUFFER, this.vertexBuffer);
+        var f32array = new Float32Array(this.count * LineVertexBuffer.itemSize);
+        var buffer = f32array;
+        var index = 0;
+        var $enum1 = ss.enumerate(this._verts$1);
+        while ($enum1.moveNext()) {
+            var pt = $enum1.current;
+            buffer[index++] = pt.previous.x;
+            buffer[index++] = pt.previous.y;
+            buffer[index++] = pt.previous.z;
             buffer[index++] = pt.position.x;
             buffer[index++] = pt.position.y;
             buffer[index++] = pt.position.z;
+            buffer[index++] = pt.next.x;
+            buffer[index++] = pt.next.y;
+            buffer[index++] = pt.next.z;
             buffer[index++] = pt.get_color().r / 255;
             buffer[index++] = pt.get_color().g / 255;
             buffer[index++] = pt.get_color().b / 255;
@@ -423,14 +472,14 @@ var TimeSeriesLineVertexBuffer$ = {
             buffer[index++] = pt.tu;
             buffer[index++] = pt.tv;
             buffer[index++] = pt.width;
-            buffer[index++] = -1;
+            buffer[index++] = pt.orientation;
         }
-        console.log(f32array);
         tilePrepDevice.bufferData(WEBGL.ARRAY_BUFFER, f32array, WEBGL.STATIC_DRAW);
     }
 };
 
-registerType("TimeSeriesLineVertexBuffer", [TimeSeriesLineVertexBuffer, TimeSeriesLineVertexBuffer$, VertexBufferBase]);
+registerType("LineVertexBuffer", [LineVertexBuffer, LineVertexBuffer$, VertexBufferBase]);
+
 
 
 // wwtlib.TimeSeriesPointVertexBuffer

@@ -113,6 +113,7 @@ export {
     SimpleLineShader2D,
     OrbitLineShader,
     LineShaderNormalDates,
+    ThickLineShader,
     TimeSeriesPointSpriteShader,
     KeplerPointSpriteShader,
     EllipseShader,
@@ -138,6 +139,7 @@ export {
     TriangleList,
     TriangleFanList,
     PointList,
+    LineVertex,
     TimeSeriesLineVertex,
     TimeSeriesPointVertex,
 } from "./graphics/primitives3d.js";

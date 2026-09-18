@@ -10,6 +10,7 @@ import { Color } from "../color.js";
 import { URLHelpers } from "../url_helpers.js";
 import { WEBGL } from "./webgl_constants.js";
 import {
+    LineVertexBuffer,
     MaskBuffer,
     PositionVertexBuffer,
     PositionColoredVertexBuffer,
@@ -23,6 +24,7 @@ import {
     OrbitLineShader,
     LineShaderNormalDates,
     LineShaderNormalDates2D,
+    ThickLineShader,
     TimeSeriesPointSpriteShader,
 } from "./shaders.js";
 
@@ -363,11 +365,21 @@ export function LineList() {
     this._linePoints = [];
     this._lineColors = [];
     this._lineDates = [];
+    this._lineWidths = [];
     this._usingLocalCenter = true;
     this._lineBuffers = [];
     this._lineBufferCounts = [];
-    this._lineWidths = [];
+    this._width = 1;
 }
+
+// Each segment is drawn as a quad, i.e. two independent triangles.
+LineList.VERTICES_PER_SEGMENT = 6;
+
+// How many segments go into a single vertex buffer. We chunk by segment rather
+// than by point so that a segment's six vertices can never straddle two
+// buffers. Six vertices apiece keeps a full buffer just under the 100k
+// vertices that the old point-based code used as its limit.
+LineList.MAX_SEGMENTS_PER_BUFFER = 16000;
 
 var LineList$ = {
     get_depthBuffered: function () {
@@ -379,30 +391,7 @@ var LineList$ = {
         return value;
     },
 
-    addLine: function (v1, v2, color, date, width=3) {
-        this._linePoints.push(v1);
-        this._linePoints.push(v2);
-        this._lineColors.push(color);
-        this._lineDates.push(date);
-        this._lineWidths.push(width);
-        this._emptyLineBuffer();
-    },
-
-    addLineNoDate: function (v1, v2, color, width=1) {
-        this._linePoints.push(v1);
-        this._linePoints.push(v2);
-        this._lineColors.push(color);
-        this._lineDates.push(new Dates(0, 0));
-        this._lineWidths.push(width);
-        this._emptyLineBuffer();
-    },
-
-    clear: function () {
-        this._linePoints.length = 0;
-        this._lineColors.length = 0;
-        this._lineDates.length = 0;
-    },
-
+    // The width, in pixels, given to lines added without an explicit width.
     get_width: function () {
         return this._width;
     },
@@ -411,6 +400,32 @@ var LineList$ = {
         this._width = value;
         this._emptyLineBuffer();
         return value;
+    },
+
+    addLine: function (v1, v2, color, date, width) {
+        this._linePoints.push(v1);
+        this._linePoints.push(v2);
+        this._lineColors.push(color);
+        this._lineDates.push(date);
+        this._lineWidths.push((width == null) ? this._width : width);
+        this._emptyLineBuffer();
+    },
+
+    addLineNoDate: function (v1, v2, color, width) {
+        this._linePoints.push(v1);
+        this._linePoints.push(v2);
+        this._lineColors.push(color);
+        this._lineDates.push(new Dates(0, 0));
+        this._lineWidths.push((width == null) ? this._width : width);
+        this._emptyLineBuffer();
+    },
+
+    clear: function () {
+        this._linePoints.length = 0;
+        this._lineColors.length = 0;
+        this._lineDates.length = 0;
+        this._lineWidths.length = 0;
+        this._emptyLineBuffer();
     },
 
     drawLines: function (renderContext, opacity) {
@@ -424,75 +439,70 @@ var LineList$ = {
             var $enum1 = ss.enumerate(this._lineBuffers);
             while ($enum1.moveNext()) {
                 var lineBuffer = $enum1.current;
-                LineShaderNormalDates.use(renderContext, lineBuffer.vertexBuffer, Color.fromArgb(255, 255, 255, 255), this._zBuffer, this.jNow, (this.timeSeries) ? this.decay : 0);
+                ThickLineShader.use(renderContext, lineBuffer.vertexBuffer, Color.fromArgb(255, 255, 255, 255), this._zBuffer, this.jNow, (this.timeSeries) ? this.decay : 0);
                 renderContext.gl.drawArrays(WEBGL.TRIANGLES, 0, lineBuffer.count);
             }
+            ThickLineShader.cleanup(renderContext);
         }
     },
 
-    _addPointToLineList: function(list, point, normal, index) {
-        var div2 = ss.truncate(index / 2);
-        var item = new TimeSeriesLineVertex();
-        item.position = point;
-        item.normal = normal;
-        item.tu = this._lineDates[div2].startDate;
-        item.tv = this._lineDates[div2].endDate;
-        item.set_color(this._lineColors[div2]);
-        item.set_width(this._lineWidths[div2]);
-        list[index] = item;
-        console.log(index);
-        console.log(item);
+    // Expand one segment into the six vertices of its quad.
+    //
+    // Note that `previous` and `next` are the segment's own two endpoints for
+    // every one of the six vertices. This list holds independent segments, not
+    // a path, so there is no meaningful neighbour to join to: giving the
+    // shader the segment's own endpoints makes it treat both ends as caps.
+    _addSegmentToLineList: function (list, offset, segment) {
+        var start = this._linePoints[segment * 2];
+        var end = this._linePoints[segment * 2 + 1];
+        var color = this._lineColors[segment];
+        var date = this._lineDates[segment];
+        var width = this._lineWidths[segment];
+
+        // Triangles (start+, start-, end+) and (start-, end-, end+).
+        var positions = [start, start, end, start, end, end];
+        var orientations = [1, -1, 1, -1, -1, 1];
+
+        for (var i = 0; i < LineList.VERTICES_PER_SEGMENT; i++) {
+            list[offset + i] = LineVertex.create(
+                positions[i], start, end, color,
+                date.startDate, date.endDate, width, orientations[i]
+            );
+        }
     },
 
     _initLineBuffer: function () {
-        if (!this._lineBuffers.length) {
-            var count = this._linePoints.length;
-            var lineBuffer = null;
-            var linePointList = null;
-            var countLeft = count;
-            var index = 0;
-            var counter = 0;
-            var temp;
-            var $enum1 = ss.enumerate(this._linePoints);
-            while ($enum1.moveNext()) {
-                var point = $enum1.current;
-                if (counter >= 100000 || linePointList == null) {
-                    if (lineBuffer != null) {
-                        lineBuffer.unlock();
-                    }
-                    var thisCount = Math.min(100000, countLeft);
-                    countLeft -= thisCount;
-                    lineBuffer = new TimeSeriesLineVertexBuffer(thisCount);
-                    linePointList = lineBuffer.lock(); // Lock the buffer (which will return our structs)
-                    this._lineBuffers.push(lineBuffer);
-                    this._lineBufferCounts.push(thisCount);
-                    counter = 0;
-                }
-                temp = point;  // -localCenter;
+        if (this._lineBuffers.length) {
+            return;
+        }
 
-                // if (index == 0) {
-                //     this._addPointToLineList(linePointList, temp, point, index); 
-                //     index++;
-                //     counter++;
-                // }
-                this._addPointToLineList(linePointList, temp, point, index);
-                index++;
-                counter++;
+        var segmentCount = ss.truncate(this._linePoints.length / 2);
+        var segment = 0;
 
-                // if (index == count - 1) {
-                //     this._addPointToLineList(linePointList, temp, point, index); 
-                //     counter++;
-                // }
+        while (segment < segmentCount) {
+            var theseSegments = Math.min(LineList.MAX_SEGMENTS_PER_BUFFER, segmentCount - segment);
+            var vertexCount = theseSegments * LineList.VERTICES_PER_SEGMENT;
+
+            var lineBuffer = new LineVertexBuffer(vertexCount);
+            var linePointList = lineBuffer.lock(); // Lock the buffer (which will return our structs)
+            this._lineBuffers.push(lineBuffer);
+            this._lineBufferCounts.push(vertexCount);
+
+            for (var i = 0; i < theseSegments; i++, segment++) {
+                this._addSegmentToLineList(linePointList, i * LineList.VERTICES_PER_SEGMENT, segment);
             }
-            if (lineBuffer != null) {
-                lineBuffer.unlock();
-            }
+
+            lineBuffer.unlock();
         }
     },
 
     _emptyLineBuffer: function () {
-        this._lineBuffers = [];
-        this._lineBufferCounts = [];
+        var $enum1 = ss.enumerate(this._lineBuffers);
+        while ($enum1.moveNext()) {
+            $enum1.current.dispose();
+        }
+        this._lineBuffers.length = 0;
+        this._lineBufferCounts.length = 0;
     }
 };
 
@@ -972,17 +982,15 @@ export function TimeSeriesLineVertex() {
     this.normal = new Vector3d();
     this.tu = 0;
     this.tv = 0;
-    this.width = 1;
 }
 
-TimeSeriesLineVertex.create = function (position, normal, time, color, width=1) {
+TimeSeriesLineVertex.create = function (position, normal, time, color) {
     var temp = new TimeSeriesLineVertex();
     temp.position = position;
     temp.normal = normal;
     temp.tu = time;
     temp.tv = 0;
     temp.color = color;
-    temp.width = width;
     return temp;
 };
 
@@ -994,19 +1002,55 @@ var TimeSeriesLineVertex$ = {
     set_color: function (value) {
         this.color = value;
         return value;
-    },
-
-    get_width: function () {
-        return this.width;
-    },
-
-    set_width: function (value) {
-        this.width = value;
-        return value;
-    },
+    }
 };
 
 registerType("TimeSeriesLineVertex", [TimeSeriesLineVertex, TimeSeriesLineVertex$, null]);
+
+
+// wwtlib.LineVertex
+//
+// One corner of the quad that ThickLineShader expands a line segment into.
+// `previous` and `next` are the endpoints of the path on either side of
+// `position`; `orientation` is +1 or -1 and says which side of the line this
+// corner sits on.
+
+export function LineVertex() {
+    this.color = null;
+    this.position = new Vector3d();
+    this.previous = new Vector3d();
+    this.next = new Vector3d();
+    this.tu = 0;
+    this.tv = 0;
+    this.width = 1;
+    this.orientation = 1;
+}
+
+LineVertex.create = function (position, previous, next, color, startTime, endTime, width, orientation) {
+    var temp = new LineVertex();
+    temp.position = position;
+    temp.previous = previous;
+    temp.next = next;
+    temp.color = color;
+    temp.tu = startTime;
+    temp.tv = endTime;
+    temp.width = width;
+    temp.orientation = orientation;
+    return temp;
+};
+
+var LineVertex$ = {
+    get_color: function () {
+        return this.color;
+    },
+
+    set_color: function (value) {
+        this.color = value;
+        return value;
+    }
+};
+
+registerType("LineVertex", [LineVertex, LineVertex$, null]);
 
 
 // wwtlib.TimeSeriesPointVertex

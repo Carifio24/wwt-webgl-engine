@@ -283,7 +283,7 @@ var Circle$ = {
                     lineColorWithOpacity.a = Math.round(lineColorWithOpacity.a * this.get_opacity());
 
                     for (var i = 0; i < vertexList.length - 1; i++) {
-                        Annotation.lineList.addLine(vertexList[i], vertexList[i + 1], lineColorWithOpacity, new Dates(0, 1));
+                        Annotation.lineList.addLine(vertexList[i], vertexList[i + 1], lineColorWithOpacity, new Dates(0, 1), this._strokeWidth$1);
                     }
                 }
 
@@ -399,9 +399,9 @@ var Poly$ = {
                     var lineColorWithOpacity = this._lineColor$1._clone();
                     lineColorWithOpacity.a = Math.round(lineColorWithOpacity.a * this.get_opacity());
                     for (var i = 0; i < (this._points$1.length - 1); i++) {
-                        Annotation.lineList.addLine(vertexList[i], vertexList[i + 1], lineColorWithOpacity, new Dates(0, 1));
+                        Annotation.lineList.addLine(vertexList[i], vertexList[i + 1], lineColorWithOpacity, new Dates(0, 1), this._strokeWidth$1);
                     }
-                    Annotation.lineList.addLine(vertexList[this._points$1.length - 1], vertexList[0], lineColorWithOpacity, new Dates(0, 1));
+                    Annotation.lineList.addLine(vertexList[this._points$1.length - 1], vertexList[0], lineColorWithOpacity, new Dates(0, 1), this._strokeWidth$1);
                 }
                 if (this._fill$1) {
                     var fillColorWithOpacity = this._fillColor$1._clone();
@@ -500,7 +500,7 @@ var PolyLine$ = {
                     var lineColorWithOpacity = this._lineColor$1._clone();
                     lineColorWithOpacity.a = Math.round(lineColorWithOpacity.a * this.get_opacity());
                     for (var i = 0; i < (this._points$1.length - 1); i++) {
-                        Annotation.lineList.addLine(vertexList[i], vertexList[i + 1], lineColorWithOpacity, new Dates(0, 1));
+                        Annotation.lineList.addLine(vertexList[i], vertexList[i + 1], lineColorWithOpacity, new Dates(0, 1), this._strokeWidth$1);
                     }
                 }
                 this.annotationDirty = false;
