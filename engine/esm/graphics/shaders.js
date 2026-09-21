@@ -529,6 +529,256 @@ var LineShaderNormalDates2D$ = {};
 
 registerType("LineShaderNormalDates2D", [LineShaderNormalDates2D, LineShaderNormalDates2D$, null]);
 
+// wwtlib.ThickLineShaderNormalDates
+//
+// Draws lines as camera-facing quads that are built in the vertex shader, so
+// that a line's width can be specified in pixels instead of relying on
+// gl.lineWidth(), which is capped at 1 on essentially every implementation.
+//
+// This approach is based on https://github.com/mattdesl/webgl-lines (projected/vert.glsl).
+// See the relevant article: https://mattdesl.svbtle.com/drawing-lines-is-hard
+//
+// Each vertex carries the positions of the previous and next points on the
+// path as well as its own, plus an orientation of +1 or -1 saying which side
+// of the path to push it towards
+
+export function ThickLineShaderNormalDates() { }
+
+ThickLineShaderNormalDates.vertLoc = 0;
+ThickLineShaderNormalDates.prevVertLoc = 0;
+ThickLineShaderNormalDates.nextVertLoc = 0;
+ThickLineShaderNormalDates.colorLoc = 0;
+ThickLineShaderNormalDates.timeLoc = 0;
+ThickLineShaderNormalDates.lineColorLoc = 0;
+ThickLineShaderNormalDates.thicknessLoc = 0;
+ThickLineShaderNormalDates.orientationLoc = 0;
+ThickLineShaderNormalDates.initialized = false;
+ThickLineShaderNormalDates._prog = null;
+
+ThickLineShaderNormalDates.itemSize = 17;
+ThickLineShaderNormalDates.stride = 4 * ThickLineShaderNormalDates.itemSize;
+ThickLineShaderNormalDates.prevOffset = 0;
+ThickLineShaderNormalDates.positionOffset = 12;
+ThickLineShaderNormalDates.nextOffset = 24;
+ThickLineShaderNormalDates.colorOffset = 36;
+ThickLineShaderNormalDates.timeOffset = 52;
+ThickLineShaderNormalDates.thicknessOffset = 60;
+ThickLineShaderNormalDates.orientationOffset = 64;
+
+ThickLineShaderNormalDates.init = function (renderContext) {
+    var gl = renderContext.gl;
+
+    const fragShaderText = `\
+        precision highp float;
+        uniform vec4 lineColor;
+        varying lowp vec4 vColor;
+
+        void main(void)
+        {
+            gl_FragColor = lineColor * vColor;
+        }
+    `;
+
+    const vertexShaderText = `\
+        attribute vec3 aPreviousPosition;
+        attribute vec3 aVertexPosition;
+        attribute vec3 aNextPosition;
+        attribute vec4 aVertexColor;
+        attribute vec2 aTime;
+        attribute float aThickness;
+        attribute float aOrientation;
+
+        uniform mat4 uMVMatrix;
+        uniform mat4 uPMatrix;
+        uniform float jNow;
+        uniform float decay;
+        uniform float viewportWidth;
+        uniform float viewportHeight;
+
+        varying lowp vec4 vColor;
+
+        void main(void)
+        {
+            float dAlpha = 1.0;
+
+            if (decay > 0.0)
+            {
+                    dAlpha = 1.0 - ((jNow - aTime.y) / decay);
+                    if (dAlpha > 1.0 )
+                    {
+                        dAlpha = 1.0;
+                    }
+            }
+
+            if (jNow < aTime.x && decay > 0.0)
+            {
+                vColor = vec4(1, 1, 1, 1);
+            }
+            else
+            {
+                vColor = vec4(aVertexColor.r, aVertexColor.g, aVertexColor.b, dAlpha * aVertexColor.a);
+            }
+
+            mat4 pmvMatrix = uPMatrix * uMVMatrix;
+            vec4 previousProjected = pmvMatrix * vec4(aPreviousPosition, 1.0);
+            vec4 currentProjected = pmvMatrix * vec4(aVertexPosition, 1.0);
+            vec4 nextProjected = pmvMatrix * vec4(aNextPosition, 1.0);
+
+            float aspect = viewportWidth / viewportHeight;
+            vec2 aspectVec = vec2(aspect, 1.0);
+            vec2 currentScreen = currentProjected.xy / currentProjected.w * aspectVec;
+            vec2 previousScreen = previousProjected.xy / previousProjected.w * aspectVec;
+            vec2 nextScreen = nextProjected.xy / nextProjected.w * aspectVec;
+
+            // aThickness is in pixels; NDC spans [-1, 1], so one pixel of
+            // height is 2.0 / viewportHeight.
+            float len = aThickness * 2.0 / viewportHeight;
+
+            vec2 dir = vec2(0.0);
+
+            if (currentScreen == previousScreen && currentScreen == nextScreen)
+            {
+                dir = vec2(0.0);
+            }
+            else if (currentScreen == previousScreen)
+            {
+                dir = normalize(nextScreen - currentScreen);
+            }
+            else if (currentScreen == nextScreen)
+            {
+                dir = normalize(currentScreen - previousScreen);
+            }
+            else
+            {
+                vec2 dirPrev = normalize(currentScreen - previousScreen);
+                vec2 dirNext = normalize(nextScreen - currentScreen);
+                vec2 tangent = normalize(dirPrev + dirNext);
+                vec2 perp = vec2(-dirPrev.y, dirPrev.x);
+                vec2 miter = vec2(-tangent.y, tangent.x);
+                dir = tangent;
+                len = len / dot(miter, perp);
+            }
+
+            vec2 normal = vec2(-dir.y, dir.x);
+            normal *= len / 2.0;
+            normal.x /= aspect;
+
+            vec2 offset = normal * aOrientation * currentProjected.w;
+            gl_Position = currentProjected + vec4(offset, 0.0, 0.0);
+        }
+    `;
+
+    ThickLineShaderNormalDates._frag = gl.createShader(WEBGL.FRAGMENT_SHADER);
+    gl.shaderSource(ThickLineShaderNormalDates._frag, fragShaderText);
+    gl.compileShader(ThickLineShaderNormalDates._frag);
+    if (!gl.getShaderParameter(ThickLineShaderNormalDates._frag, WEBGL.COMPILE_STATUS)) {
+        console.error('ThickLineShaderNormalDates fragment shader: ' + gl.getShaderInfoLog(ThickLineShaderNormalDates._frag));
+    }
+
+    ThickLineShaderNormalDates._vert = gl.createShader(WEBGL.VERTEX_SHADER);
+    gl.shaderSource(ThickLineShaderNormalDates._vert, vertexShaderText);
+    gl.compileShader(ThickLineShaderNormalDates._vert);
+    if (!gl.getShaderParameter(ThickLineShaderNormalDates._vert, WEBGL.COMPILE_STATUS)) {
+        console.error('ThickLineShaderNormalDates vertex shader: ' + gl.getShaderInfoLog(ThickLineShaderNormalDates._vert));
+    }
+
+    ThickLineShaderNormalDates._prog = gl.createProgram();
+    gl.attachShader(ThickLineShaderNormalDates._prog, ThickLineShaderNormalDates._vert);
+    gl.attachShader(ThickLineShaderNormalDates._prog, ThickLineShaderNormalDates._frag);
+    gl.linkProgram(ThickLineShaderNormalDates._prog);
+    if (!gl.getProgramParameter(ThickLineShaderNormalDates._prog, WEBGL.LINK_STATUS)) {
+        console.error('ThickLineShaderNormalDates link: ' + gl.getProgramInfoLog(ThickLineShaderNormalDates._prog));
+    }
+    gl.useProgram(ThickLineShaderNormalDates._prog);
+
+    ThickLineShaderNormalDates.prevVertLoc = gl.getAttribLocation(ThickLineShaderNormalDates._prog, 'aPreviousPosition');
+    ThickLineShaderNormalDates.vertLoc = gl.getAttribLocation(ThickLineShaderNormalDates._prog, 'aVertexPosition');
+    ThickLineShaderNormalDates.nextVertLoc = gl.getAttribLocation(ThickLineShaderNormalDates._prog, 'aNextPosition');
+    ThickLineShaderNormalDates.colorLoc = gl.getAttribLocation(ThickLineShaderNormalDates._prog, 'aVertexColor');
+    ThickLineShaderNormalDates.timeLoc = gl.getAttribLocation(ThickLineShaderNormalDates._prog, 'aTime');
+    ThickLineShaderNormalDates.thicknessLoc = gl.getAttribLocation(ThickLineShaderNormalDates._prog, 'aThickness');
+    ThickLineShaderNormalDates.orientationLoc = gl.getAttribLocation(ThickLineShaderNormalDates._prog, 'aOrientation');
+
+    ThickLineShaderNormalDates.lineColorLoc = gl.getUniformLocation(ThickLineShaderNormalDates._prog, 'lineColor');
+    ThickLineShaderNormalDates.projMatLoc = gl.getUniformLocation(ThickLineShaderNormalDates._prog, 'uPMatrix');
+    ThickLineShaderNormalDates.mvMatLoc = gl.getUniformLocation(ThickLineShaderNormalDates._prog, 'uMVMatrix');
+    ThickLineShaderNormalDates.jNowLoc = gl.getUniformLocation(ThickLineShaderNormalDates._prog, 'jNow');
+    ThickLineShaderNormalDates.decayLoc = gl.getUniformLocation(ThickLineShaderNormalDates._prog, 'decay');
+    ThickLineShaderNormalDates.widthLoc = gl.getUniformLocation(ThickLineShaderNormalDates._prog, 'viewportWidth');
+    ThickLineShaderNormalDates.heightLoc = gl.getUniformLocation(ThickLineShaderNormalDates._prog, 'viewportHeight');
+
+    gl.enable(WEBGL.BLEND);
+    gl.blendFunc(WEBGL.SRC_ALPHA, WEBGL.ONE_MINUS_SRC_ALPHA);
+    ThickLineShaderNormalDates.initialized = true;
+};
+
+ThickLineShaderNormalDates.use = function (renderContext, vertex, lineColor, zBuffer, jNow, decay) {
+    var gl = renderContext.gl;
+    if (gl != null) {
+        if (!ThickLineShaderNormalDates.initialized) {
+            ThickLineShaderNormalDates.init(renderContext);
+        }
+        gl.useProgram(ThickLineShaderNormalDates._prog);
+        var mvMat = Matrix3d.multiplyMatrix(renderContext.get_world(), renderContext.get_view());
+        gl.uniformMatrix4fv(ThickLineShaderNormalDates.mvMatLoc, false, mvMat.floatArray());
+        gl.uniformMatrix4fv(ThickLineShaderNormalDates.projMatLoc, false, renderContext.get_projection().floatArray());
+        gl.uniform4f(ThickLineShaderNormalDates.lineColorLoc, lineColor.r / 255, lineColor.g / 255, lineColor.b / 255, 1);
+        gl.uniform1f(ThickLineShaderNormalDates.jNowLoc, jNow);
+        gl.uniform1f(ThickLineShaderNormalDates.decayLoc, decay);
+        gl.uniform1f(ThickLineShaderNormalDates.widthLoc, renderContext.width);
+        gl.uniform1f(ThickLineShaderNormalDates.heightLoc, renderContext.height);
+        if (zBuffer) {
+            gl.enable(WEBGL.DEPTH_TEST);
+        } else {
+            gl.disable(WEBGL.DEPTH_TEST);
+        }
+        gl.disableVertexAttribArray(0);
+        gl.disableVertexAttribArray(1);
+        gl.disableVertexAttribArray(2);
+        gl.disableVertexAttribArray(3);
+        gl.bindBuffer(WEBGL.ARRAY_BUFFER, vertex);
+        gl.bindBuffer(WEBGL.ELEMENT_ARRAY_BUFFER, null);
+        gl.enableVertexAttribArray(ThickLineShaderNormalDates.prevVertLoc);
+        gl.enableVertexAttribArray(ThickLineShaderNormalDates.vertLoc);
+        gl.enableVertexAttribArray(ThickLineShaderNormalDates.nextVertLoc);
+        gl.enableVertexAttribArray(ThickLineShaderNormalDates.colorLoc);
+        gl.enableVertexAttribArray(ThickLineShaderNormalDates.timeLoc);
+        gl.enableVertexAttribArray(ThickLineShaderNormalDates.thicknessLoc);
+        gl.enableVertexAttribArray(ThickLineShaderNormalDates.orientationLoc);
+        gl.vertexAttribPointer(ThickLineShaderNormalDates.prevVertLoc, 3, WEBGL.FLOAT, false, ThickLineShaderNormalDates.stride, ThickLineShaderNormalDates.prevOffset);
+        gl.vertexAttribPointer(ThickLineShaderNormalDates.vertLoc, 3, WEBGL.FLOAT, false, ThickLineShaderNormalDates.stride, ThickLineShaderNormalDates.positionOffset);
+        gl.vertexAttribPointer(ThickLineShaderNormalDates.nextVertLoc, 3, WEBGL.FLOAT, false, ThickLineShaderNormalDates.stride, ThickLineShaderNormalDates.nextOffset);
+        gl.vertexAttribPointer(ThickLineShaderNormalDates.colorLoc, 4, WEBGL.FLOAT, false, ThickLineShaderNormalDates.stride, ThickLineShaderNormalDates.colorOffset);
+        gl.vertexAttribPointer(ThickLineShaderNormalDates.timeLoc, 2, WEBGL.FLOAT, false, ThickLineShaderNormalDates.stride, ThickLineShaderNormalDates.timeOffset);
+        gl.vertexAttribPointer(ThickLineShaderNormalDates.thicknessLoc, 1, WEBGL.FLOAT, false, ThickLineShaderNormalDates.stride, ThickLineShaderNormalDates.thicknessOffset);
+        gl.vertexAttribPointer(ThickLineShaderNormalDates.orientationLoc, 1, WEBGL.FLOAT, false, ThickLineShaderNormalDates.stride, ThickLineShaderNormalDates.orientationOffset);
+        gl.enable(WEBGL.BLEND);
+        gl.blendFunc(WEBGL.SRC_ALPHA, WEBGL.ONE_MINUS_SRC_ALPHA);
+    }
+};
+
+// This shader uses more attribute arrays than the rest of the engine, which
+// only ever disables arrays 0-3 before drawing. Leaving the extra arrays
+// enabled would point them at a stale buffer for every subsequent draw call,
+// so callers must invoke this once they are done drawing with this shader.
+ThickLineShaderNormalDates.cleanup = function (renderContext) {
+    var gl = renderContext.gl;
+    if (gl != null && ThickLineShaderNormalDates.initialized) {
+        gl.disableVertexAttribArray(ThickLineShaderNormalDates.prevVertLoc);
+        gl.disableVertexAttribArray(ThickLineShaderNormalDates.vertLoc);
+        gl.disableVertexAttribArray(ThickLineShaderNormalDates.nextVertLoc);
+        gl.disableVertexAttribArray(ThickLineShaderNormalDates.colorLoc);
+        gl.disableVertexAttribArray(ThickLineShaderNormalDates.timeLoc);
+        gl.disableVertexAttribArray(ThickLineShaderNormalDates.thicknessLoc);
+        gl.disableVertexAttribArray(ThickLineShaderNormalDates.orientationLoc);
+    }
+};
+
+var ThickLineShaderNormalDates$ = {};
+
+registerType("ThickLineShaderNormalDates", [ThickLineShaderNormalDates, ThickLineShaderNormalDates$, null]);
+
+
 // wwtlib.TimeSeriesPointSpriteShader
 
 export function TimeSeriesPointSpriteShader() { }
