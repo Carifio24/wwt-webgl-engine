@@ -179,6 +179,7 @@ export function SpreadSheetLayer() {
     this._raUnits$1 = 0;
     this.colorMap = 3;
     this.colorMapperName = 'Greys';
+    this._depthBuffered = null;
 
     // The following attributes control whether and how to map values from
     // the ColorMapColumn to colors. The overall option DynamicColor
@@ -678,10 +679,11 @@ var SpreadSheetLayer$ = {
         if (this.pointList == null) {
             this.pointList = new PointList(renderContext);
         }
+        var depthBuffered = this._depthBufferedToUse(renderContext);
         this.lineList.timeSeries = this.timeSeries;
         if (this.lineList2d == null) {
             this.lineList2d = new LineList();
-            this.lineList2d.set_depthBuffered(false);
+            this.lineList2d.set_depthBuffered(depthBuffered);
         }
         this.lineList.timeSeries = this.timeSeries;
         if (this.triangleList == null) {
@@ -689,7 +691,7 @@ var SpreadSheetLayer$ = {
         }
         if (this.triangleList2d == null) {
             this.triangleList2d = new TriangleList();
-            this.triangleList2d.depthBuffered = false;
+            this.triangleList2d.depthBuffered = depthBuffered;
         }
         this.positions.length = 0;
         var currentIndex = 0;
@@ -1406,6 +1408,24 @@ var SpreadSheetLayer$ = {
         }
     },
 
+    get_depthBuffered: function () {
+        return this._depthBuffered;
+    },
+
+    set_depthBuffered: function (value) {
+        this._depthBuffered = value;
+        return value;
+    },
+
+    _depthBufferedToUse: function (renderContext) {
+        if (this._depthBuffered !== null) {
+            return this._depthBuffered;
+        }
+        
+        var renderType = renderContext.get_backgroundImageset().get_dataSetType();
+        return renderType == 4;
+    },
+
     get_decay: function () {
         return this.decay;
     },
@@ -1979,6 +1999,7 @@ var SpreadSheetLayer$ = {
             this.prepVertexBuffer(device, opacity);
             this.pointList.set_mask(this._createMask());
         }
+        var depthBuffered = this._depthBufferedToUse(renderContext);
         var jNow = SpaceTimeController.get_jNow() - SpaceTimeController.utcToJulian(this.baseDate);
         var adjustedScale = this.scaleFactor * 3;
         if (flat && this.astronomical && (this._markerScale$1 === 1)) {
@@ -1989,6 +2010,7 @@ var SpreadSheetLayer$ = {
             this.triangleList2d.sky = this.get_astronomical();
             this.triangleList2d.timeSeries = this.timeSeries;
             this.triangleList2d.jNow = jNow;
+            this.triangleList2d.set_depthBuffered(depthBuffered);
             this.triangleList2d.draw(renderContext, opacity * this.get_opacity(), 1);
         }
         if (this.triangleList != null) {
@@ -1996,10 +2018,11 @@ var SpreadSheetLayer$ = {
             this.triangleList.sky = this.get_astronomical();
             this.triangleList.timeSeries = this.timeSeries;
             this.triangleList.jNow = jNow;
+            this.triangleList.set_depthBuffered(depthBuffered);
             this.triangleList.draw(renderContext, opacity * this.get_opacity(), 1);
         }
         if (this.pointList != null) {
-            this.pointList.depthBuffered = true;
+            this.pointList.depthBuffered = depthBuffered;
             this.pointList.showFarSide = this.get_showFarSide();
             this.pointList.decay = (this.timeSeries) ? this.decay : 0;
             this.pointList.sky = this.get_astronomical();
@@ -2037,6 +2060,7 @@ var SpreadSheetLayer$ = {
             this.lineList.decay = this.decay;
             this.lineList.timeSeries = this.timeSeries;
             this.lineList.jNow = jNow;
+            this.lineList.set_depthBuffered(depthBuffered);
             this.lineList.drawLines(renderContext, opacity * this.get_opacity());
         }
         if (this.lineList2d != null) {
@@ -2045,6 +2069,7 @@ var SpreadSheetLayer$ = {
             this.lineList2d.timeSeries = this.timeSeries;
             this.lineList2d.showFarSide = this.get_showFarSide();
             this.lineList2d.jNow = jNow;
+            this.lineList2d.set_depthBuffered(depthBuffered);
             this.lineList2d.drawLines(renderContext, opacity * this.get_opacity());
         }
         return true;
