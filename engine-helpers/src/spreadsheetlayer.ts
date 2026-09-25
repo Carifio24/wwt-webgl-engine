@@ -249,6 +249,17 @@ export class SpreadSheetLayerState extends LayerState implements SpreadSheetLaye
     return v;
   }
 
+  depthBuffered!: boolean | null;
+
+  get_depthBuffered(): boolean | null {
+      return this.depthBuffered;
+  }
+
+  set_depthBuffered(v: boolean | null): boolean | null {
+    this.depthBuffered = v;
+    return v;
+  }
+
   dynamicColor!: boolean;
 
   get_dynamicColor(): boolean {
