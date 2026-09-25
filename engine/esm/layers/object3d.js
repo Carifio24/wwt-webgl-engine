@@ -1033,7 +1033,7 @@ var Object3d$ = {
     // Calculate per-vertex normals by averaging face normals. Normals of adjacent faces with an
     // angle of greater than crease angle are not included in the average. CalculateVertexNormalsMerged
     // is slower than the other normal generation method, CalculateVertexNormals, but it produces better
-    // results. Vertices with identical positions (bot possibly different texture coordinates) are treated
+    // results. Vertices with identical positions (but possibly different texture coordinates) are treated
     // as the same vertex for purposes of normal calculation. This allows smooth normals across texture
     // wrap seams.
     //
@@ -1042,7 +1042,6 @@ var Object3d$ = {
         if (!vertexList.length) {
             return null;
         }
-        var vertexCount = vertexList.length;
         var triangleCount = Math.floor(indexList.length / 3);
 
         // Create a list of vertices sorted by their positions. This will be used to
@@ -1147,7 +1146,6 @@ var Object3d$ = {
         if (!vertexList.length) {
             return null;
         }
-        var vertexCount = vertexList.length;
         var triangleCount = Math.floor(indexList.length / 3);
 
         // Create a list of vertices sorted by their positions. This will be used to
@@ -1233,8 +1231,8 @@ var Object3d$ = {
                 var invDeterminant = 1 / determinant;
                 var n00 = m11 * invDeterminant;
                 var n01 = -m01 * invDeterminant;
-                var n10 = -m10 * invDeterminant;
-                var n11 = m00 * invDeterminant;
+                // var n10 = -m10 * invDeterminant;
+                // var n11 = m00 * invDeterminant;
                 partials[i] = Vector3d.addVectors(Vector3d.multiplyScalar(edge0, n00), Vector3d.multiplyScalar(edge1, n01));
                 partials[i].normalize();
             }
@@ -1388,23 +1386,27 @@ var Object3d$ = {
         return percentage;
     },
 
-    _loadMeshFromObj: function (doc, filename) {
+    _loadMeshFromBlob: function (blob) {
         var $this = this;
-
-        this.filename = filename;
-        this._tourDocument = doc;
-        var blob = doc.getFileBlob(filename);
-        var chunck = new FileReader();
-        chunck.onloadend = function (e) {
-            $this._matFiles = $this._readObjMaterialsFromBin(ss.safeCast(chunck.result, String));
+        var chunk = new FileReader();
+        chunk.onloadend = function (_e) {
+            var result = ss.safeCast(chunk.result, String);
+            $this._matFiles = $this._readObjMaterialsFromBin(result);
             $this._matFileIndex = 0;
 
             // pass data to LoadMatLib. It will chain load all the material
             // files, then load the obj from this data - hack for having no
             // synchronous blob reading in javascript
-            $this._loadMatLib(ss.safeCast(chunck.result, String));
+            $this._loadMatLib(result);
         };
-        chunck.readAsText(blob);
+        chunk.readAsText(blob);
+    },
+
+    _loadMeshFromObj: function (doc, filename) {
+        this.filename = filename;
+        this._tourDocument = doc;
+        var blob = doc.getFileBlob(filename);
+        this._loadMeshFromBlob(blob); 
     },
 
     _readObjMaterialsFromBin: function (data) {
@@ -1695,13 +1697,12 @@ var Object3d$ = {
                             currentMaterial.ambient = Color.fromArgb(255, Math.min(parseFloat(parts[1]) * 255, 255), Math.min(parseFloat(parts[2]) * 255, 255), Math.min(parseFloat(parts[3]) * 255, 255));
                             break;
                         case 'map_Kd':
-                            //ENDURE TEXTURES ARE NOT BLACK!
+                            //ENSURE TEXTURES ARE NOT BLACK!
                             currentMaterial.diffuse = Colors.get_white();
                             var textureFilename = parts[1];
                             for (var i = 2; i < parts.length; i++) {
                                 textureFilename += ' ' + parts[i];
                             }
-                            var path = this.filename.substring(0, this.filename.lastIndexOf('\\') + 1);
                             textureFilename = ss.replaceString(textureFilename, '/', '\\');
                             if (textureFilename.indexOf('\\') !== -1) {
                                 textureFilename = textureFilename.substring(textureFilename.lastIndexOf('\\') + 1);
