@@ -2060,6 +2060,8 @@ export class SpreadSheetLayer extends Layer implements SpreadSheetLayerSettingsI
   set_coordinatesType(v: CoordinatesType): CoordinatesType;
   get_decay(): number;
   set_decay(v: number): number;
+  get_depthBuffered(): boolean | null;
+  set_depthBuffered(v: boolean | null): boolean | null;
   get_dynamicColor(): boolean;
   set_dynamicColor(v: boolean): boolean;
   get_dynamicData(): boolean;
