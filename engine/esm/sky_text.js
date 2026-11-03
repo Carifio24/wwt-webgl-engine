@@ -17,6 +17,7 @@ import { Rectangle } from "./util.js";
 import { WebFile } from "./web_file.js";
 import { TextureArray } from "./graphics/texture_array.js";
 import { Transforms } from "./transforms.js";
+import { Settings } from "./settings.js";
 
 
 // wwtlib.Alignment
@@ -32,13 +33,15 @@ registerEnum("Alignment", Alignment);
 
 // wwtlib.Text3dBatch
 
-export function Text3dBatch(height) {
+export function Text3dBatch(height, font) {
     if (height == null) {
         height = 128;
     }
     this.height = height;
     this.items = [];
+    this._font = font || Settings.get_active().get_defaultFont();
     this._glyphVersion = -1;
+    this._glyphCache = null;
     this.viewTransform = null;
     this.worldTransform = null;
     this.projectionTransform = null;
@@ -133,7 +136,7 @@ var Text3dBatch$ = {
 
     prepareBatch: function () {
         if (this._glyphCache == null) {
-            this._glyphCache = GlyphCache.getCache();
+            this._glyphCache = GlyphCache.getCache(this._font);
         }
         if (!this._glyphCache.ready) {
             return;
@@ -206,6 +209,10 @@ var Text3dBatch$ = {
         this.projectionTransform = transform;
     },
 
+    set_font: function (fontName) {
+        this.font = fontName;
+    },
+
     cleanUp: function () {
         if (this._vertexBuffer != null) {
             this._vertexBuffer = null;
@@ -270,29 +277,37 @@ registerType("GlyphItem", [GlyphItem, GlyphItem$, null]);
 
 // wwtlib.GlyphCache
 
-export function GlyphCache() {
+export function GlyphCache(font) {
     this._gridSize = 8;
     this._readyFlags = 0;
     this.ready = false;
     this._glyphItems = {};
+    this._font = font || Settings.get_active().get_font();
     this.textObject = new TextObject();
     this._dirty = true;
     this._textureDirty = true;
     this._version = 0;
     this._texture = null;
-    this._summaryWebFile = new WebFile(URLHelpers.singleton.engineAssetUrl('glyphs2_summary.xml'));
+    var isDefaultFont = font == Settings.defaultFont;
+    var adjustedFontName = isDefaultFont ? "" : font.replace(" ", "").toLowerCase();
+    this._rootAssetPath = isDefaultFont ? "" : adjustedFontName + "/";
+    var summaryUrl = URLHelpers.singleton.engineAssetUrl(this._rootAssetPath + 'glyphs2_summary.xml');
+    this._summaryWebFile = new WebFile(summaryUrl);
     this._summaryWebFile.onStateChange = this._glyphSummaryReady.bind(this);
     this._fileCharacters = {};
     this._summaryWebFile.send();
 }
 
-GlyphCache._cache = null;
+GlyphCache._caches = {};
 
-GlyphCache.getCache = function () {
-    if (GlyphCache._cache == null) {
-        GlyphCache._cache = new GlyphCache();
+GlyphCache.getCache = function (font) {
+    var cacheFont = font || Settings.get_active().get_font();
+    if (GlyphCache._caches[cacheFont] == null) {
+        var cache = new GlyphCache(font);
+        GlyphCache._caches[cacheFont] = cache;
+        return cache;
     }
-    return GlyphCache._cache;
+    return GlyphCache._caches[cacheFont];
 };
 
 var GlyphCache$ = {
@@ -324,9 +339,9 @@ var GlyphCache$ = {
                     }
                 }
                 var imagePath = glyphFile.attributes.getNamedItem('ImagePath').nodeValue;
-                imagePaths.push(URLHelpers.singleton.engineAssetUrl(imagePath));
+                imagePaths.push(URLHelpers.singleton.engineAssetUrl(this._rootAssetPath + imagePath));
                 var xmlPath = glyphFile.attributes.getNamedItem('XMLPath').nodeValue;
-                var webFile = new WebFile(URLHelpers.singleton.engineAssetUrl(xmlPath));
+                var webFile = new WebFile(URLHelpers.singleton.engineAssetUrl(this._rootAssetPath + xmlPath));
                 webFile.index = index;
                 webFile.onStateChange = function () {
                     $this._glyphXmlReady(this, this.index);

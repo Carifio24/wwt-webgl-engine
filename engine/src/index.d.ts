@@ -158,6 +158,8 @@ export interface EngineSettingsInterface extends EngineSettingsInterfaceRO {
   set_solarSystemMinorOrbits(v: boolean): boolean;
 }
 
+export type Font = "Microsoft Sans Serif" | "Space Mono";
+
 /** Interface for querying {@link ImageSetLayer} settings.
  *
  * The `RO` is short for "read-only".
@@ -1938,6 +1940,8 @@ export class Settings implements EngineSettingsInterface {
   set_renderBackgroundSmooth(v: boolean): boolean;
   get_renderForegroundSmooth(): boolean;
   set_renderForegroundSmooth(v: boolean): boolean;
+  get_font(): Font;
+  set_font(v: Font): string;
 
   static get_active(): Settings;
 }

@@ -172,7 +172,10 @@ export function Settings() {
     this._constellations = true;
     this._renderBackgroundSmooth = true;
     this._renderForegroundSmooth = true;
+    this._font = "Microsoft Sans Serif";
 }
+
+Settings.defaultFont = "Microsoft Sans Serif";
 
 Settings._active = null;
 Settings.tourSettings = null;
@@ -866,6 +869,15 @@ var Settings$ = {
 
     set_renderForegroundSmooth: function (value) {
         this._renderForegroundSmooth = value;
+        return value;
+    },
+
+    get_font: function () {
+        return this._font;
+    },
+
+    set_font: function (value) {
+        this._font = value;
         return value;
     },
 

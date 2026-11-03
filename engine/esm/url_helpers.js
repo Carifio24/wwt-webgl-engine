@@ -139,6 +139,11 @@ export function URLHelpers() {
     this._flagship_static_lcpaths['/wwtweb/wmstoast.aspx'] = true;
 }
 
+URLHelpers.trimFilename = function (url) {
+    url = new URL(url);
+    return url.origin + url.pathname.substring(0, url.pathname.lastIndexOf('/') + 1);
+};
+
 var URLHelpers$ = {
     overrideAssetBaseurl: function (baseurl) {
         this._engine_asset_baseurl = baseurl;
