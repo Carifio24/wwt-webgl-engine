@@ -39,7 +39,7 @@ export function Text3dBatch(height, font) {
     }
     this.height = height;
     this.items = [];
-    this._font = font || Settings.get_active().get_defaultFont();
+    this._font = font || Settings.get_active().get_font();
     this._glyphVersion = -1;
     this._glyphCache = null;
     this.viewTransform = null;
@@ -209,8 +209,13 @@ var Text3dBatch$ = {
         this.projectionTransform = transform;
     },
 
+    get_font: function () {
+        return this._font;
+    },
+
     set_font: function (fontName) {
-        this.font = fontName;
+        this._font = fontName;
+        this.markDirty();
     },
 
     cleanUp: function () {
@@ -288,9 +293,9 @@ export function GlyphCache(font) {
     this._textureDirty = true;
     this._version = 0;
     this._texture = null;
-    var isDefaultFont = font == Settings.defaultFont;
-    var adjustedFontName = isDefaultFont ? "" : font.replace(" ", "").toLowerCase();
-    this._rootAssetPath = isDefaultFont ? "" : adjustedFontName + "/";
+    var adjustedFont = font.replace(" ", "").toLowerCase();
+    var isDefaultFont = font == Settings.defaultFont.replace(" ", "").toLowerCase();
+    this._rootAssetPath = isDefaultFont ? "" : (adjustedFont + "/");
     var summaryUrl = URLHelpers.singleton.engineAssetUrl(this._rootAssetPath + 'glyphs2_summary.xml');
     this._summaryWebFile = new WebFile(summaryUrl);
     this._summaryWebFile.onStateChange = this._glyphSummaryReady.bind(this);
