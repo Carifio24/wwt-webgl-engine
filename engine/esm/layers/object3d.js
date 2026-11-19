@@ -32,6 +32,8 @@ import { LayerUI, LayerUITreeNode } from "./layer_ui.js";
 
 import { v4 } from "uuid";
 import { WebIO } from "@gltf-transform/core";
+import { KHRDracoMeshCompression } from "@gltf-transform/extensions";
+import draco3d from "draco3d";
 
 
 // wwtlib.Material
@@ -1616,7 +1618,13 @@ var Object3d$ = {
 
         this._readFile(filename, false, function (buffer) {
             var bytes = new Uint8Array(buffer);
-            var io = new WebIO();
+            var io = new WebIO()
+                .registerExtensions([KHRDracoMeshCompression])
+                .registerDependencies({
+                  'draco3d.decoder': await draco3d.createDecoderModule({
+
+                  })
+                })
 
             var onDocument = function (document) {
                 $this._readGLTFToMesh.bind($this)(document);

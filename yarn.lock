@@ -392,6 +392,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gltf-transform/extensions@npm:^4.5.1":
+  version: 4.5.1
+  resolution: "@gltf-transform/extensions@npm:4.5.1"
+  dependencies:
+    "@gltf-transform/core": ^4.5.1
+    ktx-parse: ^1.1.0
+  checksum: bb322a609ced652157191f8b444de0f719a7f10d46e91e74ed8457776b4bfcb2a445c0b20bef15bcc629339dbfb9f68e023807ae5b80880d4d003b493c3fc91f
+  languageName: node
+  linkType: hard
+
 "@hapi/hoek@npm:^9.0.0, @hapi/hoek@npm:^9.3.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
@@ -1893,10 +1903,12 @@ __metadata:
   resolution: "@wwtelescope/engine@workspace:engine"
   dependencies:
     "@gltf-transform/core": ^4.5.1
+    "@gltf-transform/extensions": ^4.5.1
     "@typescript-eslint/eslint-plugin": ^5.38.1
     "@typescript-eslint/parser": ^5.38.1
     "@wwtelescope/engine-types": "workspace:0.0.0-dev.0"
     chai: ^4.2.0
+    draco3d: ^1.5.9
     eslint: ^8.24.0
     mocha-headless-chrome: ^4.0.0
     pako: ^1.0.11
@@ -4125,6 +4137,13 @@ __metadata:
   version: 10.0.0
   resolution: "dotenv@npm:10.0.0"
   checksum: f412c5fe8c24fbe313d302d2500e247ba8a1946492db405a4de4d30dd0eb186a88a43f13c958c5a7de303938949c4231c56994f97d05c4bc1f22478d631b4005
+  languageName: node
+  linkType: hard
+
+"draco3d@npm:^1.5.9":
+  version: 1.5.9
+  resolution: "draco3d@npm:1.5.9"
+  checksum: 0d7484c825ce504889307374ebc2cc7f778d2f0f60b9be37c95dc33573df6c1f47f4e947b173586488098d49b79ce0f1da8a13d8e89c4b49b483ca807729a857
   languageName: node
   linkType: hard
 
@@ -6945,6 +6964,13 @@ __metadata:
   version: 2.0.6
   resolution: "klona@npm:2.0.6"
   checksum: ac9ee3732e42b96feb67faae4d27cf49494e8a3bf3fa7115ce242fe04786788e0aff4741a07a45a2462e2079aa983d73d38519c85d65b70ef11447bbc3c58ce7
+  languageName: node
+  linkType: hard
+
+"ktx-parse@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "ktx-parse@npm:1.1.0"
+  checksum: 9e160e3bc6a14a39ee9a4d8431c1bb8119fc62213c7a0d24a684078eddf896d9c8e0679c439a617a934774ad02d4e9e706b19ce6ebc9eb1fb06fa4d0c2b83051
   languageName: node
   linkType: hard
 
