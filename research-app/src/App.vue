@@ -443,7 +443,7 @@ import {
   convertSpreadSheetLayerSetting,
 } from "./settings";
 import { defineComponent, isProxy, toRaw } from "vue";
-import { CreateColormapMessage } from "@wwtelescope/research-app-messages/src/layers";
+import { CreateColormapMessage, ImagesetUrlResolvedMessage } from "@wwtelescope/research-app-messages/src/layers";
 
 const D2R = Math.PI / 180.0;
 const R2D = 180.0 / Math.PI;
@@ -507,7 +507,21 @@ class ImageSetLayerMessageHandler {
         name: displayName,
         goto: gotoTarget,
       })
-      .then((layer: ImageSetLayer) => this.layerInitialized(layer));
+      .then((layer: ImageSetLayer) => {
+        this.layerInitialized(layer);
+
+        const imageset = layer.get_imageSet();
+        imageset.add_urlResolved(activeUrl => {
+
+          const message: ImagesetUrlResolvedMessage = {
+            event: "imageset_url_resolved",
+            name: imageset.get_name(),
+            activeUrl,
+          };
+          this.owner.$options.statusMessageDestination.postMessage(message);
+        });
+
+      });
 
     this.created = true;
   }
