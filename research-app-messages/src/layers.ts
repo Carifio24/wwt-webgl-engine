@@ -257,3 +257,9 @@ export function isDeleteColormapMessage(o: any): o is DeleteColormapMessage {  /
   return o.event === "delete_colormap" &&
     typeof o.name === "string";
 }
+
+export interface ImagesetUrlResolvedMessage {
+  event: "imageset_url_resolved",
+  name: string;
+  activeUrl: string | null;
+}
