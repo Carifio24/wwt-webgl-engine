@@ -200,6 +200,12 @@ export interface AddImageSetLayerOptions {
    * {@link WWTInstance.loadImageCollection}. */
   url: string;
 
+  /** A list of mirror URLs for the desired image set
+    *
+    * If the primary URL is not responsive, the lowest-index URL in this list
+    * that is responsive will be used. */
+  mirrorUrls?: string;
+
   /** Indicates what type of layer you are adding.
    *
    * If "fits", the {@link url} will be taken to point to a single FITS File that
@@ -213,7 +219,7 @@ export interface AddImageSetLayerOptions {
   /** A name to use for the new layer. */
   name: string;
 
-  /** Whether to seek the view to the positon of the FITS file on the sky,
+  /** Whether to seek the view to the position of the FITS file on the sky,
    * if/when it successfully loads. */
   goto: boolean;
 }

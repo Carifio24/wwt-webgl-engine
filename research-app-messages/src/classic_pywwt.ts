@@ -147,6 +147,9 @@ export interface CreateImageSetLayerMessage {
   /** The URL from which to obtain the FITS file or image set. */
   url: string;
 
+  /** Mirror URLs in case the default URL is not working. */
+  mirrorUrls?: string[];
+
   /** The type of layer that is being loaded.
    *
    * With "fits", the URL will be treated as a FITS file to be downloaded and
