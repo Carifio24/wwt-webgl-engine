@@ -24,7 +24,7 @@ const tests: appTests = {
     app: null as unknown as (EnhancedPageObject & ResearchAppPage),
 
     before: function (browser: NightwatchBrowser): void {
-        browser.globals.waitForConditionTimeout = 30000;
+        browser.globals.waitForConditionTimeout = 30_000;
         this.app = browser.page.researchApp();
     },
 

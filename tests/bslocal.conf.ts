@@ -15,8 +15,11 @@ const BSLOCAL_CAPABILITIES = {
 const localDirectory = __dirname;
 
 const nightwatch_config: Configuration = {
-  src_folders: [localDirectory + "/research_app"],
-  page_objects_path: [localDirectory + "/page_objects"],
+  src_folders: [
+    `${localDirectory}/engine`,
+    `${localDirectory}/research_app`,
+  ],
+  page_objects_path: [`${localDirectory}/page_objects`],
   custom_assertions_path: [],
   disable_typescript: true,
   

@@ -22,8 +22,10 @@ const services = loadServices();
 const directory = __dirname;
 
 const nightwatch_config: Configuration = {
-  src_folders: [directory + "/research_app"],
-  page_objects_path: [directory + "/page_objects"],
+  src_folders: [
+    `${directory}/research_app`,
+  ],
+  page_objects_path: [`${directory}/page_objects`],
   custom_assertions_path: [],
   disable_typescript: true,
 
